@@ -10,12 +10,13 @@ public abstract class AbstractView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
+    }
 
+    public void render() {
         initComponents();
         layoutComponents();
         addListeners();
 
-        pack();
         setLocationRelativeTo(null);
     }
 
