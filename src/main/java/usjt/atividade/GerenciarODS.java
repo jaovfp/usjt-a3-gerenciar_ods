@@ -1,6 +1,6 @@
 package usjt.atividade;
 
-import usjt.atividade.views.authentication.LoginView;
+import usjt.atividade.views.authentication.Login.LoginView;
 
 import javax.swing.*;
 

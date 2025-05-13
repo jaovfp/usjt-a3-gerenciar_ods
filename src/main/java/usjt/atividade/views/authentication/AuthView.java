@@ -17,7 +17,7 @@ public abstract class AuthView extends AbstractView {
         setSize(1000, 700);
         SplitBGPanel backgroundPanel = new SplitBGPanel(
                 Color.WHITE,
-                new Color(131, 216, 230)
+                UIStyle.BG_AUTH_COLOR
         );
         backgroundPanel.setLayout(new GridLayout(1, 2));
 
