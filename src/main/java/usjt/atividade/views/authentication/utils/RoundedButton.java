@@ -7,7 +7,11 @@ public class RoundedButton extends JButton {
 
     private int arcWidth = 60;
     private int arcHeight = 60;
-    
+    private Color borderColor;
+    private Color colorPressed;
+    private Color colorRollover;
+
+
     public RoundedButton(){
         this("");
     }
@@ -23,9 +27,9 @@ public class RoundedButton extends JButton {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         if (getModel().isPressed()) {
-            g2.setColor(new Color(0, 200, 200)); // Cor ao pressionar
+            g2.setColor(colorPressed); // Cor ao pressionar
         } else if (getModel().isRollover()) {
-            g2.setColor(new Color(0, 180, 180)); // Cor ao passar o mouse
+            g2.setColor(colorRollover); // Cor ao passar o mouse
         } else {
             g2.setColor(getBackground()); // Cor normal
         }
@@ -38,9 +42,26 @@ public class RoundedButton extends JButton {
     @Override
     protected void paintBorder(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
+        g2.setColor(borderColor);
         g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight);
         g2.dispose();
     }
+
+    public void setBorderColor(Color color) {
+        this.borderColor = color;
+        repaint();
+    }
+
+    public void setColorPressed(Color color) {
+        this.colorPressed = color;
+        repaint();
+    }
+
+    public void setColorRollover(Color color) {
+        this.colorRollover = color;
+        repaint();
+    }
+
 
     @Override
     public boolean isOpaque() {
