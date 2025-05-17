@@ -5,6 +5,6 @@ import java.awt.*;
 
 public class UIStyle {
 
-    public static final Color BG_AUTH_COLOR = new Color(0, 204, 204);
+    public static final Color BG_AUTH_COLOR = new Color(0, 33, 66);
 
 }

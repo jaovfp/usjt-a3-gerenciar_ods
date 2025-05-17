@@ -4,6 +4,8 @@
  */
 package usjt.atividade.views.authentication.Login;
 
+import java.awt.*;
+
 /**
  *
  * @author Pichau
@@ -30,51 +32,64 @@ public class LoginPanel extends javax.swing.JPanel {
         loginLabel = new javax.swing.JLabel();
         userLabel = new javax.swing.JLabel();
         userTextField = new usjt.atividade.views.authentication.utils.CustomTextField();
+        userTextField.setPlaceholderColor(Color.GRAY);
+        userTextField.setTextColor(Color.WHITE);
+        userTextField.setBorderColor(Color.CYAN);
         userTextField.setPlaceholder("Digite seu e-mail");
         passwordLabel = new javax.swing.JLabel();
         passwordField = new usjt.atividade.views.authentication.utils.CustomPasswordField();
         passwordField.setPlaceholder("Digite sua senha...");
+        passwordField.setPlaceholderColor(Color.GRAY);
+        passwordField.setTextColor(Color.WHITE);
+        passwordField.setBorderColor(Color.CYAN);
         esqueceuSenhaLabel = new javax.swing.JLabel();
         btnEntrar = new usjt.atividade.views.authentication.utils.RoundedButton();
         cadastrarLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        naoTemUmaContaLabel = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(0, 33, 66));
         setPreferredSize(new java.awt.Dimension(500, 700));
 
         loginLabel.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        loginLabel.setForeground(new java.awt.Color(0, 153, 153));
+        loginLabel.setForeground(Color.WHITE);
         loginLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         loginLabel.setText("Login");
 
         userLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         userLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        userLabel.setForeground(Color.WHITE);
         userLabel.setText("Usuário:");
 
         userTextField.setToolTipText("");
 
         passwordLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         passwordLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        passwordLabel.setForeground(Color.WHITE);
         passwordLabel.setText("Senha:");
 
-        esqueceuSenhaLabel.setForeground(new java.awt.Color(0, 204, 204));
+        esqueceuSenhaLabel.setForeground(new java.awt.Color(0, 140, 160));
         esqueceuSenhaLabel.setText("<html><u>Esqueceu sua senha ?</u></html>");
         esqueceuSenhaLabel.setToolTipText("");
         esqueceuSenhaLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        btnEntrar.setBackground(new java.awt.Color(0, 153, 153));
+        btnEntrar.setBackground(new java.awt.Color(0, 140, 160));
         btnEntrar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEntrar.setBorderColor(new java.awt.Color(0, 140, 160));
+        btnEntrar.setColorPressed(new java.awt.Color(0, 150, 160));
+        btnEntrar.setColorRollover(new java.awt.Color(0, 160, 170));
         btnEntrar.setText("Entrar");
         btnEntrar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
 
         cadastrarLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cadastrarLabel.setForeground(new java.awt.Color(0, 204, 204));
+        cadastrarLabel.setForeground(new java.awt.Color(0, 140, 160));
+        cadastrarLabel.setText("<html><u>Cadastre-se</u></html>");
         cadastrarLabel.setText("<html><u>Cadastre-se</u></html>");
         cadastrarLabel.setToolTipText("");
         cadastrarLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel1.setText("Não tem uma conta ?");
+        naoTemUmaContaLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        naoTemUmaContaLabel.setForeground(Color.GRAY);
+        naoTemUmaContaLabel.setText("Não tem uma conta ?");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -98,7 +113,7 @@ public class LoginPanel extends javax.swing.JPanel {
                         .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(139, 139, 139))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(naoTemUmaContaLabel)
                         .addGap(169, 169, 169))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(cadastrarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -122,7 +137,7 @@ public class LoginPanel extends javax.swing.JPanel {
                 .addGap(57, 57, 57)
                 .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
+                .addComponent(naoTemUmaContaLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cadastrarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(122, Short.MAX_VALUE))
@@ -135,7 +150,7 @@ public class LoginPanel extends javax.swing.JPanel {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel cadastrarLabel;
     private javax.swing.JLabel esqueceuSenhaLabel;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel naoTemUmaContaLabel;
     private javax.swing.JLabel loginLabel;
     private usjt.atividade.views.authentication.utils.CustomPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
