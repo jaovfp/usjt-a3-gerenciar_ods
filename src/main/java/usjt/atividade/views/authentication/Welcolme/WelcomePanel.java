@@ -9,6 +9,8 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
+
 import usjt.atividade.views.authentication.utils.UIStyle;
 
 /**
@@ -16,23 +18,28 @@ import usjt.atividade.views.authentication.utils.UIStyle;
  * @author Pichau
  */
 public class WelcomePanel extends JPanel{   
-    public WelcomePanel() {
+    public WelcomePanel(String text, String nameImage) {
         setPreferredSize(new Dimension(500, 700));
         setLayout(new BorderLayout());
-        
-        setBackground(UIStyle.BG_AUTH_COLOR);
-        JLabel welcomeLabel = new JLabel("Seja bem-vindo", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
-        add(welcomeLabel, BorderLayout.NORTH);
 
+        setBackground(Color.WHITE);
+        JLabel welcomeLabel = new JLabel(text, SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        welcomeLabel.setForeground(UIStyle.BG_AUTH_COLOR);
+        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 0, 10));
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setOpaque(false);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(65, 0, 0, 0));
+        topPanel.add(welcomeLabel, BorderLayout.CENTER);
+        add(topPanel, BorderLayout.NORTH);
 
         JLabel imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
 
 
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/ui_ux_auth_image.png"));
-        Image scaledImage = originalIcon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+        ImageIcon originalIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/"+nameImage)));
+        Image scaledImage = originalIcon.getImage().getScaledInstance(350, 350, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
         imageLabel.setIcon(scaledIcon);
 

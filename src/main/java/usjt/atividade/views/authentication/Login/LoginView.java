@@ -23,13 +23,13 @@ public class LoginView extends AuthView {
     @Override
     protected void initComponents() {
         loginPanel = new LoginPanel();
-        welcomePanel = new WelcomePanel();
+        welcomePanel = new WelcomePanel("Olá, seja bem-vindo!", "ui-ux-login.png");
     }
 
     @Override
     protected void layoutComponents() {
-        leftPanel.add(loginPanel, BorderLayout.CENTER);
-        rightPanel.add(welcomePanel, BorderLayout.CENTER);
+        leftPanel.add(welcomePanel, BorderLayout.CENTER);
+        rightPanel.add(loginPanel, BorderLayout.CENTER);
     }
 
     @Override
