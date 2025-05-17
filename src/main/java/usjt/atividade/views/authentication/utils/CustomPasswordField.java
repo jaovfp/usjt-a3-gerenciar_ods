@@ -6,7 +6,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 public class CustomPasswordField extends JPasswordField {
-    private Color borderColor = Color.BLACK;
+    private Color borderColor;
+    private Color placeholderColor;
+    private Color textColor;
     private String placeholder = ""; 
 
     public CustomPasswordField() {
@@ -16,6 +18,8 @@ public class CustomPasswordField extends JPasswordField {
     public CustomPasswordField(int columns) {
         super(columns);
         setOpaque(false);
+        setForeground(textColor);
+        setCaretColor(textColor);
 
         addFocusListener(new FocusListener() {
             @Override
@@ -49,7 +53,7 @@ public class CustomPasswordField extends JPasswordField {
 
         if (new String(getPassword()).isEmpty() && !isFocusOwner()) {
             Graphics2D g2 = (Graphics2D) g.create();
-            g2.setColor(Color.GRAY); 
+            g2.setColor(placeholderColor);
             g2.setFont(getFont().deriveFont(Font.ITALIC));
             Insets insets = getInsets();
             g2.drawString(placeholder, insets.left + 2, getHeight() / 2 + getFont().getSize() / 2 - 4);
@@ -58,5 +62,22 @@ public class CustomPasswordField extends JPasswordField {
 
         g.setColor(borderColor);
         g.fillRect(0, getHeight() - 1, getWidth(), 1);
+    }
+
+    public void setPlaceholderColor(Color color) {
+        this.placeholderColor = color;
+        repaint();
+    }
+
+    public void setTextColor(Color color) {
+        this.textColor = color;
+        setForeground(textColor);
+        setCaretColor(textColor);
+        repaint();
+    }
+
+    public void setBorderColor(Color color) {
+        this.borderColor = color;
+        repaint();
     }
 }
