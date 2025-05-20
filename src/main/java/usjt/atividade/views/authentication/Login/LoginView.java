@@ -22,7 +22,7 @@ public class LoginView extends AuthView {
 
     @Override
     protected void initComponents() {
-        loginPanel = new LoginPanel();
+        loginPanel = new LoginPanel(this);
         welcomePanel = new WelcomePanel("Olá, seja bem-vindo!", "ui-ux-login.png");
     }
 
