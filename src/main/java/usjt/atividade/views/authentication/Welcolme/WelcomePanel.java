@@ -13,10 +13,6 @@ import java.util.Objects;
 
 import usjt.atividade.views.authentication.utils.UIStyle;
 
-/**
- *
- * @author Pichau
- */
 public class WelcomePanel extends JPanel{   
     public WelcomePanel(String text, String nameImage) {
         setPreferredSize(new Dimension(500, 700));
@@ -44,14 +40,5 @@ public class WelcomePanel extends JPanel{
         imageLabel.setIcon(scaledIcon);
 
         add(imageLabel, BorderLayout.CENTER);
-
-        Locale locale = new Locale("pt", "BR");
-        SimpleDateFormat sdf = new SimpleDateFormat("d 'de' MMMM 'de' yyyy", locale);
-        String currentDate = sdf.format(new Date());
-
-        JLabel dateLabel = new JLabel(currentDate, SwingConstants.CENTER);
-        dateLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        dateLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        add(dateLabel, BorderLayout.SOUTH);
     }
 }
