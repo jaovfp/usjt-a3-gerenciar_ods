@@ -17,7 +17,7 @@ public class SignUpView extends AuthView {
 
     @Override
     protected void initComponents() {
-        signUpPanel = new SignUpPanel();
+        signUpPanel = new SignUpPanel(this);
         welcomePanel = new WelcomePanel("Junte-se a nós!", "ui-ux-signup.png");
     }
 
