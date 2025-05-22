@@ -13,14 +13,6 @@ public abstract class AbstractView extends JFrame {
     }
 
     public void render() {
-        initComponents();
-        layoutComponents();
-        addListeners();
-
         setLocationRelativeTo(null);
     }
-
-    protected abstract void initComponents();
-    protected abstract void layoutComponents();
-    protected abstract void addListeners();
 }
