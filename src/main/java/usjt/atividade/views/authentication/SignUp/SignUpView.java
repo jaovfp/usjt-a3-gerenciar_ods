@@ -18,5 +18,4 @@ public class SignUpView extends AuthView {
         rightPanel.add(signUpPanel, BorderLayout.CENTER);
         render();
     }
-
 }

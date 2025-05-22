@@ -13,17 +13,27 @@ public abstract class AuthView extends AbstractView {
     protected JPanel rightPanel;
 
     public AuthView(String title) {
-        super(title);
-        setSize(1000, 700);
+        super(title, 1000, 700);
+        initPanels();
+        layoutPanels();
+    }
+
+    @Override
+    protected void initPanels(){
+        leftPanel = new JPanel();
+        rightPanel = new JPanel();
+
+    }
+
+    @Override
+    protected void layoutPanels(){
         SplitBGPanel backgroundPanel = new SplitBGPanel(
                 Color.WHITE,
                 UIStyle.BG_AUTH_COLOR
         );
         backgroundPanel.setLayout(new GridLayout(1, 2));
 
-        leftPanel = new JPanel();
         leftPanel.setOpaque(false);
-        rightPanel = new JPanel();
         rightPanel.setOpaque(false);
 
         backgroundPanel.add(leftPanel);
