@@ -6,12 +6,9 @@ import java.awt.*;
 public abstract class AbstractPanel extends JPanel {
     public AbstractPanel(Color backgroundColor, Dimension preferredSize) {
         setBackground(backgroundColor);
-        setPreferredSize(preferredSize  );
+        setPreferredSize(preferredSize);
         setOpaque(false);
         setLayout(new BorderLayout());
-        initComponents();
-        layoutComponents();
-        addListeners();
     }
 
     protected abstract void initComponents();

@@ -30,6 +30,7 @@ public class LoginPanel extends AbstractPanel {
         super(UIStyle.BG_AUTH_COLOR, UIStyle.AUTH_DIMENSION);
         this.loginView = loginView;
         initComponents();
+        layoutComponents();
         addListeners();
     }
 

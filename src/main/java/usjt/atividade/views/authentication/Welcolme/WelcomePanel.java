@@ -1,44 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package usjt.atividade.views.authentication.Welcolme;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Objects;
 
+import usjt.atividade.views.AbstractPanel;
+import static usjt.atividade.views.authentication.utils.ComponentFactory.*;
 import usjt.atividade.views.authentication.utils.UIStyle;
 
-public class WelcomePanel extends JPanel{   
-    public WelcomePanel(String text, String nameImage) {
-        setPreferredSize(new Dimension(500, 700));
-        setLayout(new BorderLayout());
+public class WelcomePanel extends AbstractPanel {
+    private JLabel welcomeLabel;
+    private JLabel imageLabel;
 
-        setBackground(Color.WHITE);
-        JLabel welcomeLabel = new JLabel(text, SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        welcomeLabel.setForeground(UIStyle.BG_AUTH_COLOR);
+    public WelcomePanel(String text, String nameImage) {
+        super(Color.WHITE, UIStyle.AUTH_DIMENSION);
+        initComponents(text,nameImage);
+        layoutComponents();
+        addListeners();
+    }
+
+    @Override
+    protected void initComponents() {
+    }
+
+    protected void initComponents(String welcomeText, String nameImage){
+        welcomeLabel = createLabel(welcomeText, UIStyle.AUTH_TITLE_FONT, UIStyle.BG_AUTH_COLOR, SwingConstants.CENTER);
+        imageLabel = createImageLabel(nameImage, SwingConstants.CENTER, 350, 350);
+    }
+
+    @Override
+    protected void layoutComponents(){
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 0, 10));
+
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false);
         topPanel.setBorder(BorderFactory.createEmptyBorder(65, 0, 0, 0));
         topPanel.add(welcomeLabel, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
 
-        JLabel imageLabel = new JLabel();
-        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
-
-
-        ImageIcon originalIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/"+nameImage)));
-        Image scaledImage = originalIcon.getImage().getScaledInstance(350, 350, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(scaledImage);
-        imageLabel.setIcon(scaledIcon);
-
         add(imageLabel, BorderLayout.CENTER);
+    }
+
+    @Override
+    protected void addListeners(){
+
     }
 }
