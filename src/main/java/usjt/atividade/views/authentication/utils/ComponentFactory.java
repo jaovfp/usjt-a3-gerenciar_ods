@@ -2,6 +2,7 @@ package usjt.atividade.views.authentication.utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class ComponentFactory {
     public static JLabel createLabel(String text, Font font, Color color, int alignment) {
@@ -48,5 +49,19 @@ public class ComponentFactory {
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
         label.setFont(font);
         return label;
+    }
+
+
+    public static JLabel createImageLabel(String imageName, int horizontalAlignment, int width, int height) {
+        JLabel imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(horizontalAlignment);
+
+        ImageIcon icon = new ImageIcon(
+                Objects.requireNonNull(ComponentFactory.class.getResource("/images/" + imageName))
+        );
+
+        Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledImage));
+        return imageLabel;
     }
 }
