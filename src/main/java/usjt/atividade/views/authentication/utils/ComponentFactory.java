@@ -52,12 +52,12 @@ public class ComponentFactory {
     }
 
 
-    public static JLabel createImageLabel(String imageName, int horizontalAlignment, int width, int height) {
+    public static JLabel createImageLabel(String imageName, String typeImage, int horizontalAlignment, int width, int height) {
         JLabel imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(horizontalAlignment);
 
         ImageIcon icon = new ImageIcon(
-                Objects.requireNonNull(ComponentFactory.class.getResource("/images/" + imageName))
+                Objects.requireNonNull(ComponentFactory.class.getResource("/" + typeImage + "/" + imageName))
         );
 
         Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);

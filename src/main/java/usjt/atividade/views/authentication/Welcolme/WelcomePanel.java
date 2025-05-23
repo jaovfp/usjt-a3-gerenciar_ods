@@ -24,7 +24,7 @@ public class WelcomePanel extends AbstractPanel {
 
     protected void initComponents(String welcomeText, String nameImage){
         welcomeLabel = createLabel(welcomeText, UIStyle.AUTH_TITLE_FONT, UIStyle.BG_AUTH_COLOR, SwingConstants.CENTER);
-        imageLabel = createImageLabel(nameImage, SwingConstants.CENTER, 350, 350);
+        imageLabel = createImageLabel(nameImage, "images", SwingConstants.CENTER, 350, 350);
     }
 
     @Override

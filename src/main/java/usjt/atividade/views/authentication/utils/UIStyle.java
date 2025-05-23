@@ -11,4 +11,5 @@ public class UIStyle {
     public static final Color AUTH_ACCENT_COLOR = new Color(0, 140, 160);
     public static final Font AUTH_TITLE_FONT = new Font("Arial", Font.BOLD, 24);
     public static final Font AUTH_TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    public static final Font AUTH_BTN_FONT = new Font("Arial", Font.BOLD, 18);
 }
