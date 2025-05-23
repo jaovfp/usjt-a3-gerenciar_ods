@@ -5,8 +5,8 @@ import java.awt.*;
 
 public abstract class AbstractView extends JFrame {
 
-    public AbstractView(String title, int width, int height) {
-        setTitle(title);
+    public AbstractView(String screenTitle, int width, int height) {
+        setTitle(screenTitle);
         setSize(width, height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());

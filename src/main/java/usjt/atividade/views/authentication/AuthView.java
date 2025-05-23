@@ -1,6 +1,7 @@
 package usjt.atividade.views.authentication;
 
 import usjt.atividade.views.AbstractView;
+import usjt.atividade.views.authentication.Welcolme.WelcomePanel;
 import usjt.atividade.views.authentication.utils.SplitBGPanel;
 import usjt.atividade.views.authentication.utils.UIStyle;
 
@@ -11,18 +12,21 @@ public abstract class AuthView extends AbstractView {
 
     protected JPanel leftPanel;
     protected JPanel rightPanel;
+    private final String welcomeTitle;
+    private final String welcomeImage;
 
-    public AuthView(String title) {
-        super(title, 1000, 700);
+    public AuthView(String screenTitle, String welcomeTitle, String welcomeImage) {
+        super(screenTitle, 1000, 700);
+        this.welcomeTitle = welcomeTitle;
+        this.welcomeImage = welcomeImage;
         initPanels();
         layoutPanels();
     }
 
     @Override
     protected void initPanels(){
-        leftPanel = new JPanel();
+        leftPanel = new WelcomePanel(this.welcomeTitle, this.welcomeImage);
         rightPanel = new JPanel();
-
     }
 
     @Override
