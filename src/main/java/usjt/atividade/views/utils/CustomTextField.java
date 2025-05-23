@@ -1,4 +1,4 @@
-package usjt.atividade.views.authentication.utils;
+package usjt.atividade.views.utils;
 
 import javax.swing.*;
 import java.awt.*;

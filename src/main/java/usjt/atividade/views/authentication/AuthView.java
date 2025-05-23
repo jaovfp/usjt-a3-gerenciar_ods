@@ -2,8 +2,8 @@ package usjt.atividade.views.authentication;
 
 import usjt.atividade.views.AbstractView;
 import usjt.atividade.views.authentication.Welcolme.WelcomePanel;
-import usjt.atividade.views.authentication.utils.SplitBGPanel;
-import usjt.atividade.views.authentication.utils.UIStyle;
+import usjt.atividade.views.utils.SplitBGPanel;
+import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
 import java.awt.*;

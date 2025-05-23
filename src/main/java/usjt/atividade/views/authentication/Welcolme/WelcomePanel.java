@@ -3,9 +3,9 @@ package usjt.atividade.views.authentication.Welcolme;
 import javax.swing.*;
 import java.awt.*;
 
+import static usjt.atividade.views.utils.ComponentFactory.*;
 import usjt.atividade.views.AbstractPanel;
-import static usjt.atividade.views.authentication.utils.ComponentFactory.*;
-import usjt.atividade.views.authentication.utils.UIStyle;
+import usjt.atividade.views.utils.UIStyle;
 
 public class WelcomePanel extends AbstractPanel {
     private JLabel welcomeLabel;

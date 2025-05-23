@@ -3,11 +3,11 @@ package usjt.atividade.views.authentication.Login;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.ForgotPassword.ForgotPasswordView;
 import usjt.atividade.views.authentication.SignUp.SignUpView;
-import usjt.atividade.views.authentication.utils.CustomPasswordField;
-import usjt.atividade.views.authentication.utils.CustomTextField;
-import usjt.atividade.views.authentication.utils.RoundedButton;
-import usjt.atividade.views.authentication.utils.UIStyle;
-import static usjt.atividade.views.authentication.utils.ComponentFactory.*;
+import usjt.atividade.views.utils.CustomPasswordField;
+import usjt.atividade.views.utils.CustomTextField;
+import usjt.atividade.views.utils.RoundedButton;
+import usjt.atividade.views.utils.UIStyle;
+import static usjt.atividade.views.utils.ComponentFactory.*;
 
 import javax.swing.*;
 import java.awt.*;

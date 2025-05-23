@@ -1,4 +1,4 @@
-package usjt.atividade.views.authentication.utils;
+package usjt.atividade.views.utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +22,7 @@ public class ComponentFactory {
         btn.setBorderColor(bgColor);
         btn.setColorPressed(bgColor.darker());
         btn.setColorRollover(bgColor.brighter());
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
     }
 

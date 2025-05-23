@@ -2,16 +2,16 @@ package usjt.atividade.views.authentication.ForgotPassword;
 
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;
-import usjt.atividade.views.authentication.utils.CustomTextField;
-import usjt.atividade.views.authentication.utils.RoundedButton;
-import usjt.atividade.views.authentication.utils.UIStyle;
+import usjt.atividade.views.authentication.ResetPassword.ResetPasswordView;
+import usjt.atividade.views.utils.CustomTextField;
+import usjt.atividade.views.utils.RoundedButton;
+import usjt.atividade.views.utils.UIStyle;
+import static usjt.atividade.views.utils.ComponentFactory.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import static usjt.atividade.views.authentication.utils.ComponentFactory.*;
 
 public class ForgotPasswordPanel extends AbstractPanel {
 
@@ -87,6 +87,7 @@ public class ForgotPasswordPanel extends AbstractPanel {
     @Override
     protected void addListeners(){
         addBotaoVoltarListener();
+        addBotaoEnviarPin();
     }
 
     private void addBotaoVoltarListener(){
@@ -94,6 +95,16 @@ public class ForgotPasswordPanel extends AbstractPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 new LoginView().setVisible(true);
+                forgotPasswordView.dispose();
+            }
+        });
+    }
+
+    private void addBotaoEnviarPin(){
+        btnSendPinCodeEmail.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new ResetPasswordView().setVisible(true);
                 forgotPasswordView.dispose();
             }
         });

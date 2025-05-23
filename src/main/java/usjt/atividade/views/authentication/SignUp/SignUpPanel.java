@@ -2,12 +2,17 @@ package usjt.atividade.views.authentication.SignUp;
 
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;
-import usjt.atividade.views.authentication.utils.*;
+import usjt.atividade.views.utils.CustomPasswordField;
+import usjt.atividade.views.utils.CustomTextField;
+import usjt.atividade.views.utils.RoundedButton;
+import usjt.atividade.views.utils.UIStyle;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import static usjt.atividade.views.authentication.utils.ComponentFactory.*;
+
+import static usjt.atividade.views.utils.ComponentFactory.*;
 
 
 public class SignUpPanel extends AbstractPanel {
