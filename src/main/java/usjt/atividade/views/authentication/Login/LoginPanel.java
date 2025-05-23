@@ -1,6 +1,7 @@
 package usjt.atividade.views.authentication.Login;
 
 import usjt.atividade.views.AbstractPanel;
+import usjt.atividade.views.authentication.ForgotPassword.ForgotPasswordView;
 import usjt.atividade.views.authentication.SignUp.SignUpView;
 import usjt.atividade.views.authentication.utils.CustomPasswordField;
 import usjt.atividade.views.authentication.utils.CustomTextField;
@@ -105,6 +106,7 @@ public class LoginPanel extends AbstractPanel {
     @Override
     protected void addListeners(){
         addCadastrarLabelListener();
+        addEsqueceuSuaSenhaListener();
     }
 
     private void addCadastrarLabelListener() {
@@ -112,6 +114,16 @@ public class LoginPanel extends AbstractPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 new SignUpView().setVisible(true);
+                loginView.dispose();
+            }
+        });
+    }
+
+    private void addEsqueceuSuaSenhaListener() {
+        esqueceuSenhaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new ForgotPasswordView().setVisible(true);
                 loginView.dispose();
             }
         });
