@@ -1,10 +1,11 @@
 package usjt.atividade.domain.model.User;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class User {
 
-    private int userId;
+    private UUID userId;
     private String username;
     private String email;
     private String passwordHash;
@@ -14,7 +15,7 @@ public class User {
     private LocalDateTime createDate;
     private LocalDateTime changeDate;
 
-    public User(int userId, String username, String email, String passwordHash, UserType type,
+    public User(UUID userId, String username, String email, String passwordHash, UserType type,
                 boolean isActive, String profilePhotoUrl, LocalDateTime createDate, LocalDateTime changeDate) {
         this.userId = userId;
         this.username = username;
@@ -27,11 +28,11 @@ public class User {
         this.changeDate = changeDate;
     }
 
-    public int getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 

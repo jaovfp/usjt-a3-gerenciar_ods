@@ -1,7 +1,7 @@
 USE app_gerenciarods;
 
 CREATE TABLE tbl_users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id CHAR(36) PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -13,8 +13,8 @@ CREATE TABLE tbl_users (
 );
 
 CREATE TABLE tbl_password_recovery (
-    recovery_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    recovery_id CHAR(36) PRIMARY KEY,
+    user_id CHAR(36) NOT NULL,
     pin VARCHAR(6) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP,
