@@ -4,7 +4,7 @@ import usjt.atividade.app.Exceptions.ValidationException;
 import usjt.atividade.app.User.dto.requests.CreateUserRequest;
 
 import static usjt.atividade.common.MessageConstants.*;
-import static usjt.atividade.common.ValidatorUtils.*;
+import static usjt.atividade.common.utils.ValidatorUtils.*;
 
 public class UserValidator {
 

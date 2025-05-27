@@ -2,7 +2,7 @@ package usjt.atividade.app.User;
 
 import usjt.atividade.app.Exceptions.UnprocessableEntityException;
 import usjt.atividade.app.User.dto.requests.CreateUserRequest;
-import usjt.atividade.common.PasswordHasher;
+import usjt.atividade.common.utils.PasswordHasher;
 import usjt.atividade.domain.model.User.User;
 import usjt.atividade.domain.model.User.UserType;
 

@@ -1,4 +1,4 @@
-package usjt.atividade.common;
+package usjt.atividade.common.utils;
 
 import java.util.regex.Pattern;
 

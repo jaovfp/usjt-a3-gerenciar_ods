@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserRepositoryImpl implements UserRepository {
@@ -47,7 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    public User findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM tbl_users WHERE email = ? AND is_active = true";
 
         try (Connection conn = MySQLConnection.getInstance();
@@ -57,7 +58,7 @@ public class UserRepositoryImpl implements UserRepository {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new User(
+                return Optional.of(new User(
                         UUID.fromString(rs.getString("user_id")),
                         rs.getString("username"),
                         rs.getString("email"),
@@ -67,10 +68,10 @@ public class UserRepositoryImpl implements UserRepository {
                         rs.getString("profile_photo_url"),
                         rs.getTimestamp("create_date").toLocalDateTime(),
                         rs.getTimestamp("change_date").toLocalDateTime()
-                );
+                ));
             }
 
-            return null;
+            return Optional.empty();
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao consultar usuário", e);
