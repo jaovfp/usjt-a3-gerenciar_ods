@@ -1,5 +1,7 @@
 package usjt.atividade.views.authentication.ForgotPassword;
 
+import usjt.atividade.app.Authentication.AuthController;
+import usjt.atividade.common.Response;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;
 import usjt.atividade.views.authentication.ResetPassword.ResetPasswordView;
@@ -7,6 +9,7 @@ import usjt.atividade.views.utils.CustomTextField;
 import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 import static usjt.atividade.views.utils.ComponentFactory.*;
+import static usjt.atividade.views.utils.PasswordUtils.convertPassword;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,10 +25,12 @@ public class ForgotPasswordPanel extends AbstractPanel {
     private JLabel emailLabel;
     private CustomTextField emailTextField;
     private RoundedButton btnSendPinCodeEmail;
+    private final AuthController authController;
 
     public ForgotPasswordPanel(ForgotPasswordView forgotPasswordView) {
         super(UIStyle.BG_AUTH_COLOR, UIStyle.AUTH_DIMENSION);
         this.forgotPasswordView = forgotPasswordView;
+        this.authController = new AuthController();
         initComponents();
         layoutComponents();
         addListeners();
@@ -88,6 +93,23 @@ public class ForgotPasswordPanel extends AbstractPanel {
     protected void addListeners(){
         addBotaoVoltarListener();
         addBotaoEnviarPin();
+        btnSendPinCodeEmail.addActionListener(e -> btnSendPinCodeEmailClick());
+    }
+
+    private void btnSendPinCodeEmailClick(){
+        Response<Void> response = authController.requestPasswordReset(emailTextField.getText());
+        if (response.isSuccess()){
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            new ResetPasswordView().setVisible(true);
+            forgotPasswordView.dispose();
+        }else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            clearFields();
+        }
+    }
+
+    private void clearFields(){
+        emailTextField.setText("");
     }
 
     private void addBotaoVoltarListener(){

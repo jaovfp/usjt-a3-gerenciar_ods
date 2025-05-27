@@ -1,4 +1,4 @@
-package usjt.atividade.common;
+package usjt.atividade.common.utils;
 
 import org.mindrot.jbcrypt.BCrypt;
 

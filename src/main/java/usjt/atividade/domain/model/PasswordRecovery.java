@@ -1,17 +1,18 @@
 package usjt.atividade.domain.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class PasswordRecovery {
 
-    private int recoveryId;
-    private int userId;
+    private UUID recoveryId;
+    private UUID userId;
     private String pin;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
     private boolean isUsed;
 
-    public PasswordRecovery(int recoveryId, int userId, String pin,
+    public PasswordRecovery(UUID recoveryId, UUID userId, String pin,
                             LocalDateTime createdAt, LocalDateTime expiresAt, boolean isUsed) {
         this.recoveryId = recoveryId;
         this.userId = userId;
@@ -21,51 +22,27 @@ public class PasswordRecovery {
         this.isUsed = isUsed;
     }
 
-    public int getRecoveryId() {
+    public UUID getRecoveryId() {
         return recoveryId;
     }
 
-    public void setRecoveryId(int recoveryId) {
-        this.recoveryId = recoveryId;
-    }
-
-    public int getUserId() {
+    public UUID getUserId() {
         return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getPin() {
         return pin;
     }
 
-    public void setPin(String pin) {
-        this.pin = pin;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public LocalDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(LocalDateTime expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
     public boolean isUsed() {
         return isUsed;
-    }
-
-    public void setUsed(boolean used) {
-        isUsed = used;
     }
 }
