@@ -15,6 +15,9 @@ public class MessageConstants {
     public static final String RESET_PASSWORD_REQUEST_SUCCESS = "O código de verificação foi enviado para o e-mail ";
     public static final String EMAIL_NOT_FOUND = "O e-mail informado não existe.";
     public static final String ERROR_SEND_EMAIL = "Erro ao enviar e-mail de recuperação para ";
+    public static final String SUCCESS_UPDATE_PASSWORD = "Senha alterada com sucesso";
+    public static final String PIN_CODE_ERROR = "PIN inválido ou expirado";
+    public static final String PIN_CODE_ERROR_LENGHT = "O Pin deve conter apenas 6 dígitos.";
 
     private void MessageConstants() {
     }

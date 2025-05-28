@@ -28,7 +28,7 @@ public class EmailTemplate {
         html.append("</div>");
         html.append("<div class=\"pin\">").append(pin).append("</div>");
         html.append("<div class=\"message\">");
-        html.append("<p>O código expira em 2 minutos. Se você não solicitou essa recuperação, ignore este e-mail.</p>");
+        html.append("<p>O código expira em 3 minutos. Se você não solicitou essa recuperação, ignore este e-mail.</p>");
         html.append("</div>");
         html.append("<div class=\"footer\">&copy; 2025 Gerenciar ODS. Todos os direitos reservados.</div>");
         html.append("</div>");

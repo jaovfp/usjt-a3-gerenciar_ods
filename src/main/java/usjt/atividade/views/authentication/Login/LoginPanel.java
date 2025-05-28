@@ -45,7 +45,7 @@ public class LoginPanel extends AbstractPanel {
     @Override
     protected void initComponents() {
         loginLabel = createLabel("Login", UIStyle.AUTH_TITLE_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
-        userLabel = createLabel("Usuário:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
+        userLabel = createLabel("E-mail:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         passwordLabel = createLabel("Senha:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         naoTemUmaContaLabel = createLabel("Não tem uma conta ?", UIStyle.AUTH_TEXT_FONT, UIStyle.PLACEHOLDER_COLOR, SwingConstants.LEFT);
         emailTextField = createCustomTextField("Digite seu e-mail...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);

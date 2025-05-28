@@ -2,6 +2,7 @@ package usjt.atividade.app.Authentication;
 
 import org.mindrot.jbcrypt.BCrypt;
 import usjt.atividade.app.Authentication.dto.AuthenticateRequest;
+import usjt.atividade.app.Authentication.dto.ResetPasswordRequest;
 import usjt.atividade.app.Email.EmailService;
 import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.app.Exceptions.UnprocessableEntityException;
@@ -12,11 +13,10 @@ import usjt.atividade.domain.model.User.User;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static usjt.atividade.app.Authentication.AuthValidator.validateAuthenticate;
-import static usjt.atividade.app.Authentication.AuthValidator.validatePasswordRecovery;
-import static usjt.atividade.common.MessageConstants.EMAIL_NOT_FOUND;
-import static usjt.atividade.common.MessageConstants.INVALID_AUTHENTICATE;
+import static usjt.atividade.app.Authentication.AuthValidator.*;
+import static usjt.atividade.common.MessageConstants.*;
 import static usjt.atividade.common.utils.CodeGenerator.generateNumericCode;
+import static usjt.atividade.common.utils.PasswordHasher.hash;
 
 public class AuthServiceImpl implements AuthService {
 
@@ -32,7 +32,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public User authenticate(AuthenticateRequest request){
-
         validateAuthenticate(request);
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UnprocessableEntityException(INVALID_AUTHENTICATE));
@@ -47,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
         return user;
     }
 
-    public void requestPasswordRecovery(String email){
+    public PasswordRecovery requestPasswordRecovery(String email){
         validatePasswordRecovery(email);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(EMAIL_NOT_FOUND));
@@ -59,11 +58,29 @@ public class AuthServiceImpl implements AuthService {
                 user.getUserId(),
                 pinCode,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(2),
+                LocalDateTime.now().plusMinutes(3),
                 false
         );
 
         passowordRecoveryRepository.save(recovery);
-        emailService.sendRecoveryEmail(email,pinCode);
+        emailService.sendRecoveryEmail(email, pinCode);
+        return recovery;
+    }
+
+    public void resetPassword(ResetPasswordRequest request){
+        validateResetPassword(request);
+
+        PasswordRecovery recovery = passowordRecoveryRepository.findValidById(request.getRecoveryId())
+                .filter(r -> r.getPin().equals(request.getPinCode()))
+                .orElseThrow(() -> new UnprocessableEntityException(PIN_CODE_ERROR));
+
+        User user = userRepository.findById(recovery.getUserId().toString())
+                .orElseThrow(() -> new RuntimeException("Usuário vinculado ao id da recuperação de senha não existe."));
+
+        user.setPasswordHash(hash(request.getPassword()));
+        request.setPassword("");
+        userRepository.update(user);
+
+        passowordRecoveryRepository.invalidatePin(recovery.getRecoveryId());
     }
 }

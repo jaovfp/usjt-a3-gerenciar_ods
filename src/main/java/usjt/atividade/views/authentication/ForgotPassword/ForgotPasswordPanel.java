@@ -2,6 +2,7 @@ package usjt.atividade.views.authentication.ForgotPassword;
 
 import usjt.atividade.app.Authentication.AuthController;
 import usjt.atividade.common.Response;
+import usjt.atividade.domain.model.PasswordRecovery;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;
 import usjt.atividade.views.authentication.ResetPassword.ResetPasswordView;
@@ -9,7 +10,6 @@ import usjt.atividade.views.utils.CustomTextField;
 import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 import static usjt.atividade.views.utils.ComponentFactory.*;
-import static usjt.atividade.views.utils.PasswordUtils.convertPassword;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,21 +92,42 @@ public class ForgotPasswordPanel extends AbstractPanel {
     @Override
     protected void addListeners(){
         addBotaoVoltarListener();
-        addBotaoEnviarPin();
         btnSendPinCodeEmail.addActionListener(e -> btnSendPinCodeEmailClick());
     }
 
-    private void btnSendPinCodeEmailClick(){
-        Response<Void> response = authController.requestPasswordReset(emailTextField.getText());
-        if (response.isSuccess()){
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            new ResetPasswordView().setVisible(true);
-            forgotPasswordView.dispose();
-        }else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            clearFields();
-        }
+    private void btnSendPinCodeEmailClick() {
+        String email = emailTextField.getText();
+        btnSendPinCodeEmail.setText("Enviando pin...");
+        btnSendPinCodeEmail.setEnabled(false);
+
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            private Response<PasswordRecovery> response;
+
+            @Override
+            protected Void doInBackground() {
+                response = authController.requestPasswordReset(email);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                btnSendPinCodeEmail.setText("Continuar");
+                btnSendPinCodeEmail.setEnabled(true);
+
+                if (response.isSuccess()) {
+                    JOptionPane.showMessageDialog(null, response.getMessage(), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    new ResetPasswordView(response.getData()).setVisible(true);
+                    forgotPasswordView.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, response.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                    clearFields();
+                }
+            }
+        };
+
+        worker.execute();
     }
+
 
     private void clearFields(){
         emailTextField.setText("");
@@ -117,16 +138,6 @@ public class ForgotPasswordPanel extends AbstractPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 new LoginView().setVisible(true);
-                forgotPasswordView.dispose();
-            }
-        });
-    }
-
-    private void addBotaoEnviarPin(){
-        btnSendPinCodeEmail.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                new ResetPasswordView().setVisible(true);
                 forgotPasswordView.dispose();
             }
         });
