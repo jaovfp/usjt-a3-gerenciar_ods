@@ -13,19 +13,19 @@ public class UserValidator {
             throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_EMPTY_FIELDS);
         }
 
-        if (isEmailValid(request.getEmail())) {
+        if (!isEmailValid(request.getEmail())) {
             throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_INVALID_EMAIL);
         }
 
-        if (isValidPasswordLength(request.getPassword())) {
+        if (!isValidPasswordLength(request.getPassword())) {
             throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_PASSWORD_LENGTH);
         }
 
-        if (passwordHasUppercase(request.getPassword())) {
+        if (!passwordHasUppercase(request.getPassword())) {
             throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_PASSWORD_UPPERCASE);
         }
 
-        if (passwordHasSpecialCharacter(request.getPassword())) {
+        if (!passwordHasSpecialCharacter(request.getPassword())) {
             throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_PASSWORD_SPECIAL_CHAR);
         }
     }

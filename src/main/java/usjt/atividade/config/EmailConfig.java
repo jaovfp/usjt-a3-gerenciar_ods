@@ -1,4 +1,4 @@
-package usjt.atividade.app.Email;
+package usjt.atividade.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

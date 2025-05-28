@@ -14,7 +14,7 @@ public class AuthValidator {
             throw new ValidationException(ERROR_EMPTY_FIELDS);
         }
 
-        if (isEmailValid(request.getEmail())) {
+        if (!isEmailValid(request.getEmail())) {
             throw new ValidationException(ERROR_INVALID_EMAIL);
         }
     }
@@ -24,7 +24,7 @@ public class AuthValidator {
             throw new ValidationException(ERROR_EMPTY_FIELDS);
         }
 
-        if (isEmailValid(email)) {
+        if (!isEmailValid(email)) {
             throw new ValidationException(ERROR_INVALID_EMAIL);
         }
     }

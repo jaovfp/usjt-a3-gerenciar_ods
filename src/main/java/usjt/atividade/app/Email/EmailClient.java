@@ -1,5 +1,7 @@
 package usjt.atividade.app.Email;
 
+import usjt.atividade.config.EmailConfig;
+
 import javax.mail.*;
 import javax.mail.internet.*;
 
