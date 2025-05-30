@@ -1,5 +1,9 @@
 package usjt.atividade.views.authentication.SignUp;
 
+import usjt.atividade.app.User.UserController;
+import usjt.atividade.app.User.dto.requests.CreateUserRequest;
+import usjt.atividade.common.MessageConstants;
+import usjt.atividade.common.Response;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;
 import usjt.atividade.views.utils.CustomPasswordField;
@@ -11,8 +15,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 import static usjt.atividade.views.utils.ComponentFactory.*;
+import static usjt.atividade.views.utils.PasswordUtils.convertPassword;
 
 
 public class SignUpPanel extends AbstractPanel {
@@ -29,10 +35,12 @@ public class SignUpPanel extends AbstractPanel {
     private JLabel repeatPasswordLabel;
     private RoundedButton btnSignUp;
     private SignUpView signUpView;
+    private final UserController userController;
 
     public SignUpPanel(SignUpView signUpView) {
         super(UIStyle.BG_AUTH_COLOR, UIStyle.AUTH_DIMENSION);
         this.signUpView = signUpView;
+        this.userController = new UserController();
         initComponents();
         layoutComponents();
         addListeners();
@@ -115,6 +123,7 @@ public class SignUpPanel extends AbstractPanel {
 
     @Override
     protected void addListeners(){
+        btnSignUp.addActionListener(e -> btnSignUpClick());
         addBotaoVoltarListener();
     }
 
@@ -126,5 +135,38 @@ public class SignUpPanel extends AbstractPanel {
                 signUpView.dispose();
             }
         });
+    }
+
+    private void btnSignUpClick(){
+        if (!isPasswordMatching()){
+            JOptionPane.showMessageDialog(null, MessageConstants.PASSWORDS_DO_NOT_MATCH, "Erro", JOptionPane.ERROR_MESSAGE);
+            clearFields();
+            return;
+        }
+        createUser();
+    }
+
+    private void createUser(){
+        CreateUserRequest createUserRequest = new CreateUserRequest(userTextField.getText(),emailTextField.getText(), convertPassword(passwordField));
+        Response<Void> response = userController.createUser(createUserRequest);
+        if (response.isSuccess()){
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            new LoginView().setVisible(true);
+            signUpView.dispose();
+        }else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            clearFields();
+        }
+    }
+
+    private void clearFields(){
+        repeatPasswordField.setText("");
+        passwordField.setText("");
+        userTextField.setText("");
+        emailTextField.setText("");
+    }
+
+    private Boolean isPasswordMatching(){
+        return Objects.equals(convertPassword(passwordField), convertPassword(repeatPasswordField));
     }
 }

@@ -3,6 +3,13 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Environment variable files
+.env
+
+# development support files
+src/main/java/usjt/atividade/views/authentication/panel_development.form
+src/main/java/usjt/atividade/views/authentication/panel_development.java
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

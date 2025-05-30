@@ -1,5 +1,9 @@
 package usjt.atividade.views.authentication.Login;
 
+import usjt.atividade.app.Authentication.AuthController;
+import usjt.atividade.app.Authentication.dto.AuthenticateRequest;
+import usjt.atividade.common.Response;
+import usjt.atividade.domain.model.User.User;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.ForgotPassword.ForgotPasswordView;
 import usjt.atividade.views.authentication.SignUp.SignUpView;
@@ -8,6 +12,7 @@ import usjt.atividade.views.utils.CustomTextField;
 import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 import static usjt.atividade.views.utils.ComponentFactory.*;
+import static usjt.atividade.views.utils.PasswordUtils.convertPassword;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,20 +21,22 @@ import java.awt.event.MouseEvent;
 
 public class LoginPanel extends AbstractPanel {
 
-    private RoundedButton btnEntrar;
-    private JLabel cadastrarLabel;
-    private JLabel esqueceuSenhaLabel;
+    private RoundedButton btnSignIn;
+    private JLabel signUpLabel;
+    private JLabel forgotPasswordLabel;
     private JLabel naoTemUmaContaLabel;
     private JLabel loginLabel;
     private CustomPasswordField passwordField;
     private JLabel passwordLabel;
     private JLabel userLabel;
-    private CustomTextField userTextField;
+    private CustomTextField emailTextField;
     private LoginView loginView;
+    private AuthController authController;
 
     public LoginPanel(LoginView loginView) {
         super(UIStyle.BG_AUTH_COLOR, UIStyle.AUTH_DIMENSION);
         this.loginView = loginView;
+        this.authController = new AuthController();
         initComponents();
         layoutComponents();
         addListeners();
@@ -38,14 +45,14 @@ public class LoginPanel extends AbstractPanel {
     @Override
     protected void initComponents() {
         loginLabel = createLabel("Login", UIStyle.AUTH_TITLE_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
-        userLabel = createLabel("Usuário:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
+        userLabel = createLabel("E-mail:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         passwordLabel = createLabel("Senha:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         naoTemUmaContaLabel = createLabel("Não tem uma conta ?", UIStyle.AUTH_TEXT_FONT, UIStyle.PLACEHOLDER_COLOR, SwingConstants.LEFT);
-        userTextField = createCustomTextField("Digite seu usuário...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
+        emailTextField = createCustomTextField("Digite seu e-mail...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         passwordField = createCustomPasswordField("Digite sua senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
-        esqueceuSenhaLabel = createLinkLabel("Esqueceu sua senha ?", UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
-        cadastrarLabel = createLinkLabel("Cadastre-se",  UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
-        btnEntrar = createRoundedButton("Entrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        forgotPasswordLabel = createLinkLabel("Esqueceu sua senha ?", UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
+        signUpLabel = createLinkLabel("Cadastre-se",  UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
+        btnSignIn = createRoundedButton("Entrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
     }
     
     @Override
@@ -58,24 +65,24 @@ public class LoginPanel extends AbstractPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(esqueceuSenhaLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(forgotPasswordLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, 422, GroupLayout.PREFERRED_SIZE)
                         .addComponent(passwordLabel)
-                        .addComponent(userTextField, GroupLayout.PREFERRED_SIZE, 422, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(emailTextField, GroupLayout.PREFERRED_SIZE, 422, GroupLayout.PREFERRED_SIZE)
                         .addComponent(userLabel)))
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnEntrar, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSignIn, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE)
                         .addGap(139, 139, 139))
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(naoTemUmaContaLabel)
                         .addGap(169, 169, 169))
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(cadastrarLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(signUpLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addGap(209, 209, 209))))
         );
         layout.setVerticalGroup(
@@ -86,31 +93,65 @@ public class LoginPanel extends AbstractPanel {
                 .addGap(43, 43, 43)
                 .addComponent(userLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userTextField, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+                .addComponent(emailTextField, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55)
                 .addComponent(passwordLabel)
                 .addGap(18, 18, 18)
                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(esqueceuSenhaLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(forgotPasswordLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(57, 57, 57)
-                .addComponent(btnEntrar, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSignIn, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(naoTemUmaContaLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cadastrarLabel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+                .addComponent(signUpLabel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(122, Short.MAX_VALUE))
         );
     }
 
     @Override
     protected void addListeners(){
-        addCadastrarLabelListener();
-        addEsqueceuSuaSenhaListener();
+        addSignUpLabelListener();
+        addForgotPasswordListener();
+        btnSignIn.addActionListener(e -> btnSignInClick());
     }
 
-    private void addCadastrarLabelListener() {
-        cadastrarLabel.addMouseListener(new MouseAdapter() {
+    private void btnSignInClick(){
+        AuthenticateRequest authenticateRequest = new AuthenticateRequest(emailTextField.getText(), convertPassword(passwordField));
+        Response<User> response = authController.authenticate(authenticateRequest);
+        if (response.isSuccess()){
+            User user = response.getData();
+            redirectToMainScreen(user);
+            loginView.dispose();
+        }else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            clearFields();
+        }
+    }
+
+    private void redirectToMainScreen(User user) {
+        switch (user.getType()) {
+            case ADMIN:
+                new SignUpView().setVisible(true); // alterar para a tela do usuário
+                break;
+            case NORMAL:
+                new SignUpView().setVisible(true); // alterar para a tela de admin
+                break;
+            default:
+                System.out.println(user);
+                JOptionPane.showMessageDialog(null, "Tipo de usuário desconhecido.");
+                break;
+        }
+    }
+
+    private void clearFields(){
+        emailTextField.setText("");
+        passwordField.setText("");
+    }
+
+    private void addSignUpLabelListener() {
+        signUpLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 new SignUpView().setVisible(true);
@@ -119,8 +160,8 @@ public class LoginPanel extends AbstractPanel {
         });
     }
 
-    private void addEsqueceuSuaSenhaListener() {
-        esqueceuSenhaLabel.addMouseListener(new MouseAdapter() {
+    private void addForgotPasswordListener() {
+        forgotPasswordLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 new ForgotPasswordView().setVisible(true);
