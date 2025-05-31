@@ -3,6 +3,7 @@ package usjt.atividade.views.User;
 import usjt.atividade.domain.model.User.User;
 import usjt.atividade.views.AbstractView;
 import usjt.atividade.views.SideMenu.SideMenuPanel;
+import usjt.atividade.views.User.Events.EventsPanel;
 import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 
@@ -37,7 +38,7 @@ public class UserView extends AbstractView {
 
         btnHome.addActionListener(e -> setContent(new UserHomePanel()));
         //btnCreateEvents.addActionListener(e -> setContent(new CadastrarEventosPanel()));
-        //btnSearchEvents.addActionListener(e -> setContent(new VerEventosPanel()));
+        btnSearchEvents.addActionListener(e -> setContent(new EventsPanel(user)));
 
         menuButtons = List.of(btnHome, btnCreateEvents, btnSearchEvents);
     }
@@ -59,7 +60,7 @@ public class UserView extends AbstractView {
     @Override
     protected void layoutPanels(){
         setLayout(new BorderLayout());
-        menuPanel.setPreferredSize(new Dimension(220, getHeight()));
+        menuPanel.setPreferredSize(UIStyle.SIDE_MENU_DIMENSION);
         add(menuPanel, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
     }

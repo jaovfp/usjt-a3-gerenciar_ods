@@ -3,6 +3,8 @@ package usjt.atividade.views.utils;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -137,5 +139,58 @@ public class ComponentFactory {
         btnLabelTextAndIcon.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 
         return btnLabelTextAndIcon;
+    }
+
+    public static JPanel createMenuPanel(int width, int height, Color lineColor, JButton[] buttons) {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(lineColor);
+                g.fillRect(0, getHeight() - 2, getWidth(), 2);
+            }
+        };
+        panel.setPreferredSize(new Dimension(width, height));
+        panel.setLayout(new GridBagLayout());
+        panel.setOpaque(false);
+
+        JPanel buttonContainer = new JPanel(new GridLayout(1, buttons.length, 40, 0));
+        buttonContainer.setOpaque(false);
+
+        for (JButton button : buttons) {
+            buttonContainer.add(button);
+        }
+
+        panel.add(buttonContainer);
+        return panel;
+    }
+
+    public static JButton createMenuButton(String text, Color textColor, Color hoverColor) {
+        JButton button = new JButton(text);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setForeground(textColor);
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.putClientProperty("selected", false);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (!(Boolean.TRUE.equals(button.getClientProperty("selected")))) {
+                    button.setForeground(hoverColor.brighter());
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!(Boolean.TRUE.equals(button.getClientProperty("selected")))) {
+                    button.setForeground(textColor);
+                }
+            }
+        });
+
+        return button;
     }
 }

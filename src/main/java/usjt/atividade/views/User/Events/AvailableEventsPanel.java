@@ -1,14 +1,16 @@
-package usjt.atividade.views.User;
+package usjt.atividade.views.User.Events;
 
+import usjt.atividade.domain.model.User.User;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.utils.UIStyle;
 
-public class UserHomePanel extends AbstractPanel {
+public class AvailableEventsPanel extends AbstractPanel {
 
+    private final User user;
 
-
-    public UserHomePanel() {
-        super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.USER_ADMIN_CONTENT_DIMENSION);
+    public AvailableEventsPanel(User user) {
+        super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.CONTENT_TOPIC_USER_ADMIN_DIMENSION);
+        this.user = user;
         initComponents();
         layoutComponents();
         addListeners();
@@ -28,4 +30,5 @@ public class UserHomePanel extends AbstractPanel {
     public void addListeners(){
 
     }
+
 }

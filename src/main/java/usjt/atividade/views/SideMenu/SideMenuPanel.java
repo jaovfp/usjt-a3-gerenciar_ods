@@ -55,9 +55,9 @@ public class SideMenuPanel extends AbstractPanel {
     @Override
     protected void layoutComponents() {
         JPanel topSpacer = new JPanel();
-        topSpacer.setPreferredSize(new Dimension(250, 80));
+        topSpacer.setPreferredSize(new Dimension(250, 50));
         topSpacer.setBackground(UIStyle.BG_USER_ADMIN_COLOR);
-        JLabel menuLabel = createImageLabel("menu.png", "icons", SwingConstants.LEFT, 20, 20);
+        JLabel menuLabel = createImageLabel("menu.png", "icons", SwingConstants.LEFT, 15, 15);
         topSpacer.setLayout(new BorderLayout());
         menuLabel.setBorder(BorderFactory.createEmptyBorder(20, 15, 20, 0));
         topSpacer.add(menuLabel, BorderLayout.WEST);
@@ -66,7 +66,7 @@ public class SideMenuPanel extends AbstractPanel {
         mainPanel.add(userCard);
         mainPanel.add(Box.createVerticalStrut(30));
         mainPanel.add(createSeparator());
-        mainPanel.add(Box.createVerticalStrut(170));
+        mainPanel.add(Box.createVerticalStrut(100));
 
         if (!isNull(menuButtons)) {
             for (JButton btn : menuButtons) {
@@ -75,7 +75,7 @@ public class SideMenuPanel extends AbstractPanel {
             }
         }
 
-        mainPanel.add(Box.createVerticalStrut(170));
+        mainPanel.add(Box.createVerticalStrut(100));
         mainPanel.add(createSeparator());
         mainPanel.add(Box.createVerticalStrut(30));
         mainPanel.add(footer);
