@@ -1,7 +1,11 @@
 package usjt.atividade.views.utils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.Objects;
 
 public class ComponentFactory {
@@ -14,7 +18,7 @@ public class ComponentFactory {
     }
 
     public static RoundedButton createRoundedButton(String text, Font font, Color bgColor, Color textColor) {
-        RoundedButton btn = new RoundedButton();
+        RoundedButton btn = new RoundedButton(60, 60);
         btn.setText(text);
         btn.setFont(font);
         btn.setForeground(textColor);
@@ -23,6 +27,32 @@ public class ComponentFactory {
         btn.setColorPressed(bgColor.darker());
         btn.setColorRollover(bgColor.brighter());
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
+    }
+
+    public static RoundedButton createRoundedButtonWithIcon(String text, Font font, Color bgColor, Color colorPressed, Color colorRollover, Color textColor, String iconFileName) {
+        RoundedButton btn = new RoundedButton(60, 60);
+        btn.setText(text);
+        btn.setFont(font);
+        btn.setForeground(textColor);
+        btn.setBackground(bgColor);
+        btn.setBorderColor(bgColor);
+        btn.setColorPressed(colorPressed);
+        btn.setColorRollover(colorRollover);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        ImageIcon rawIcon = new ImageIcon(
+                Objects.requireNonNull(ComponentFactory.class.getResource("/icons/" + iconFileName))
+        );
+        Image scaledImage = rawIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        btn.setIcon(scaledIcon);
+
+        btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btn.setIconTextGap(10);
+        btn.setMargin(new Insets(0, 20, 0, 20));
+
         return btn;
     }
 
@@ -64,5 +94,48 @@ public class ComponentFactory {
         Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(scaledImage));
         return imageLabel;
+    }
+
+    public static JLabel createRoundedImageLabel(String imageName, String typeImage, int horizontalAlignment, int width, int height){
+        JLabel imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(horizontalAlignment);
+        try {
+            URL imageUrl = Objects.requireNonNull(ComponentFactory.class.getResource("/" + typeImage + "/" + imageName));
+
+            BufferedImage originalImage = ImageIO.read(imageUrl);
+            Image scaled = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+            BufferedImage circleBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = circleBuffer.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2.setClip(new Ellipse2D.Float(0, 0, width, height));
+            g2.drawImage(scaled, 0, 0, null);
+            g2.dispose();
+
+            imageLabel.setIcon(new ImageIcon(circleBuffer));
+        } catch (Exception e) {
+            e.printStackTrace();
+            imageLabel.setText("Erro");
+        }
+        return imageLabel;
+    }
+
+    public static JLabel createBtnLabelTextAndIcon(String text, Font textFont, String iconFileName) {
+        ImageIcon rawIcon = new ImageIcon(
+                Objects.requireNonNull(ComponentFactory.class.getResource("/icons/" + iconFileName))
+        );
+        Image scaledImage = rawIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+        JLabel btnLabelTextAndIcon = new JLabel(text, scaledIcon, JLabel.LEFT);
+        btnLabelTextAndIcon.setFont(textFont);
+        btnLabelTextAndIcon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        btnLabelTextAndIcon.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnLabelTextAndIcon.setIconTextGap(10);
+        btnLabelTextAndIcon.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+
+        return btnLabelTextAndIcon;
     }
 }

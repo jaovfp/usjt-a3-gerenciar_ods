@@ -5,19 +5,21 @@ import java.awt.*;
 
 public class RoundedButton extends JButton {
 
-    private int arcWidth = 60;
-    private int arcHeight = 60;
+    private final int arcWidth;
+    private final int arcHeight;
     private Color borderColor;
     private Color colorPressed;
     private Color colorRollover;
 
 
-    public RoundedButton(){
-        this("");
+    public RoundedButton(int arcWidth, int arcHeight){
+        this("", arcWidth, arcHeight);
     }
 
-    public RoundedButton(String text) {
+    public RoundedButton(String text, int arcWidth, int arcHeight) {
         super(text);
+        this.arcHeight = arcHeight;
+        this.arcWidth = arcWidth;
         setContentAreaFilled(false);
         setFocusPainted(false);
         setOpaque(false);
