@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS tbl_event_requests (
     event_description TEXT,
     event_date DATE NOT NULL,
     location VARCHAR(255),
-    status ENUM('PENDING', 'APPROVED', 'REJECTED') DEFAULT 'PENDING',
+    status ENUM('PENDING', 'APPROVED', 'REJECTED', 'CANCELED') DEFAULT 'PENDING',
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES tbl_users(user_id),
     FOREIGN KEY (ods_id) REFERENCES tbl_ods_topics(ods_id)
