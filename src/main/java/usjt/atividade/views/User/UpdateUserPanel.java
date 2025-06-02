@@ -3,11 +3,11 @@ package usjt.atividade.views.User;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.utils.UIStyle;
 
-public class UserHomePanel extends AbstractPanel {
+public class UpdateUserPanel extends AbstractPanel {
 
 
 
-    public UserHomePanel() {
+    public UpdateUserPanel() {
         super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.USER_ADMIN_CONTENT_DIMENSION);
         initComponents();
         layoutComponents();

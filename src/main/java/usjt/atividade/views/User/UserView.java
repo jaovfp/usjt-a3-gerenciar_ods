@@ -32,15 +32,15 @@ public class UserView extends AbstractView {
     }
 
     private void createMenuButtons(){
-        RoundedButton btnHome = createRoundedButtonWithIcon("Inicio", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "home.png");
+        RoundedButton updateUser = createRoundedButtonWithIcon("Atualizar Cadastro", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "home.png");
         RoundedButton btnCreateEvents = createRoundedButtonWithIcon("Cadastrar Eventos", UIStyle.SIDE_MENU_BTN_TEXT_FONT, UIStyle.TRANSPARENT_COLOR, BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "appointment.png");
-        RoundedButton btnSearchEvents = createRoundedButtonWithIcon("Ver Eventos", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "search.png");
+        RoundedButton btnEvents = createRoundedButtonWithIcon("Eventos", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "search.png");
 
-        btnHome.addActionListener(e -> setContent(new UserHomePanel()));
+        updateUser.addActionListener(e -> setContent(new UpdateUserPanel()));
         //btnCreateEvents.addActionListener(e -> setContent(new CadastrarEventosPanel()));
-        btnSearchEvents.addActionListener(e -> setContent(new EventsPanel(user)));
+        btnEvents.addActionListener(e -> setContent(new EventsPanel(user)));
 
-        menuButtons = List.of(btnHome, btnCreateEvents, btnSearchEvents);
+        menuButtons = List.of(btnEvents, btnCreateEvents, updateUser);
     }
 
     public void setContent(JPanel newContent) {
@@ -52,8 +52,9 @@ public class UserView extends AbstractView {
 
     @Override
     protected void initPanels(){
-        menuPanel = new SideMenuPanel(user.getUsername(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
+        menuPanel = new SideMenuPanel(user.getFullname(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
         contentPanel = new JPanel();
+        setContent(new EventsPanel(user));
         contentPanel.setBackground(Color.WHITE);
     }
 
