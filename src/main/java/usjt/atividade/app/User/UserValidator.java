@@ -9,7 +9,7 @@ import static usjt.atividade.common.utils.ValidatorUtils.*;
 public class UserValidator {
 
     public static void validateCreate(CreateUserRequest request) {
-        if (isStringNullOrEmpty(request.getUsername()) || isStringNullOrEmpty(request.getEmail()) || isStringNullOrEmpty(request.getPassword())) {
+        if (isStringNullOrEmpty(request.getFullname()) || isStringNullOrEmpty(request.getEmail()) || isStringNullOrEmpty(request.getPassword())) {
             throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_EMPTY_FIELDS);
         }
 

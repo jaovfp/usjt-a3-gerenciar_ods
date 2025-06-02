@@ -17,7 +17,7 @@ import static usjt.atividade.views.utils.ComponentFactory.*;
 
 public class SideMenuPanel extends AbstractPanel {
 
-    private final String userName;
+    private final String fullName;
     private final String profileImagePath;
     private final Color backgroundColor;
     private final List<JButton> menuButtons;
@@ -29,10 +29,10 @@ public class SideMenuPanel extends AbstractPanel {
     private JPanel mainPanel;
     private JFrame parentView;
 
-    public SideMenuPanel(String userName, String profileImagePath, Color backgroundColor, List<JButton> menuButtons, JFrame parentView) {
+    public SideMenuPanel(String fullName, String profileImagePath, Color backgroundColor, List<JButton> menuButtons, JFrame parentView) {
         super(backgroundColor, UIStyle.SIDE_MENU_DIMENSION);
         this.parentView = parentView;
-        this.userName = userName;
+        this.fullName = fullName;
         this.profileImagePath = profileImagePath;
         this.backgroundColor = backgroundColor;
         this.menuButtons = menuButtons;
@@ -44,7 +44,7 @@ public class SideMenuPanel extends AbstractPanel {
 
     @Override
     protected void initComponents() {
-        userCard = createUserCard(userName, profileImagePath);
+        userCard = createUserCard(fullName, profileImagePath);
         footer = createFooter(backgroundColor);
 
         mainPanel = new RoundedPanel(100, backgroundColor);

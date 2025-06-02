@@ -37,11 +37,18 @@ public class UserServiceImpl implements UserService  {
     private User createNormalUser(CreateUserRequest request){
         User user = new User(
                 UUID.randomUUID(),
-                request.getUsername(),
+                request.getFullname(),
                 request.getEmail(),
                 PasswordHasher.hash(request.getPassword()),
                 UserType.NORMAL,
                 true,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null

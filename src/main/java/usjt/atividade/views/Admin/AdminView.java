@@ -51,7 +51,7 @@ public class AdminView extends AbstractView {
 
     @Override
     protected void initPanels(){
-        menuPanel = new SideMenuPanel(user.getUsername(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
+        menuPanel = new SideMenuPanel(user.getFullname(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
         contentPanel = new JPanel();
         contentPanel.setBackground(Color.WHITE);
     }
