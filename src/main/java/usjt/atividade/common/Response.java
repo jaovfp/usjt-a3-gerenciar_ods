@@ -1,7 +1,5 @@
 package usjt.atividade.common;
 
-import usjt.atividade.domain.model.User.User;
-
 public class Response <T>{
 
     private final boolean success;

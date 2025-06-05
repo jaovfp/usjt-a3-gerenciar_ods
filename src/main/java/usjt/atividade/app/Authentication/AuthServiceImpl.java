@@ -6,6 +6,7 @@ import usjt.atividade.app.Authentication.dto.ResetPasswordRequest;
 import usjt.atividade.app.Email.EmailService;
 import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.app.Exceptions.UnprocessableEntityException;
+import usjt.atividade.app.PasswordRecovery.PasswordRecoveryRepositoryImpl;
 import usjt.atividade.app.User.UserRepositoryImpl;
 import usjt.atividade.domain.model.PasswordRecovery;
 import usjt.atividade.domain.model.User.User;

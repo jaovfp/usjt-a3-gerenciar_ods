@@ -55,7 +55,7 @@ public class UserView extends AbstractView {
         menuPanel = new SideMenuPanel(user.getFullname(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
         contentPanel = new JPanel();
         setContent(new EventsPanel(user));
-        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBackground(UIStyle.BG_USER_ADMIN_COLOR);
     }
 
     @Override

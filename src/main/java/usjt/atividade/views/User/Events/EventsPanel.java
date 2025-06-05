@@ -2,6 +2,7 @@ package usjt.atividade.views.User.Events;
 
 import usjt.atividade.domain.model.User.User;
 import usjt.atividade.views.AbstractPanel;
+import usjt.atividade.views.User.Events.MyEvents.MyEventsPanel;
 import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;

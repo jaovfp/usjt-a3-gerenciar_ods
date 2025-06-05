@@ -1,4 +1,4 @@
-package usjt.atividade.app.Authentication;
+package usjt.atividade.app.PasswordRecovery;
 
 import usjt.atividade.domain.model.PasswordRecovery;
 
