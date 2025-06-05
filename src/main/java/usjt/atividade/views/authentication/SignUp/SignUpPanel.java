@@ -1,6 +1,6 @@
 package usjt.atividade.views.authentication.SignUp;
 
-import usjt.atividade.app.User.UserController;
+import usjt.atividade.infra.controller.UserController;
 import usjt.atividade.app.User.dto.requests.CreateUserRequest;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.Response;

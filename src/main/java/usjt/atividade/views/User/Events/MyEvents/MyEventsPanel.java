@@ -1,12 +1,11 @@
 package usjt.atividade.views.User.Events.MyEvents;
 
 import usjt.atividade.app.Events.DTO.MyEventsRequest;
-import usjt.atividade.app.Events.EventController;
-import usjt.atividade.app.Exceptions.NotFoundException;
+import usjt.atividade.infra.controller.EventController;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.common.Response;
 import usjt.atividade.common.StatusCode;
-import usjt.atividade.domain.model.User.User;
+import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.utils.CustomTextField;
 import usjt.atividade.views.utils.UIStyle;

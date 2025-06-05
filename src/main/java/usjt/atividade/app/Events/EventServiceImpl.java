@@ -4,6 +4,7 @@ import usjt.atividade.app.Events.DTO.MyEventsRequest;
 import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.PaginatedResponse;
+import usjt.atividade.infra.Repository.EventRepository;
 
 import java.util.List;
 import java.util.UUID;

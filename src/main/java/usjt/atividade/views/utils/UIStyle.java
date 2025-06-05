@@ -13,7 +13,6 @@ public class UIStyle {
     public static final Font AUTH_TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 14);
     public static final Font AUTH_BTN_FONT = new Font("Arial", Font.BOLD, 18);
     public static final String FORGOT_PASSWORD_TEXT =  "<html><div style='width: 300px;'>Por favor, digite o endereço de e-mail vinculado à sua conta.<br> Enviaremos um código para que você possa redefinir sua senha.</div></html>";
-
     public static final Color BG_USER_ADMIN_COLOR = new Color(245, 245, 245);
     public static final Font USER_ADMIN_TITLE_FONT = new Font("Segoe UI", Font.BOLD, 24);
     public static final Color BG_SIDE_MENU_USER_COLOR = new Color(0, 66, 99);

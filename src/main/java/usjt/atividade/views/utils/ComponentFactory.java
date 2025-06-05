@@ -1,8 +1,5 @@
 package usjt.atividade.views.utils;
 
-import usjt.atividade.app.Events.DTO.MyEventsRequest;
-import usjt.atividade.views.User.Events.MyEvents.MyEventsRowPanel;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +9,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Objects;
-import java.util.List;
 
 public class ComponentFactory {
     public static JLabel createLabel(String text, Font font, Color color, int alignment) {

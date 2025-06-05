@@ -1,6 +1,6 @@
 package usjt.atividade.views.Admin;
 
-import usjt.atividade.domain.model.User.User;
+import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractView;
 import usjt.atividade.views.SideMenu.SideMenuPanel;
 import usjt.atividade.views.utils.RoundedButton;

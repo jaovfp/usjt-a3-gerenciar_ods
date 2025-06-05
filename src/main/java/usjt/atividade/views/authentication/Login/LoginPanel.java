@@ -1,9 +1,9 @@
 package usjt.atividade.views.authentication.Login;
 
-import usjt.atividade.app.Authentication.AuthController;
+import usjt.atividade.infra.controller.AuthController;
 import usjt.atividade.app.Authentication.dto.AuthenticateRequest;
 import usjt.atividade.common.Response;
-import usjt.atividade.domain.model.User.User;
+import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.Admin.AdminView;
 import usjt.atividade.views.User.UserView;
