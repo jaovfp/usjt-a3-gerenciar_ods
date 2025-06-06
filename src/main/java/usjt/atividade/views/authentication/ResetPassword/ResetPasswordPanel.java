@@ -1,10 +1,10 @@
 package usjt.atividade.views.authentication.ResetPassword;
 
-import usjt.atividade.app.Authentication.AuthController;
+import usjt.atividade.infra.controller.AuthController;
 import usjt.atividade.app.Authentication.dto.ResetPasswordRequest;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.Response;
-import usjt.atividade.domain.model.PasswordRecovery;
+import usjt.atividade.domain.entities.PasswordRecovery;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.ForgotPassword.ForgotPasswordView;
 import usjt.atividade.views.authentication.Login.LoginView;

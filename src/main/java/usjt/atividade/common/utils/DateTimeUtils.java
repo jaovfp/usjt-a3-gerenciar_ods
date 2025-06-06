@@ -1,7 +1,9 @@
 package usjt.atividade.common.utils;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import static java.util.Objects.isNull;
 
@@ -15,6 +17,11 @@ public class DateTimeUtils {
             return null;
         }
         return Timestamp.valueOf(localDateTime);
+    }
+
+    public static String getFormattedDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
+        return formatter.format(new Date());
     }
 
 }

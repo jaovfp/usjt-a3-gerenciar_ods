@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Objects;
 
 public class CustomTextField extends JTextField {
     private Color borderColor;
@@ -12,14 +13,16 @@ public class CustomTextField extends JTextField {
     private Color textColor;
 
     public CustomTextField() {
-        this(20);
+        super(20);
+        initStyle();
     }
 
-    public CustomTextField(int columns) {
-        super(columns);
+    private void initStyle() {
         setOpaque(false);
         setForeground(textColor);
         setCaretColor(textColor);
+
+        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor));
 
         addFocusListener(new FocusListener() {
             @Override
@@ -34,8 +37,22 @@ public class CustomTextField extends JTextField {
                 repaint();
             }
         });
+    }
 
-        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor));
+    public JPanel withIcon(String iconFileName, int iconSize) {
+        JLabel iconLabel = new JLabel();
+        ImageIcon rawIcon = new ImageIcon(
+                Objects.requireNonNull(getClass().getResource("/icons/" + iconFileName))
+        );
+        Image scaledImage = rawIcon.getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        iconLabel.setIcon(new ImageIcon(scaledImage));
+        iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setOpaque(false);
+        panel.add(iconLabel, BorderLayout.WEST);
+        panel.add(this, BorderLayout.CENTER);
+        return panel;
     }
 
     public void setPlaceholder(String placeholder) {
@@ -50,7 +67,6 @@ public class CustomTextField extends JTextField {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         if (getText().isEmpty() && !isFocusOwner()) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setColor(placeholderColor);

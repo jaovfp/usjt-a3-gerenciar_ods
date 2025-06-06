@@ -18,6 +18,7 @@ public class MessageConstants {
     public static final String SUCCESS_UPDATE_PASSWORD = "Senha alterada com sucesso";
     public static final String PIN_CODE_ERROR = "PIN inválido ou expirado";
     public static final String PIN_CODE_ERROR_LENGHT = "O Pin deve conter apenas 6 dígitos.";
+    public static final String EVENTS_REQUESTS_NOT_FOUND = "Não foi encontrada nenhuma solicitação de eventos";
 
     private void MessageConstants() {
     }

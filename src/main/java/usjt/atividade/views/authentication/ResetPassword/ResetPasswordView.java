@@ -1,6 +1,6 @@
 package usjt.atividade.views.authentication.ResetPassword;
 
-import usjt.atividade.domain.model.PasswordRecovery;
+import usjt.atividade.domain.entities.PasswordRecovery;
 import usjt.atividade.views.authentication.AuthView;
 
 import java.awt.*;
