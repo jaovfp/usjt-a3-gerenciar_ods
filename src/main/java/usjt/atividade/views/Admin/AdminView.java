@@ -2,7 +2,7 @@ package usjt.atividade.views.Admin;
 
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractView;
-import usjt.atividade.views.SideMenu.SideMenuPanel;
+import usjt.atividade.views.utils.SideMenu.SideMenuPanel;
 import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 
@@ -53,7 +53,7 @@ public class AdminView extends AbstractView {
     protected void initPanels(){
         menuPanel = new SideMenuPanel(user.getFullname(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
         contentPanel = new JPanel();
-        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBackground(UIStyle.BG_USER_ADMIN_COLOR);
     }
 
     @Override

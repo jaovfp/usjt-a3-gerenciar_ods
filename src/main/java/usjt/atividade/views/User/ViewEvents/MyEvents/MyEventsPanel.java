@@ -1,21 +1,24 @@
-package usjt.atividade.views.User.Events.MyEvents;
+package usjt.atividade.views.User.ViewEvents.MyEvents;
 
 import usjt.atividade.app.Events.DTO.MyEventsRequest;
 import usjt.atividade.infra.controller.EventController;
-import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.common.Response;
 import usjt.atividade.common.StatusCode;
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.utils.CustomTextField;
+import usjt.atividade.views.utils.ModernScrollBarUI;
+import usjt.atividade.views.utils.PaginatedPanel.PaginationPanel;
 import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import static usjt.atividade.views.utils.ComponentFactory.createCustomTextField;
 
@@ -25,6 +28,7 @@ public class MyEventsPanel extends AbstractPanel {
     private JPanel searchField;
     private JScrollPane listEventsPanel;
     private EventController eventController;
+    private PaginationPanel paginationPanel;
 
     public MyEventsPanel(User user) {
         super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.CONTENT_TOPIC_USER_ADMIN_DIMENSION);
@@ -39,8 +43,9 @@ public class MyEventsPanel extends AbstractPanel {
     public void initComponents(){
         CustomTextField textField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
         searchField = textField.withIcon("searchBlue.png", 15);
-        Response<PaginatedResponse<MyEventsRequest>> response = eventController.getEventRequests(user.getUserId(), 1, 10);
-        listEventsPanel = getListEventsPanel(response,1);
+        Response<List<MyEventsRequest>> response = eventController.getEventRequests(user.getUserId(), 1, 10);
+        listEventsPanel = getListEventsPanel(response, 1);
+        paginationPanel = getPaginationPanel(response);
     }
 
     @Override
@@ -53,15 +58,18 @@ public class MyEventsPanel extends AbstractPanel {
                                 .addGap(55)
                                 .addGroup(layout.createParallelGroup(Alignment.TRAILING)
                                         .addComponent(searchField, PREFERRED_SIZE, 211, PREFERRED_SIZE)
-                                        .addComponent(listEventsPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE))
+                                        .addComponent(listEventsPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
+                                        .addComponent(paginationPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE))
                         ));
         layout.setVerticalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(12, 12, 12)
+                                .addGap(12)
                                 .addComponent(searchField, PREFERRED_SIZE, 34, PREFERRED_SIZE)
                                 .addGap(22)
-                                .addComponent(listEventsPanel, PREFERRED_SIZE, 420, PREFERRED_SIZE))
+                                .addComponent(listEventsPanel, PREFERRED_SIZE, 370, PREFERRED_SIZE)
+                                .addGap(10)
+                                .addComponent(paginationPanel, PREFERRED_SIZE, 50, PREFERRED_SIZE))
         );
     }
 
@@ -74,19 +82,31 @@ public class MyEventsPanel extends AbstractPanel {
         JPanel listPanel = new JPanel();
         listPanel.setBackground(bgListColor);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
 
         for (MyEventsRequest evento : eventos) {
-            MyEventsRowPanel row = new MyEventsRowPanel(evento);
-            row.setBackground(rowColor);
-            row.setAlignmentX(Component.LEFT_ALIGNMENT);
-            listPanel.add(row);
-            listPanel.add(Box.createVerticalStrut(6));
+            MyEventsRowPanel row = new MyEventsRowPanel(evento, rowColor);
+
+            Dimension rowSize = new Dimension(890, 50);
+            row.setMaximumSize(rowSize);
+            row.setPreferredSize(rowSize);
+            row.setMinimumSize(rowSize);
+
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+            wrapper.setBackground(bgListColor);
+            wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+            wrapper.add(row);
+
+            listPanel.add(wrapper);
+            listPanel.add(Box.createVerticalStrut(20));
         }
 
         JScrollPane scrollPane = new JScrollPane(listPanel);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI(UIStyle.BG_SIDE_MENU_USER_COLOR.brighter(), Color.lightGray));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(6, Integer.MAX_VALUE));
 
         return scrollPane;
     }
@@ -113,14 +133,41 @@ public class MyEventsPanel extends AbstractPanel {
     }
 
 
-    private JScrollPane getListEventsPanel(Response<PaginatedResponse<MyEventsRequest>> response, int page){
+    private JScrollPane getListEventsPanel(Response<List<MyEventsRequest>> response, int page){
         if (response.isSuccess()){
-           List<MyEventsRequest> listEvents = response.getData().getData();
+           List<MyEventsRequest> listEvents = response.getData();
            return createMyEventsListPanel(listEvents, UIStyle.BG_USER_ADMIN_COLOR, Color.WHITE);
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }else{
             return createErrorPanel("Erro ao consultar as suas solicitações de eventos", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
+        }
+    }
+
+    private PaginationPanel getPaginationPanel(Response<List<MyEventsRequest>> response){
+        if ( response.isSuccess() && !isNull(response.getData()) ){
+                return new PaginationPanel(
+                    response.getData().size(),
+                    1,
+                    5,
+                    e -> {
+                        int page = paginationPanel.getCurrentPage();
+                        int size = paginationPanel.getItemsPerPage();
+                        Response<List<MyEventsRequest>> newResponse = eventController.getEventRequests(user.getUserId(), page, size);
+                        listEventsPanel.setViewportView(getListEventsPanel(newResponse, page).getViewport().getView());
+
+                        if (newResponse.isSuccess() && isNull(newResponse.getData())) {
+                            paginationPanel.refresh(newResponse.getData().size(), page);
+                        }
+                    },
+                    UIStyle.USER_ADMIN_PAGINATION_DIMENSION,
+                    UIStyle.BG_USER_ADMIN_COLOR,
+                    Color.BLACK
+            );
+        } else {
+            PaginationPanel panel = new PaginationPanel(0, 1, 10, e -> {}, UIStyle.USER_ADMIN_PAGINATION_DIMENSION, UIStyle.BG_USER_ADMIN_COLOR, Color.BLACK);
+            panel.setVisible(false);
+            return panel;
         }
     }
 }

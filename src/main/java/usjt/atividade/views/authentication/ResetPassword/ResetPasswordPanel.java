@@ -59,7 +59,7 @@ public class ResetPasswordPanel extends AbstractPanel {
         newPasswordField = createCustomPasswordField("Digite sua nova senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         repeatNewPasswordLabel = createLabel("Repetir senha:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         repeatNewPasswordField = createCustomPasswordField("Repita sua nova senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
-        btnResetPassword = createRoundedButton("Alterar Senha", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        btnResetPassword = createRoundedButton("Alterar Senha", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR, 60, 60);
     }
 
     @Override

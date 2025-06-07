@@ -2,6 +2,9 @@ package usjt.atividade.views.utils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicArrowButton;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -19,7 +22,7 @@ public class ComponentFactory {
         return label;
     }
 
-    public static RoundedButton createRoundedButton(String text, Font font, Color bgColor, Color textColor) {
+    public static RoundedButton createRoundedButton(String text, Font font, Color bgColor, Color textColor, int arcWidth, int arcHeight) {
         RoundedButton btn = new RoundedButton(60, 60);
         btn.setText(text);
         btn.setFont(font);
@@ -192,5 +195,50 @@ public class ComponentFactory {
         });
 
         return button;
+    }
+
+    public static <T> JComboBox<T> createCustomComboBox(T[] items, Color arrowColor, Color backgroundColor, Color textColor) {
+        JComboBox<T> comboBox = new JComboBox<>(items);
+        comboBox.setBackground(backgroundColor);
+        comboBox.setForeground(textColor);
+        comboBox.setBorder(BorderFactory.createEmptyBorder());
+        comboBox.setFocusable(false);
+        comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        comboBox.setOpaque(false);
+
+        comboBox.setUI(new BasicComboBoxUI() {
+            @Override
+            protected JButton createArrowButton() {
+                return new BasicArrowButton(
+                        BasicArrowButton.SOUTH,
+                        null, null,
+                        arrowColor,
+                        null
+                ) {
+                    @Override
+                    public void setBorder(Border border) {
+                    }
+
+                    @Override
+                    public void paint(Graphics g) {
+                        int w = getWidth();
+                        int h = getHeight();
+                        int size = Math.min((h - 4) / 2, (w - 4) / 2);
+                        int x = (w - size) / 2;
+                        int y = (h - size) / 2;
+
+                        Graphics2D g2 = (Graphics2D) g;
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2.setColor(arrowColor);
+                        int[] xPoints = {x, x + size, x + size / 2};
+                        int[] yPoints = {y, y, y + size};
+                        g2.fillPolygon(xPoints, yPoints, 3);
+                    }
+                };
+            }
+        });
+
+        return comboBox;
     }
 }

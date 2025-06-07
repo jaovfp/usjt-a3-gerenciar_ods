@@ -1,6 +1,10 @@
 package usjt.atividade.views.utils;
 
+import usjt.atividade.domain.valueObjects.EventRequestStatus;
+
 import java.awt.*;
+
+import static java.util.Objects.isNull;
 
 public class UIStyle {
 
@@ -13,7 +17,7 @@ public class UIStyle {
     public static final Font AUTH_TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 14);
     public static final Font AUTH_BTN_FONT = new Font("Arial", Font.BOLD, 18);
     public static final String FORGOT_PASSWORD_TEXT =  "<html><div style='width: 300px;'>Por favor, digite o endereço de e-mail vinculado à sua conta.<br> Enviaremos um código para que você possa redefinir sua senha.</div></html>";
-    public static final Color BG_USER_ADMIN_COLOR = new Color(245, 245, 245);
+    public static final Color BG_USER_ADMIN_COLOR = new Color(247, 247, 247);
     public static final Font USER_ADMIN_TITLE_FONT = new Font("Segoe UI", Font.BOLD, 24);
     public static final Color BG_SIDE_MENU_USER_COLOR = new Color(0, 66, 99);
     public static final Color BG_SIDE_MENU_ADMIN_COLOR = new Color(0, 96, 12);
@@ -27,4 +31,23 @@ public class UIStyle {
     public static final Dimension USER_ADMIN_DIMENSION = new Dimension(1300, 800);
     public static final Dimension CONTENT_USER_ADMIN_DIMENSION = new Dimension(1100, 800);
     public static final Dimension CONTENT_TOPIC_USER_ADMIN_DIMENSION = new Dimension(1100, 620);
+    public static final Dimension USER_ADMIN_PAGINATION_DIMENSION = new Dimension(1100, 50);
+
+    public static Color defineEventRequestStatusColorByStatus(EventRequestStatus status) {
+        if (isNull(status)) {
+            return Color.GRAY;
+        }
+        switch (status) {
+            case PENDING:
+                return UIStyle.BG_SIDE_MENU_USER_COLOR.brighter().brighter();
+            case APPROVED:
+                return Color.green.darker();
+            case REJECTED:
+                return Color.red.darker();
+            case CANCELED:
+                return Color.gray;
+            default:
+                return Color.GRAY;
+        }
+    }
 }

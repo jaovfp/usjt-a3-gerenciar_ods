@@ -54,7 +54,7 @@ public class LoginPanel extends AbstractPanel {
         passwordField = createCustomPasswordField("Digite sua senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         forgotPasswordLabel = createLinkLabel("Esqueceu sua senha ?", UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
         signUpLabel = createLinkLabel("Cadastre-se",  UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
-        btnSignIn = createRoundedButton("Entrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        btnSignIn = createRoundedButton("Entrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR, 60, 60);
     }
     
     @Override

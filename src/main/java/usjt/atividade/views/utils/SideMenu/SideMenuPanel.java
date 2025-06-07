@@ -1,4 +1,4 @@
-package usjt.atividade.views.SideMenu;
+package usjt.atividade.views.utils.SideMenu;
 
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;

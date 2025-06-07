@@ -7,7 +7,7 @@ public abstract class AbstractPanel extends JPanel {
     public AbstractPanel(Color backgroundColor, Dimension preferredSize) {
         setBackground(backgroundColor);
         setPreferredSize(preferredSize);
-        setOpaque(false);
+        setOpaque(true);
         setLayout(new BorderLayout());
     }
 

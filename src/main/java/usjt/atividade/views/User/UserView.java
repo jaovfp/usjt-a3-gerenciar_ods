@@ -2,8 +2,8 @@ package usjt.atividade.views.User;
 
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractView;
-import usjt.atividade.views.SideMenu.SideMenuPanel;
-import usjt.atividade.views.User.Events.EventsPanel;
+import usjt.atividade.views.utils.SideMenu.SideMenuPanel;
+import usjt.atividade.views.User.ViewEvents.EventsPanel;
 import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 
