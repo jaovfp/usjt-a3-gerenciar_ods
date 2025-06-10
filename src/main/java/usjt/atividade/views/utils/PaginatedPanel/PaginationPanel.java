@@ -25,6 +25,7 @@ public class PaginationPanel extends AbstractPanel {
     private final ActionListener onChange;
     private final Color backGroundColor;
     private final Color textColor;
+    private boolean suppressPageComboListener = false;
 
     public PaginationPanel(int totalItems, int currentPage, int itemsPerPage, ActionListener onChange, Dimension dimension, Color backGroundColor, Color textColor) {
         super(backGroundColor, dimension);
@@ -94,6 +95,8 @@ public class PaginationPanel extends AbstractPanel {
         });
 
         pageCombo.addActionListener(e -> {
+            if (suppressPageComboListener) return;
+
             Integer selected = (Integer) pageCombo.getSelectedItem();
             if (selected != null && selected != currentPage) {
                 currentPage = selected;
@@ -121,11 +124,13 @@ public class PaginationPanel extends AbstractPanel {
         int end = Math.min(totalItems, currentPage * itemsPerPage);
         infoLabel.setText(MessageFormat.format("{0}-{1} de {2} itens", start, end, totalItems));
 
+        suppressPageComboListener = true;
         pageCombo.removeAllItems();
         for (int i = 1; i <= getTotalPages(); i++) {
             pageCombo.addItem(i);
         }
         pageCombo.setSelectedItem(currentPage);
+        suppressPageComboListener = false;
 
         prevButton.setEnabled(currentPage > 1);
         nextButton.setEnabled(currentPage < getTotalPages());

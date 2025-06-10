@@ -7,6 +7,7 @@ import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
+import javax.swing.text.View;
 import java.awt.*;
 
 import static javax.swing.GroupLayout.DEFAULT_SIZE;
@@ -19,7 +20,7 @@ public class MyEventsRowPanel extends AbstractPanel {
 
     private final MyEventsRequest event;
 
-    private JLabel lblNome, lblOds, lblStatus, lblData;
+    private JLabel lblStatus, lblData, lblName, lblOds;
     private JLabel btnVerDetalhes;
 
     public MyEventsRowPanel(MyEventsRequest event, Color bgColor) {
@@ -33,11 +34,11 @@ public class MyEventsRowPanel extends AbstractPanel {
 
     @Override
     protected void initComponents() {
-        lblNome = createLabel(event.getEventName(), new Font("Segoe UI", Font.BOLD, 12), UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
+        lblName = createLabel("<html><div style='width:200px'>" + event.getEventName() + "</div></html>", new Font("Segoe UI", Font.BOLD, 12), UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
+        lblOds = createLabel("<html><div style='width:270px'>" + event.getOdsName() + "</div></html>", new Font("Segoe UI", Font.PLAIN, 11), UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
         String status = EventRequestStatus.valueOf(event.getStatus()).getStatus();
         Color colorStatus = defineEventRequestStatusColorByStatus(EventRequestStatus.valueOf(event.getStatus()));
         lblStatus = createLabel(status, new Font("Segoe UI", Font.PLAIN, 11), colorStatus, SwingConstants.LEFT);
-        lblOds = createLabel(event.getOdsName(), new Font("Segoe UI", Font.PLAIN, 11), UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
         String dateConverted = dateConverter(event.getCreateDate(), "dd/MM/yyyy");
         lblData = createLabel(dateConverted, new Font("Segoe UI", Font.PLAIN, 11), Color.GRAY, SwingConstants.LEFT);
         btnVerDetalhes = createLinkLabel("Ver detalhes", UIStyle.BG_SIDE_MENU_USER_COLOR.brighter(), new Font("Segoe UI", Font.PLAIN, 11));
@@ -51,7 +52,7 @@ public class MyEventsRowPanel extends AbstractPanel {
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(20)
-                                .addComponent(lblNome, PREFERRED_SIZE, 200, PREFERRED_SIZE)
+                                .addComponent(lblName, PREFERRED_SIZE, 200, PREFERRED_SIZE)
                                 .addGap(20)
                                 .addComponent(lblStatus, PREFERRED_SIZE, 100, PREFERRED_SIZE)
                                 .addGap(20)
@@ -63,24 +64,67 @@ public class MyEventsRowPanel extends AbstractPanel {
                                 .addGap(20)
         ));
         layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(lblNome, GroupLayout.Alignment.CENTER, PREFERRED_SIZE, 50, PREFERRED_SIZE)
-                        .addComponent(lblStatus, GroupLayout.Alignment.CENTER, PREFERRED_SIZE, 50, PREFERRED_SIZE)
-                        .addComponent(lblOds, GroupLayout.Alignment.CENTER, PREFERRED_SIZE, 50, PREFERRED_SIZE)
-                        .addComponent(lblData, GroupLayout.Alignment.CENTER, PREFERRED_SIZE, 50, PREFERRED_SIZE)
-                        .addComponent(btnVerDetalhes, GroupLayout.Alignment.CENTER, PREFERRED_SIZE, 50, PREFERRED_SIZE)
+                layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(lblName, GroupLayout.Alignment.CENTER)
+                                .addComponent(lblStatus, GroupLayout.Alignment.CENTER)
+                                .addComponent(lblOds, GroupLayout.Alignment.CENTER)
+                                .addComponent(lblData, GroupLayout.Alignment.CENTER)
+                                .addComponent(btnVerDetalhes, GroupLayout.Alignment.CENTER)
+                        )
         );
     }
 
-    private int getTextAreaHeight(JTextArea area, int width) {
-        FontMetrics fm = area.getFontMetrics(area.getFont());
-        int lines = (int) Math.ceil((double) area.getText().length() * fm.charWidth('a') / width);
-        int height = lines * fm.getHeight();
-        return Math.max(height, fm.getHeight());
+    @Override
+    public Dimension getPreferredSize() {
+        int width = 970;
+
+        int lblNameHeight = getHtmlTextHeight(lblName, 200);
+        int lblOdsHeight = getHtmlTextHeight(lblOds, 20);
+
+        int maxHeight = Math.max(lblNameHeight, lblOdsHeight);
+        int height = Math.max(50, maxHeight + 20);
+
+        return new Dimension(width, height);
+    }
+
+    private int getHtmlTextHeight(JLabel label, int width) {
+        if (label == null || label.getText() == null) {
+            return 0;
+        }
+        View view = (View) label.getClientProperty(javax.swing.plaf.basic.BasicHTML.propertyKey);
+        if (view != null) {
+            view.setSize(width, 0);
+            return (int) view.getPreferredSpan(View.Y_AXIS);
+        }
+        return label.getPreferredSize().height;
     }
 
     @Override
     protected void addListeners() {
-        //btnVerDetalhes.addActionListener(e -> showDetailsDialog());
+        btnVerDetalhes.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                showDetailsDialog();
+            }
+        });
+    }
+
+    private void showDetailsDialog() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(Color.WHITE);
+
+        panel.add(new JLabel("📝 Nome do Evento: " + event.getEventName()));
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(new JLabel("📄 Descrição: " + event.getEventDescription()));
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(new JLabel("📌 Status: " + EventRequestStatus.valueOf(event.getStatus()).getStatus()));
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(new JLabel("🎯 ODS Relacionado: " + event.getOdsName()));
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(new JLabel("📅 Data da Solicitação: " + dateConverter(event.getCreateDate(), "dd/MM/yyyy HH:mm")));
+
+        JOptionPane.showMessageDialog(this, panel, "Detalhes do Evento", JOptionPane.INFORMATION_MESSAGE);
     }
 }

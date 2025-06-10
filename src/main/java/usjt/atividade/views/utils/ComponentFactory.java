@@ -210,32 +210,12 @@ public class ComponentFactory {
         comboBox.setUI(new BasicComboBoxUI() {
             @Override
             protected JButton createArrowButton() {
-                return new BasicArrowButton(
-                        BasicArrowButton.SOUTH,
-                        null, null,
-                        arrowColor,
-                        null
-                ) {
-                    @Override
-                    public void setBorder(Border border) {
-                    }
-
-                    @Override
-                    public void paint(Graphics g) {
-                        int w = getWidth();
-                        int h = getHeight();
-                        int size = Math.min((h - 4) / 2, (w - 4) / 2);
-                        int x = (w - size) / 2;
-                        int y = (h - size) / 2;
-
-                        Graphics2D g2 = (Graphics2D) g;
-                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                        g2.setColor(arrowColor);
-                        int[] xPoints = {x, x + size, x + size / 2};
-                        int[] yPoints = {y, y, y + size};
-                        g2.fillPolygon(xPoints, yPoints, 3);
-                    }
-                };
+                JButton button = new JButton(new ArrowIcon(arrowColor));
+                button.setContentAreaFilled(false);
+                button.setFocusPainted(false);
+                button.setBorderPainted(false);
+                button.setBorder(BorderFactory.createEmptyBorder());
+                return button;
             }
         });
 

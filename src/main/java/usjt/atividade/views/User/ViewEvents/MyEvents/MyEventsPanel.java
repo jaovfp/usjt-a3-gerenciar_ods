@@ -1,6 +1,9 @@
 package usjt.atividade.views.User.ViewEvents.MyEvents;
 
+import usjt.atividade.app.Events.DTO.MyEventRequestFilter;
 import usjt.atividade.app.Events.DTO.MyEventsRequest;
+import usjt.atividade.common.PaginatedResponse;
+import usjt.atividade.domain.valueObjects.EventRequestStatus;
 import usjt.atividade.infra.controller.EventController;
 import usjt.atividade.common.Response;
 import usjt.atividade.common.StatusCode;
@@ -20,15 +23,18 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
+import static usjt.atividade.views.utils.ComponentFactory.createCustomComboBox;
 import static usjt.atividade.views.utils.ComponentFactory.createCustomTextField;
 
 public class MyEventsPanel extends AbstractPanel {
 
     private final User user;
-    private JPanel searchField;
+    private JPanel searchPanel;
     private JScrollPane listEventsPanel;
     private EventController eventController;
     private PaginationPanel paginationPanel;
+    private CustomTextField searchField;
+    private JComboBox<EventRequestStatus> statusField;
 
     public MyEventsPanel(User user) {
         super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.CONTENT_TOPIC_USER_ADMIN_DIMENSION);
@@ -41,9 +47,21 @@ public class MyEventsPanel extends AbstractPanel {
 
     @Override
     public void initComponents(){
-        CustomTextField textField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
-        searchField = textField.withIcon("searchBlue.png", 15);
-        Response<List<MyEventsRequest>> response = eventController.getEventRequests(user.getUserId(), 1, 10);
+        statusField = createCustomComboBox(
+                EventRequestStatus.values(),
+                UIStyle.BG_SIDE_MENU_USER_COLOR,
+                UIStyle.BG_USER_ADMIN_COLOR,
+                Color.GRAY
+        );
+        statusField.addItem(null);
+        statusField.setRenderer(createEventStatusRenderer());
+        statusField.setSelectedItem(null);
+
+        searchField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
+        searchPanel = searchField.withIcon("searchBlue.png", 15);
+
+        Response<PaginatedResponse<MyEventsRequest>> response = eventController.getEventRequests(user.getUserId(), 1, 5,
+                createFilter(searchField.getText().trim(), (EventRequestStatus) statusField.getSelectedItem()));
         listEventsPanel = getListEventsPanel(response, 1);
         paginationPanel = getPaginationPanel(response);
     }
@@ -52,30 +70,62 @@ public class MyEventsPanel extends AbstractPanel {
     public void layoutComponents(){
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
+
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
         layout.setHorizontalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
-                        .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createSequentialGroup()
                                 .addGap(55)
-                                .addGroup(layout.createParallelGroup(Alignment.TRAILING)
-                                        .addComponent(searchField, PREFERRED_SIZE, 211, PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(55)
+                                                .addComponent(statusField, PREFERRED_SIZE, 170, PREFERRED_SIZE)
+                                                .addGap(460)
+                                                .addComponent(searchPanel, PREFERRED_SIZE, 211, PREFERRED_SIZE)
+                                        )
                                         .addComponent(listEventsPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
-                                        .addComponent(paginationPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE))
-                        ));
+                                        .addComponent(paginationPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
+                                )
+                        )
+        );
+
         layout.setVerticalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(12)
-                                .addComponent(searchField, PREFERRED_SIZE, 34, PREFERRED_SIZE)
-                                .addGap(22)
-                                .addComponent(listEventsPanel, PREFERRED_SIZE, 370, PREFERRED_SIZE)
-                                .addGap(10)
-                                .addComponent(paginationPanel, PREFERRED_SIZE, 50, PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                                        .addComponent(statusField, PREFERRED_SIZE, 24, PREFERRED_SIZE)
+                                        .addComponent(searchPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
+                                )
+                                .addGap(42)
+                                .addComponent(listEventsPanel, PREFERRED_SIZE, 360, PREFERRED_SIZE)
+                                .addGap(5)
+                                .addComponent(paginationPanel, PREFERRED_SIZE, 50, PREFERRED_SIZE)
+                        )
         );
     }
 
     @Override
     public void addListeners(){
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
 
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+        });
+        statusField.addActionListener(e -> { applyFilterWithPage(1);});
     }
 
     private static JScrollPane createMyEventsListPanel(List<MyEventsRequest> eventos, Color bgListColor, Color rowColor) {
@@ -133,9 +183,9 @@ public class MyEventsPanel extends AbstractPanel {
     }
 
 
-    private JScrollPane getListEventsPanel(Response<List<MyEventsRequest>> response, int page){
+    private JScrollPane getListEventsPanel(Response<PaginatedResponse<MyEventsRequest>> response, int page){
         if (response.isSuccess()){
-           List<MyEventsRequest> listEvents = response.getData();
+           List<MyEventsRequest> listEvents = response.getData().getData();
            return createMyEventsListPanel(listEvents, UIStyle.BG_USER_ADMIN_COLOR, Color.WHITE);
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
@@ -144,30 +194,68 @@ public class MyEventsPanel extends AbstractPanel {
         }
     }
 
-    private PaginationPanel getPaginationPanel(Response<List<MyEventsRequest>> response){
-        if ( response.isSuccess() && !isNull(response.getData()) ){
-                return new PaginationPanel(
-                    response.getData().size(),
-                    1,
-                    5,
-                    e -> {
-                        int page = paginationPanel.getCurrentPage();
-                        int size = paginationPanel.getItemsPerPage();
-                        Response<List<MyEventsRequest>> newResponse = eventController.getEventRequests(user.getUserId(), page, size);
-                        listEventsPanel.setViewportView(getListEventsPanel(newResponse, page).getViewport().getView());
-
-                        if (newResponse.isSuccess() && isNull(newResponse.getData())) {
-                            paginationPanel.refresh(newResponse.getData().size(), page);
-                        }
-                    },
-                    UIStyle.USER_ADMIN_PAGINATION_DIMENSION,
-                    UIStyle.BG_USER_ADMIN_COLOR,
-                    Color.BLACK
-            );
-        } else {
-            PaginationPanel panel = new PaginationPanel(0, 1, 10, e -> {}, UIStyle.USER_ADMIN_PAGINATION_DIMENSION, UIStyle.BG_USER_ADMIN_COLOR, Color.BLACK);
-            panel.setVisible(false);
-            return panel;
+    private PaginationPanel getPaginationPanel(Response<PaginatedResponse<MyEventsRequest>> response) {
+        int totalItems = 0;
+        int itemsPerPage = 5;  // default
+        if (response.isSuccess() && !isNull(response.getData().getData())) {
+            totalItems = response.getData().getTotalItems();
         }
+        PaginationPanel panel = new PaginationPanel(
+                totalItems,
+                1,
+                itemsPerPage,
+                e -> {
+                    int page = paginationPanel.getCurrentPage();
+                    applyFilterWithPage(page);
+                },
+                UIStyle.USER_ADMIN_PAGINATION_DIMENSION,
+                UIStyle.BG_USER_ADMIN_COLOR,
+                Color.BLACK
+        );
+        if (totalItems == 0) {
+            panel = new PaginationPanel(0, 1, 10, e -> {}, UIStyle.USER_ADMIN_PAGINATION_DIMENSION, UIStyle.BG_USER_ADMIN_COLOR, Color.BLACK);
+            panel.setVisible(false);
+        }
+        return panel;
+    }
+
+    private MyEventRequestFilter createFilter(String eventName, EventRequestStatus status){
+        return new MyEventRequestFilter(eventName, status);
+    }
+
+    private void applyFilterWithPage(int page) {
+        String searchText = searchField.getText().trim();
+        EventRequestStatus selectedStatus = (EventRequestStatus) statusField.getSelectedItem();
+
+        MyEventRequestFilter filter = createFilter(searchText, selectedStatus);
+        int size = paginationPanel.getItemsPerPage();
+
+        Response<PaginatedResponse<MyEventsRequest>> response = eventController.getEventRequests(user.getUserId(), page, size, filter);
+        listEventsPanel.setViewportView(getListEventsPanel(response, page).getViewport().getView());
+
+        if (response.isSuccess()) {
+            paginationPanel.refresh(response.getData().getTotalItems(), page);
+        }
+    }
+
+    private DefaultListCellRenderer createEventStatusRenderer() {
+        return new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                if (value == null) {
+                    setText("Todos os status");
+                } else if (value instanceof EventRequestStatus) {
+                    setText(((EventRequestStatus) value).getStatus());
+                } else {
+                    setText("");
+                }
+
+                return this;
+            }
+        };
     }
 }
