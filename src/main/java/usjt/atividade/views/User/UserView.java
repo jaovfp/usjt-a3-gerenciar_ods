@@ -2,6 +2,7 @@ package usjt.atividade.views.User;
 
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractView;
+import usjt.atividade.views.User.UpdateRegistration.UpdateUserPanel;
 import usjt.atividade.views.utils.SideMenu.SideMenuPanel;
 import usjt.atividade.views.User.ViewEvents.EventsPanel;
 import usjt.atividade.views.utils.RoundedButton;
@@ -36,7 +37,7 @@ public class UserView extends AbstractView {
         RoundedButton btnCreateEvents = createRoundedButtonWithIcon("Cadastrar Eventos", UIStyle.SIDE_MENU_BTN_TEXT_FONT, UIStyle.TRANSPARENT_COLOR, BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "appointment.png");
         RoundedButton btnEvents = createRoundedButtonWithIcon("Eventos", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "search.png");
 
-        updateUser.addActionListener(e -> setContent(new UpdateUserPanel()));
+        updateUser.addActionListener(e -> setContent(new UpdateUserPanel(user)));
         //btnCreateEvents.addActionListener(e -> setContent(new CadastrarEventosPanel()));
         btnEvents.addActionListener(e -> setContent(new EventsPanel(user)));
 
