@@ -1,32 +1,31 @@
 package usjt.atividade.app.Events;
 
-import usjt.atividade.app.Events.DTO.MyEventRequestFilter;
-import usjt.atividade.app.Events.DTO.MyEventsRequest;
+import usjt.atividade.app.Events.DTO.EventRequestFilter;
+import usjt.atividade.domain.entities.EventsRequest;
 import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.PaginatedResponse;
-import usjt.atividade.infra.Repository.EventRepository;
+import usjt.atividade.infra.Repository.EventRequestRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 public class EventServiceImpl {
 
-    private final EventRepository repository;
+    private final EventRequestRepository repository;
 
     public EventServiceImpl() {
-        this.repository = new EventRepository();
+        this.repository = new EventRequestRepository();
     }
 
-    public PaginatedResponse<MyEventsRequest> getPaginatedEventRequests(UUID userId, int page, int size, MyEventRequestFilter filter) {
-        int totalItems = repository.countByUserIdAndFilter(userId.toString(), filter);
+    public PaginatedResponse<EventsRequest> getPaginatedEventRequests(int page, int size, EventRequestFilter filter) {
+        int totalItems = repository.countEventRequestByFilter(filter);
         if (totalItems == 0){
             throw new NotFoundException(MessageConstants.EVENTS_REQUESTS_NOT_FOUND);
         }
         int totalPages = (int) Math.ceil((double) totalItems / size);
         int offset = (page - 1) * size;
 
-        List<MyEventsRequest> items = repository.findAllEventRequestsByUserIdAndFilter(userId.toString(), offset, size, filter);
+        List<EventsRequest> items = repository.findAllEventRequestsByFilter(offset, size, filter);
 
         return new PaginatedResponse<>(items, page, totalPages, totalItems);
     }

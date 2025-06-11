@@ -1,7 +1,7 @@
 package usjt.atividade.infra.controller;
 
-import usjt.atividade.app.Events.DTO.MyEventRequestFilter;
-import usjt.atividade.app.Events.DTO.MyEventsRequest;
+import usjt.atividade.app.Events.DTO.EventRequestFilter;
+import usjt.atividade.domain.entities.EventsRequest;
 import usjt.atividade.app.Events.EventServiceImpl;
 import usjt.atividade.app.Exceptions.ErrorException;
 import usjt.atividade.common.PaginatedResponse;
@@ -20,9 +20,9 @@ public class EventController {
         this.eventServiceImpl = new EventServiceImpl();
     }
 
-    public Response<PaginatedResponse<MyEventsRequest>> getEventRequests(UUID userId, int page, int pageSize, MyEventRequestFilter filter){
+    public Response<PaginatedResponse<EventsRequest>> getEventRequests(int page, int pageSize, EventRequestFilter filter){
         try{
-            PaginatedResponse<MyEventsRequest> eventsRequests = eventServiceImpl.getPaginatedEventRequests(userId, page, pageSize, filter);
+            PaginatedResponse<EventsRequest> eventsRequests = eventServiceImpl.getPaginatedEventRequests(page, pageSize, filter);
             return Response.ok(eventsRequests);
         }catch (ErrorException e){
             return Response.fail(e.getStatusCode(), e.getMessage());

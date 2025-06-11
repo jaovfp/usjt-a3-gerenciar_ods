@@ -29,4 +29,8 @@ public class Address {
     public String getPostalCode() {
         return postalCode;
     }
+
+    public String toString() {
+        return addressLine + ", " + city + ", " + state + " - " + postalCode;
+    }
 }

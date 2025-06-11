@@ -1,7 +1,7 @@
 package usjt.atividade.views.User.ViewEvents.MyEvents;
 
-import usjt.atividade.app.Events.DTO.MyEventRequestFilter;
-import usjt.atividade.app.Events.DTO.MyEventsRequest;
+import usjt.atividade.app.Events.DTO.EventRequestFilter;
+import usjt.atividade.domain.entities.EventsRequest;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.domain.valueObjects.EventRequestStatus;
 import usjt.atividade.infra.controller.EventController;
@@ -60,8 +60,8 @@ public class MyEventsPanel extends AbstractPanel {
         searchField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
         searchPanel = searchField.withIcon("searchBlue.png", 15);
 
-        Response<PaginatedResponse<MyEventsRequest>> response = eventController.getEventRequests(user.getUserId(), 1, 5,
-                createFilter(searchField.getText().trim(), (EventRequestStatus) statusField.getSelectedItem()));
+        EventRequestFilter filter = createFilter(searchField.getText().trim(), (EventRequestStatus) statusField.getSelectedItem(), user.getUserId().toString(), null);
+        Response<PaginatedResponse<EventsRequest>> response = eventController.getEventRequests(1, 5, filter);
         listEventsPanel = getListEventsPanel(response, 1);
         paginationPanel = getPaginationPanel(response);
     }
@@ -128,13 +128,13 @@ public class MyEventsPanel extends AbstractPanel {
         statusField.addActionListener(e -> { applyFilterWithPage(1);});
     }
 
-    private static JScrollPane createMyEventsListPanel(List<MyEventsRequest> eventos, Color bgListColor, Color rowColor) {
+    private static JScrollPane createMyEventsListPanel(List<EventsRequest> eventos, Color bgListColor, Color rowColor) {
         JPanel listPanel = new JPanel();
         listPanel.setBackground(bgListColor);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
 
-        for (MyEventsRequest evento : eventos) {
+        for (EventsRequest evento : eventos) {
             MyEventsRowPanel row = new MyEventsRowPanel(evento, rowColor);
 
             Dimension rowSize = new Dimension(890, 50);
@@ -183,9 +183,9 @@ public class MyEventsPanel extends AbstractPanel {
     }
 
 
-    private JScrollPane getListEventsPanel(Response<PaginatedResponse<MyEventsRequest>> response, int page){
+    private JScrollPane getListEventsPanel(Response<PaginatedResponse<EventsRequest>> response, int page){
         if (response.isSuccess()){
-           List<MyEventsRequest> listEvents = response.getData().getData();
+           List<EventsRequest> listEvents = response.getData().getData();
            return createMyEventsListPanel(listEvents, UIStyle.BG_USER_ADMIN_COLOR, Color.WHITE);
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
@@ -194,7 +194,7 @@ public class MyEventsPanel extends AbstractPanel {
         }
     }
 
-    private PaginationPanel getPaginationPanel(Response<PaginatedResponse<MyEventsRequest>> response) {
+    private PaginationPanel getPaginationPanel(Response<PaginatedResponse<EventsRequest>> response) {
         int totalItems = 0;
         int itemsPerPage = 5;  // default
         if (response.isSuccess() && !isNull(response.getData().getData())) {
@@ -219,18 +219,18 @@ public class MyEventsPanel extends AbstractPanel {
         return panel;
     }
 
-    private MyEventRequestFilter createFilter(String eventName, EventRequestStatus status){
-        return new MyEventRequestFilter(eventName, status);
+    private EventRequestFilter createFilter(String eventName, EventRequestStatus status, String userId, String requestId){
+        return new EventRequestFilter(eventName, status, userId, requestId);
     }
 
     private void applyFilterWithPage(int page) {
         String searchText = searchField.getText().trim();
         EventRequestStatus selectedStatus = (EventRequestStatus) statusField.getSelectedItem();
 
-        MyEventRequestFilter filter = createFilter(searchText, selectedStatus);
+        EventRequestFilter filter = createFilter(searchText, selectedStatus, user.getUserId().toString(), null);
         int size = paginationPanel.getItemsPerPage();
 
-        Response<PaginatedResponse<MyEventsRequest>> response = eventController.getEventRequests(user.getUserId(), page, size, filter);
+        Response<PaginatedResponse<EventsRequest>> response = eventController.getEventRequests(page, size, filter);
         listEventsPanel.setViewportView(getListEventsPanel(response, page).getViewport().getView());
 
         if (response.isSuccess()) {

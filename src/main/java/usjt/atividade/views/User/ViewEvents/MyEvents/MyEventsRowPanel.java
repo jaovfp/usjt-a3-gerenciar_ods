@@ -1,16 +1,13 @@
 package usjt.atividade.views.User.ViewEvents.MyEvents;
 
-import usjt.atividade.app.Events.DTO.MyEventsRequest;
-import usjt.atividade.domain.valueObjects.EventRequestStatus;
+import usjt.atividade.domain.entities.EventsRequest;
 import usjt.atividade.views.AbstractPanel;
-import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
 import javax.swing.text.View;
 import java.awt.*;
 
-import static javax.swing.GroupLayout.DEFAULT_SIZE;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import static usjt.atividade.common.utils.DateTimeUtils.dateConverter;
 import static usjt.atividade.views.utils.ComponentFactory.*;
@@ -18,12 +15,12 @@ import static usjt.atividade.views.utils.UIStyle.defineEventRequestStatusColorBy
 
 public class MyEventsRowPanel extends AbstractPanel {
 
-    private final MyEventsRequest event;
+    private final EventsRequest event;
 
     private JLabel lblStatus, lblData, lblName, lblOds;
     private JLabel btnVerDetalhes;
 
-    public MyEventsRowPanel(MyEventsRequest event, Color bgColor) {
+    public MyEventsRowPanel(EventsRequest event, Color bgColor) {
         super(bgColor, new Dimension(970, 50));
         this.event = event;
         this.setOpaque(true);
@@ -35,9 +32,9 @@ public class MyEventsRowPanel extends AbstractPanel {
     @Override
     protected void initComponents() {
         lblName = createLabel("<html><div style='width:200px'>" + event.getEventName() + "</div></html>", new Font("Segoe UI", Font.BOLD, 12), UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
-        lblOds = createLabel("<html><div style='width:270px'>" + event.getOdsName() + "</div></html>", new Font("Segoe UI", Font.PLAIN, 11), UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
-        String status = EventRequestStatus.valueOf(event.getStatus()).getStatus();
-        Color colorStatus = defineEventRequestStatusColorByStatus(EventRequestStatus.valueOf(event.getStatus()));
+        lblOds = createLabel("<html><div style='width:270px'>" + event.getOds().getOdsName() + "</div></html>", new Font("Segoe UI", Font.PLAIN, 11), UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
+        String status = event.getStatus().getStatus();
+        Color colorStatus = defineEventRequestStatusColorByStatus(event.getStatus());
         lblStatus = createLabel(status, new Font("Segoe UI", Font.PLAIN, 11), colorStatus, SwingConstants.LEFT);
         String dateConverted = dateConverter(event.getCreateDate(), "dd/MM/yyyy");
         lblData = createLabel(dateConverted, new Font("Segoe UI", Font.PLAIN, 11), Color.GRAY, SwingConstants.LEFT);
@@ -113,16 +110,19 @@ public class MyEventsRowPanel extends AbstractPanel {
     private void showDetailsDialog() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(Color.WHITE);
 
         panel.add(new JLabel("📝 Nome do Evento: " + event.getEventName()));
-        panel.add(Box.createVerticalStrut(5));
+        panel.add(Box.createVerticalStrut(10));
         panel.add(new JLabel("📄 Descrição: " + event.getEventDescription()));
-        panel.add(Box.createVerticalStrut(5));
-        panel.add(new JLabel("📌 Status: " + EventRequestStatus.valueOf(event.getStatus()).getStatus()));
-        panel.add(Box.createVerticalStrut(5));
-        panel.add(new JLabel("🎯 ODS Relacionado: " + event.getOdsName()));
-        panel.add(Box.createVerticalStrut(5));
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(new JLabel("📌 Status: " + event.getStatus().getStatus()));
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(new JLabel("🎯 ODS Relacionado: " + event.getOds().getOdsName()));
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(new JLabel("📍 Endereço: " + event.getAddress().toString()));
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(new JLabel("📅 Data do Evento: " + event.getEventDate()));
+        panel.add(Box.createVerticalStrut(10));
         panel.add(new JLabel("📅 Data da Solicitação: " + dateConverter(event.getCreateDate(), "dd/MM/yyyy HH:mm")));
 
         JOptionPane.showMessageDialog(this, panel, "Detalhes do Evento", JOptionPane.INFORMATION_MESSAGE);
