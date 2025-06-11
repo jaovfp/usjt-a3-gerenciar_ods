@@ -1,11 +1,27 @@
 package usjt.atividade.app.Adm;
 
-import usjt.atividade.common.Response;
+import usjt.atividade.domain.entities.User;
+import usjt.atividade.domain.repository.EventRepository;
+import usjt.atividade.domain.repository.UserRepository;
 
-public class AdmService {
 
-    public Response getAllUsers (){
+import java.util.List;
 
+
+public class AdmService  {
+
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+
+
+    public AdmService(UserRepository userRepository, EventRepository eventRepository) {
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+    }
+
+    public List<User> findAllUser(){
+        List<User> listUser =  userRepository.findAllUsers(0, 10);
+        return listUser;
     }
 
 }

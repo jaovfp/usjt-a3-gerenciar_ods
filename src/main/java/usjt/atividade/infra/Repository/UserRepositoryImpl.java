@@ -1,5 +1,6 @@
 package usjt.atividade.infra.Repository;
 
+import usjt.atividade.app.Events.DTO.MyEventsRequest;
 import usjt.atividade.domain.repository.UserRepository;
 import usjt.atividade.domain.valueObjects.*;
 import usjt.atividade.infra.config.MySQLConnection;
@@ -8,6 +9,8 @@ import usjt.atividade.domain.entities.User;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -140,4 +143,103 @@ public class UserRepositoryImpl implements UserRepository {
             throw new RuntimeException("Erro ao atualizar usuário", e);
         }
     }
+
+    public List<MyEventsRequest> findEventsByUserName (String name, int offset, int pageSize){
+        List<MyEventsRequest> result = new ArrayList<>();
+
+        final String sql =
+                "SELECT * " + "FROM tbl_event_requests er " +
+                        "WHERE er.fullname = ? " +
+                        "ORDER BY er.create_date DESC " +
+                        "LIMIT ? OFFSET ?";
+
+
+        try (Connection conn = MySQLConnection.getInstance();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            stmt.setInt(2, pageSize );
+            stmt.setInt(3, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    MyEventsRequest request = new MyEventsRequest();
+                    request.setRequestId(rs.getString("request_id"));
+                    request.setEventName(rs.getString("event_name"));
+                    request.setEventDescription(rs.getString("event_description"));
+                    request.setStatus(rs.getString("status"));
+                    request.setOdsName(rs.getString("ods_name"));
+                    request.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+
+                    result.add(request);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public List<User> findAllUsers(int offset, int pageSize) {
+        List<User> result = new ArrayList<>();
+
+        final String sql =
+                "SELECT * FROM tbl_users " +
+                        "ORDER BY create_date DESC " +
+                        "LIMIT ? OFFSET ?";
+
+        try (Connection conn = MySQLConnection.getInstance();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    stmt.setString(1, user.getFullname());
+                    stmt.setString(2, user.getEmail().getValue());
+                    stmt.setString(3, user.getPasswordHash());
+                    stmt.setDate(4, user.getBirthDate() != null ? Date.valueOf(user.getBirthDate()) : null);
+                    stmt.setString(5, user.getCpfValue());
+                    stmt.setString(6, user.getPhoneNumberValue());
+                    stmt.setString(7, user.getAddressLine());
+                    stmt.setString(8, user.getCity());
+                    stmt.setString(9, user.getState());
+                    stmt.setString(10, user.getPostalCode());
+                    stmt.setString(11, user.getType().name());
+                    stmt.setBoolean(12, user.isActive());
+                    stmt.setString(13, user.getProfilePhotoUrl());
+                    stmt.setTimestamp(14, Timestamp.valueOf(LocalDateTime.now()));
+                    stmt.setString(15, user.getUserId().toString());
+
+                    result.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar usuários: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        return result;
+    }
+
+    public boolean deleteUserById(String userId) {
+        final String sql = "DELETE FROM tbl_users WHERE user_id = ?";
+
+        try (Connection conn = MySQLConnection.getInstance();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, userId);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao deletar usuário: " + e.getMessage());
+            return false;
+        }
+    }
+
 }

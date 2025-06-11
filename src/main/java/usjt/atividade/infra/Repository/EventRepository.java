@@ -71,4 +71,76 @@ public class EventRepository {
 
         return 0;
     }
+
+    public List<MyEventsRequest> findAllEventsByStatus (int offset, int pageSize, String status) {
+        List<MyEventsRequest> result = new ArrayList<>();
+
+        final String sql =
+                "SELECT * " + "FROM tbl_event_requests er " +
+                        "WHERE er.status = ? " +
+                        "ORDER BY er.create_date DESC " +
+                        "LIMIT ? OFFSET ?";
+
+
+        try (Connection conn = MySQLConnection.getInstance();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, status);
+            stmt.setInt(2, pageSize );
+            stmt.setInt(3, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    MyEventsRequest request = new MyEventsRequest();
+                    request.setRequestId(rs.getString("request_id"));
+                    request.setEventName(rs.getString("event_name"));
+                    request.setEventDescription(rs.getString("event_description"));
+                    request.setStatus(rs.getString("status"));
+                    request.setOdsName(rs.getString("ods_name"));
+                    request.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+
+                    result.add(request);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public List<MyEventsRequest> findAllEvents (int offset, int pageSize) {
+        List<MyEventsRequest> result = new ArrayList<>();
+
+        final String sql =
+                "SELECT * " + "FROM tbl_event_requests er " +
+                        "ORDER BY er.create_date DESC " +
+                        "LIMIT ? OFFSET ?";
+
+
+        try (Connection conn = MySQLConnection.getInstance();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, pageSize );
+            stmt.setInt(2, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    MyEventsRequest request = new MyEventsRequest();
+                    request.setRequestId(rs.getString("request_id"));
+                    request.setEventName(rs.getString("event_name"));
+                    request.setEventDescription(rs.getString("event_description"));
+                    request.setStatus(rs.getString("status"));
+                    request.setOdsName(rs.getString("ods_name"));
+                    request.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+
+                    result.add(request);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
 }
