@@ -58,7 +58,7 @@ public class MyEventsPanel extends AbstractPanel {
         statusField.setSelectedItem(null);
 
         searchField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
-        searchPanel = searchField.withIcon("searchBlue.png", 15);
+        searchPanel = searchField.withIcon("searchBlue.png", 15, BorderLayout.WEST);
 
         EventRequestFilter filter = createFilter(searchField.getText().trim(), (EventRequestStatus) statusField.getSelectedItem(), user.getUserId().toString(), null);
         Response<PaginatedResponse<EventsRequest>> response = eventController.getEventRequests(1, 5, filter);

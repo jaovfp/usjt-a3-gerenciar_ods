@@ -2,8 +2,7 @@ package usjt.atividade.views.utils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.util.Objects;
 
 public class CustomTextField extends JTextField {
@@ -11,6 +10,7 @@ public class CustomTextField extends JTextField {
     private String placeholder = "";
     private Color placeholderColor;
     private Color textColor;
+    private boolean enableEditOnIconClick = false;
 
     public CustomTextField() {
         super(20);
@@ -39,7 +39,7 @@ public class CustomTextField extends JTextField {
         });
     }
 
-    public JPanel withIcon(String iconFileName, int iconSize) {
+    public JPanel withIcon(String iconFileName, int iconSize, String borderLayoutIconPosit) {
         JLabel iconLabel = new JLabel();
         ImageIcon rawIcon = new ImageIcon(
                 Objects.requireNonNull(getClass().getResource("/icons/" + iconFileName))
@@ -47,10 +47,30 @@ public class CustomTextField extends JTextField {
         Image scaledImage = rawIcon.getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
         iconLabel.setIcon(new ImageIcon(scaledImage));
         iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        iconLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        iconLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (enableEditOnIconClick) {
+                    setEditable(true);
+                    requestFocusInWindow();
+                }
+            }
+        });
+
+        if (enableEditOnIconClick) {
+            addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusLost(FocusEvent e) {
+                    setEditable(false);
+                }
+            });
+        }
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(false);
-        panel.add(iconLabel, BorderLayout.WEST);
+        panel.add(iconLabel, borderLayoutIconPosit);
         panel.add(this, BorderLayout.CENTER);
         return panel;
     }
@@ -95,5 +115,12 @@ public class CustomTextField extends JTextField {
     public void setBorderColor(Color color) {
         this.borderColor = color;
         repaint();
+    }
+
+    public void setEnableEditOnIconClick(boolean enable) {
+        this.enableEditOnIconClick = enable;
+        if (!enable) {
+            setEditable(false);
+        }
     }
 }

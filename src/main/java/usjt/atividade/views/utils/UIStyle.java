@@ -32,6 +32,8 @@ public class UIStyle {
     public static final Dimension CONTENT_USER_ADMIN_DIMENSION = new Dimension(1100, 800);
     public static final Dimension CONTENT_TOPIC_USER_ADMIN_DIMENSION = new Dimension(1100, 620);
     public static final Dimension USER_ADMIN_PAGINATION_DIMENSION = new Dimension(1100, 50);
+    public static final Font CONTENT_USER_ADMIN_TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    public static final Font USER_CONTENT_BTN_FONT = new Font("Arial", Font.BOLD, 18);
 
     public static Color defineEventRequestStatusColorByStatus(EventRequestStatus status) {
         if (isNull(status)) {

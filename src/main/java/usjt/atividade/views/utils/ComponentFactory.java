@@ -70,6 +70,42 @@ public class ComponentFactory {
         return field;
     }
 
+    public static CustomFormattedCpfField createCustomFormattedCpfField(String placeholder, Color textColor, Color borderColor) {
+        CustomFormattedCpfField field = new CustomFormattedCpfField();
+        field.setPlaceholder(placeholder);
+        field.setPlaceholderColor(UIStyle.PLACEHOLDER_COLOR);
+        field.setTextColor(textColor);
+        field.setBorderColor(borderColor);
+        return field;
+    }
+
+    public static CustomFormattedCepField createCustomFormattedCepField(String placeholder, Color textColor, Color borderColor) {
+        CustomFormattedCepField field = new CustomFormattedCepField();
+        field.setPlaceholder(placeholder);
+        field.setPlaceholderColor(UIStyle.PLACEHOLDER_COLOR);
+        field.setTextColor(textColor);
+        field.setBorderColor(borderColor);
+        return field;
+    }
+
+    public static CustomFormattedPhoneField createCustomFormattedPhoneField(String placeholder, Color textColor, Color borderColor) {
+        CustomFormattedPhoneField field = new CustomFormattedPhoneField();
+        field.setPlaceholder(placeholder);
+        field.setPlaceholderColor(UIStyle.PLACEHOLDER_COLOR);
+        field.setTextColor(textColor);
+        field.setBorderColor(borderColor);
+        return field;
+    }
+
+    public static CustomFormattedDateField createCustomFormattedDateField(String placeholder, Color textColor, Color borderColor) {
+        CustomFormattedDateField field = new CustomFormattedDateField();
+        field.setPlaceholder(placeholder);
+        field.setPlaceholderColor(UIStyle.PLACEHOLDER_COLOR);
+        field.setTextColor(textColor);
+        field.setBorderColor(borderColor);
+        return field;
+    }
+
     public static CustomPasswordField createCustomPasswordField(String placeholder, Color textColor, Color borderColor) {
         CustomPasswordField field = new CustomPasswordField();
         field.setPlaceholder(placeholder);
