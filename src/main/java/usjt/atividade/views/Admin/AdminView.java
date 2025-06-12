@@ -37,7 +37,7 @@ public class AdminView extends AbstractView {
 
         btnHome.addActionListener(e -> setContent(new AdminHomePanel()));
         //btnCreateEvents.addActionListener(e -> setContent(new CadastrarEventosPanel()));
-        //btnSearchEvents.addActionListener(e -> setContent(new VerEventosPanel()));
+        btnSearchEvents.addActionListener(e -> setContent(new UserManagementPanel()));
 
         menuButtons = List.of(btnHome, btnCreateEvents, btnSearchEvents);
     }
