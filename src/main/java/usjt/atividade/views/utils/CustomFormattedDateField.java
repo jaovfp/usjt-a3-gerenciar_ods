@@ -17,7 +17,7 @@ public class CustomFormattedDateField extends AbstractCustomFormattedTextField {
             formatter.setAllowsInvalid(false);
             return formatter;
         } catch (ParseException e) {
-            e.printStackTrace();
+            System.out.println(e);
             return null;
         }
     }

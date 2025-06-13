@@ -23,8 +23,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
-import static usjt.atividade.views.utils.ComponentFactory.createCustomComboBox;
-import static usjt.atividade.views.utils.ComponentFactory.createCustomTextField;
+import static usjt.atividade.views.utils.ComponentFactory.*;
 
 public class MyEventsPanel extends AbstractPanel {
 
@@ -56,6 +55,7 @@ public class MyEventsPanel extends AbstractPanel {
         statusField.addItem(null);
         statusField.setRenderer(createEventStatusRenderer());
         statusField.setSelectedItem(null);
+        applyCustomScrollBarToComboBox(statusField);
 
         searchField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
         searchPanel = searchField.withIcon("searchBlue.png", 15, BorderLayout.WEST);
@@ -186,7 +186,7 @@ public class MyEventsPanel extends AbstractPanel {
     private JScrollPane getListEventsPanel(Response<PaginatedResponse<EventsRequest>> response, int page){
         if (response.isSuccess()){
            List<EventsRequest> listEvents = response.getData().getData();
-           return createMyEventsListPanel(listEvents, UIStyle.BG_USER_ADMIN_COLOR, Color.WHITE);
+           return createMyEventsListPanel(listEvents, UIStyle.BG_USER_ADMIN_COLOR, new Color(240, 240, 240) );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }else{

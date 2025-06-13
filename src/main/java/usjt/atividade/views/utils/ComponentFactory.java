@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicComboPopup;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -99,6 +100,15 @@ public class ComponentFactory {
 
     public static CustomFormattedDateField createCustomFormattedDateField(String placeholder, Color textColor, Color borderColor) {
         CustomFormattedDateField field = new CustomFormattedDateField();
+        field.setPlaceholder(placeholder);
+        field.setPlaceholderColor(UIStyle.PLACEHOLDER_COLOR);
+        field.setTextColor(textColor);
+        field.setBorderColor(borderColor);
+        return field;
+    }
+
+    public static CustomFormattedDateTimeField createCustomFormattedDateTimeField(String placeholder, Color textColor, Color borderColor) {
+        CustomFormattedDateTimeField field = new CustomFormattedDateTimeField();
         field.setPlaceholder(placeholder);
         field.setPlaceholderColor(UIStyle.PLACEHOLDER_COLOR);
         field.setTextColor(textColor);
@@ -256,5 +266,61 @@ public class ComponentFactory {
         });
 
         return comboBox;
+    }
+
+    public static <T> JPanel createComboBoxWithIcon(
+            JComboBox<T> comboBox,
+            String iconFileName,
+            int iconSize,
+            String iconPosition
+    ) {
+
+        JLabel iconLabel = new JLabel();
+        ImageIcon rawIcon = new ImageIcon(
+                Objects.requireNonNull(CustomTextField.class.getResource("/icons/" + iconFileName))
+        );
+        Image scaledImage = rawIcon.getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        iconLabel.setIcon(new ImageIcon(scaledImage));
+        iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        iconLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setOpaque(false);
+        panel.add(comboBox, BorderLayout.CENTER);
+        panel.add(iconLabel, iconPosition);
+
+        return panel;
+    }
+
+    public static CustomTextArea createCustomTextArea(String placeholder, Color textColor, Color borderColor, Color bgColor, int rows, int columns) {
+        CustomTextArea area = new CustomTextArea(rows, columns, bgColor);
+        area.setPlaceholder(placeholder);
+        area.setPlaceholderColor(UIStyle.PLACEHOLDER_COLOR);
+        area.setTextColor(textColor);
+        area.setBorderColor(borderColor);
+        area.setBackground(Color.WHITE);
+        return area;
+    }
+
+    public static void applyCustomScrollBarToComboBox(JComboBox<?> comboBox) {
+        comboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent e) {
+                Object comp = comboBox.getUI().getAccessibleChild(comboBox, 0);
+                if (comp instanceof BasicComboPopup) {
+                    BasicComboPopup popup = (BasicComboPopup) comp;
+                    JScrollPane scrollPane = (JScrollPane) popup.getComponent(0);
+                    JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+                    verticalBar.setUI(new ModernScrollBarUI(UIStyle.BG_SIDE_MENU_USER_COLOR.brighter(), Color.LIGHT_GRAY));
+                    verticalBar.setPreferredSize(new Dimension(6, Integer.MAX_VALUE));
+                }
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent e) {}
+        });
     }
 }

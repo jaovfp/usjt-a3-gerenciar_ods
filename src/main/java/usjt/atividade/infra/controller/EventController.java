@@ -7,7 +7,11 @@ import usjt.atividade.app.Exceptions.ErrorException;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.common.Response;
 import usjt.atividade.common.StatusCode;
+import usjt.atividade.domain.entities.ODS;
+import usjt.atividade.domain.repository.OdsRepository;
+import usjt.atividade.infra.Repository.OdsRepositoryImpl;
 
+import java.util.List;
 import java.util.UUID;
 
 import static usjt.atividade.common.MessageConstants.INTERNAL_ERROR;
@@ -24,6 +28,18 @@ public class EventController {
         try{
             PaginatedResponse<EventsRequest> eventsRequests = eventServiceImpl.getPaginatedEventRequests(page, pageSize, filter);
             return Response.ok(eventsRequests);
+        }catch (ErrorException e){
+            return Response.fail(e.getStatusCode(), e.getMessage());
+        }catch (Exception e){
+            System.out.println(e);
+            return Response.fail(StatusCode.INTERNAL_ERROR, INTERNAL_ERROR);
+        }
+    }
+
+    public Response<List<ODS>> getOdsTopics (){
+        try{
+            List<ODS> odsTopics = eventServiceImpl.getOdsTopics();
+            return Response.ok(odsTopics);
         }catch (ErrorException e){
             return Response.fail(e.getStatusCode(), e.getMessage());
         }catch (Exception e){

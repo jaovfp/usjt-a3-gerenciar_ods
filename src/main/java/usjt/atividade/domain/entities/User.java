@@ -21,6 +21,7 @@ public class User {
     private String profilePhotoUrl;
     private LocalDateTime createDate;
     private LocalDateTime changeDate;
+    private boolean isProfileComplete;
 
     public User(){}
 

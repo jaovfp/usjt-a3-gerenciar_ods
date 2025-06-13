@@ -4,15 +4,15 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import java.text.ParseException;
 
-public class CustomFormattedCepField extends AbstractCustomFormattedTextField {
+public class CustomFormattedDateTimeField extends AbstractCustomFormattedTextField{
 
-    public CustomFormattedCepField() {
+    public CustomFormattedDateTimeField() {
         super.setFormatterFactory(new DefaultFormatterFactory(createFormatter()));
     }
 
     private MaskFormatter createFormatter() {
         try {
-            MaskFormatter formatter = new MaskFormatter("#####-###");
+            MaskFormatter formatter = new MaskFormatter("##/##/#### ##:##");
             formatter.setPlaceholderCharacter('_');
             formatter.setAllowsInvalid(false);
             return formatter;
@@ -24,7 +24,7 @@ public class CustomFormattedCepField extends AbstractCustomFormattedTextField {
 
     @Override
     protected boolean shouldShowPlaceholder() {
-        return getText().trim().equals("_____-___");
+        return getText().trim().equals("__/__/____ __:__");
     }
 
 }

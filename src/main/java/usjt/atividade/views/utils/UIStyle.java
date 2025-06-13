@@ -26,7 +26,7 @@ public class UIStyle {
     public static final Font SIDE_MENU_TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 12);
     public static final Font SIDE_MENU_BTN_TEXT_FONT = new Font("Segoe UI", Font.BOLD, 12);
     public static final Color TRANSPARENT_COLOR = new Color(0,0,0, 0);
-    public static final Dimension USER_ADMIN_CONTENT_DIMENSION = new Dimension(1350, 1000);
+    public static final Dimension USER_ADMIN_CONTENT_DIMENSION = new Dimension(1100, 1000);
     public static final Dimension SIDE_MENU_DIMENSION = new Dimension(250, 800);
     public static final Dimension USER_ADMIN_DIMENSION = new Dimension(1300, 800);
     public static final Dimension CONTENT_USER_ADMIN_DIMENSION = new Dimension(1100, 800);

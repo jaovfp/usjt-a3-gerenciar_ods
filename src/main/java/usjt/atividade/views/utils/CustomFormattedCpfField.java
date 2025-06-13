@@ -12,13 +12,12 @@ public class CustomFormattedCpfField extends AbstractCustomFormattedTextField{
 
     private MaskFormatter createFormatter() {
         try {
-            // Formato: 000.000.000-00
             MaskFormatter formatter = new MaskFormatter("###.###.###-##");
             formatter.setPlaceholderCharacter('_');
             formatter.setAllowsInvalid(false);
             return formatter;
         } catch (ParseException e) {
-            e.printStackTrace();
+            System.out.println(e);
             return null;
         }
     }

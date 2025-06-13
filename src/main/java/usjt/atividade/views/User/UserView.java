@@ -2,6 +2,7 @@ package usjt.atividade.views.User;
 
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractView;
+import usjt.atividade.views.User.CreateEvents.CreateEventsPanel;
 import usjt.atividade.views.User.UpdateRegistration.UpdateUserPanel;
 import usjt.atividade.views.utils.SideMenu.SideMenuPanel;
 import usjt.atividade.views.User.ViewEvents.EventsPanel;
@@ -65,7 +66,7 @@ public class UserView extends AbstractView {
         );
 
         updateUser.addActionListener(e -> setContent(new UpdateUserPanel(user)));
-        // btnCreateEvents.addActionListener(e -> setContent(new CadastrarEventosPanel()));
+        btnCreateEvents.addActionListener(e -> setContent(new CreateEventsPanel(user)));
         btnEvents.addActionListener(e -> setContent(new EventsPanel(user)));
 
         menuButtons = List.of(btnEvents, btnCreateEvents, updateUser);
