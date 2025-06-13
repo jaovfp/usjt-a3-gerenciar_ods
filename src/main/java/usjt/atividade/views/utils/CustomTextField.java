@@ -54,7 +54,7 @@ public class CustomTextField extends JTextField {
             public void mouseClicked(MouseEvent e) {
                 if (enableEditOnIconClick) {
                     setEditable(true);
-                    requestFocusInWindow();
+                    SwingUtilities.invokeLater(() -> {requestFocusInWindow();grabFocus();});
                 }
             }
         });
