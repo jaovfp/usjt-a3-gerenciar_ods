@@ -1,7 +1,5 @@
 package usjt.atividade.common.utils;
 
-import java.util.regex.Pattern;
-
 import static java.util.Objects.isNull;
 
 public class ValidatorUtils {

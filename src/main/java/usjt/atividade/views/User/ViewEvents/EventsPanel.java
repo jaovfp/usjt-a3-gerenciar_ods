@@ -1,8 +1,10 @@
-package usjt.atividade.views.User.Events;
+package usjt.atividade.views.User.ViewEvents;
 
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractPanel;
-import usjt.atividade.views.User.Events.MyEvents.MyEventsPanel;
+import usjt.atividade.views.User.ViewEvents.AvailableEvents.AvailableEventsPanel;
+import usjt.atividade.views.User.ViewEvents.MyEvents.MyEventsPanel;
+import usjt.atividade.views.User.ViewEvents.RegisteredEvents.SubscribeEventsPanel;
 import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
@@ -51,7 +53,7 @@ public class EventsPanel extends AbstractPanel {
 
         contentPanel.add(new AvailableEventsPanel(user), "Eventos Disponíveis");
         contentPanel.add(new MyEventsPanel(user), "Meus Eventos");
-        contentPanel.add(new RegisteredEventsPanel(user), "Minhas Inscrições");
+        contentPanel.add(new SubscribeEventsPanel(user), "Minhas Inscrições");
 
         updateMenuSelection("Meus Eventos");
         cardLayout.show(contentPanel, "Meus Eventos");

@@ -19,6 +19,8 @@ public class MessageConstants {
     public static final String PIN_CODE_ERROR = "PIN inválido ou expirado";
     public static final String PIN_CODE_ERROR_LENGHT = "O Pin deve conter apenas 6 dígitos.";
     public static final String EVENTS_REQUESTS_NOT_FOUND = "Não foi encontrada nenhuma solicitação de eventos";
+    public static final String EVENTS_SUBSCRIBES_NOT_FOUND = "Não foi encontrada nenhuma inscrição de usuários.";
+    public static final String ODS_TOPICS_NOT_FOUND = "Ocorreu um erro interno e não há tópicos da ODS disponíveis. Tente novamente mais tarde";
 
     private void MessageConstants() {
     }

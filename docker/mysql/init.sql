@@ -1,3 +1,7 @@
+CREATE DATABASE IF NOT EXISTS app_gerenciarods
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
 USE app_gerenciarods;
 
 CREATE TABLE IF NOT EXISTS tbl_users (

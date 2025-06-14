@@ -21,6 +21,7 @@ public class User {
     private String profilePhotoUrl;
     private LocalDateTime createDate;
     private LocalDateTime changeDate;
+    private boolean isProfileComplete;
 
     public User(){}
 
@@ -140,5 +141,9 @@ public class User {
         } else {
             this.address = new Address(addressLine, city, state, postalCode);
         }
+    }
+
+    public void setFullName(String fullName) {
+
     }
 }

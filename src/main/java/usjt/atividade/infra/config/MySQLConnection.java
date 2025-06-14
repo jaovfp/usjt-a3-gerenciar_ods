@@ -22,6 +22,7 @@ public class MySQLConnection {
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
             }
         }catch (SQLException e) {
+            System.out.println(e);
             throw new RuntimeException("error connecting to database", e);
         }
         return connection;
