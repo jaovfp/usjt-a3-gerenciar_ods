@@ -1,26 +1,26 @@
 package usjt.atividade.views.User.ViewEvents.MyEvents;
 
-import usjt.atividade.domain.entities.EventsRequest;
+import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
-import javax.swing.text.View;
 import java.awt.*;
+import java.util.List;
 
-import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import static usjt.atividade.common.utils.DateTimeUtils.dateConverter;
 import static usjt.atividade.views.utils.ComponentFactory.*;
+import static usjt.atividade.views.utils.RowLayoutUtils.applyRowLayout;
 import static usjt.atividade.views.utils.UIStyle.defineEventRequestStatusColorByStatus;
 
 public class MyEventsRowPanel extends AbstractPanel {
 
-    private final EventsRequest event;
+    private final EventRequest event;
 
     private JLabel lblStatus, lblData, lblName, lblOds;
     private JLabel btnVerDetalhes;
 
-    public MyEventsRowPanel(EventsRequest event, Color bgColor) {
+    public MyEventsRowPanel(EventRequest event, Color bgColor) {
         super(bgColor, new Dimension(970, 50));
         this.event = event;
         this.setOpaque(true);
@@ -43,58 +43,11 @@ public class MyEventsRowPanel extends AbstractPanel {
 
     @Override
     protected void layoutComponents() {
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(20)
-                                .addComponent(lblName, PREFERRED_SIZE, 200, PREFERRED_SIZE)
-                                .addGap(20)
-                                .addComponent(lblStatus, PREFERRED_SIZE, 100, PREFERRED_SIZE)
-                                .addGap(20)
-                                .addComponent(lblOds, PREFERRED_SIZE, 270, PREFERRED_SIZE)
-                                .addGap(20)
-                                .addComponent(lblData, PREFERRED_SIZE, 100, PREFERRED_SIZE)
-                                .addGap(50)
-                                .addComponent(btnVerDetalhes, PREFERRED_SIZE, 120, PREFERRED_SIZE)
-                                .addGap(20)
-        ));
-        layout.setVerticalGroup(
-                layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(lblName, GroupLayout.Alignment.CENTER)
-                                .addComponent(lblStatus, GroupLayout.Alignment.CENTER)
-                                .addComponent(lblOds, GroupLayout.Alignment.CENTER)
-                                .addComponent(lblData, GroupLayout.Alignment.CENTER)
-                                .addComponent(btnVerDetalhes, GroupLayout.Alignment.CENTER)
-                        )
-        );
-    }
+        List<Component> components = List.of(lblName, lblStatus, lblOds, lblData, btnVerDetalhes);
+        List<Integer> widths = List.of(200, 100, 270, 100, 120);
+        List<Integer> gaps = List.of(20, 20, 20, 50);
 
-    @Override
-    public Dimension getPreferredSize() {
-        int width = 970;
-
-        int lblNameHeight = getHtmlTextHeight(lblName, 200);
-        int lblOdsHeight = getHtmlTextHeight(lblOds, 20);
-
-        int maxHeight = Math.max(lblNameHeight, lblOdsHeight);
-        int height = Math.max(50, maxHeight + 20);
-
-        return new Dimension(width, height);
-    }
-
-    private int getHtmlTextHeight(JLabel label, int width) {
-        if (label == null || label.getText() == null) {
-            return 0;
-        }
-        View view = (View) label.getClientProperty(javax.swing.plaf.basic.BasicHTML.propertyKey);
-        if (view != null) {
-            view.setSize(width, 0);
-            return (int) view.getPreferredSpan(View.Y_AXIS);
-        }
-        return label.getPreferredSize().height;
+        applyRowLayout(this, components, widths, gaps);
     }
 
     @Override

@@ -3,7 +3,8 @@ package usjt.atividade.views.User.CreateEvents;
 import usjt.atividade.common.Response;
 import usjt.atividade.domain.entities.ODS;
 import usjt.atividade.domain.entities.User;
-import usjt.atividade.infra.controller.EventController;
+import usjt.atividade.infra.controller.EventRequestController;
+import usjt.atividade.infra.controller.OdsController;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.utils.*;
 
@@ -44,13 +45,16 @@ public class CreateEventsPanel extends AbstractPanel {
     private JPanel addressLinePanel;
     private RoundedButton btnCreate;
     private List<ODS> odsList;
-    private final EventController eventController;
+    private final EventRequestController eventRequestController;
+    private final OdsController odsController;
     private JScrollPane eventDescriptionScrollPane;
 
     public CreateEventsPanel(User user){
         super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.USER_ADMIN_CONTENT_DIMENSION);
         this.user = user;
-        this.eventController = new EventController();
+        this.odsController = new OdsController();
+        this.eventRequestController = new EventRequestController();
+
         setOdsTopics();
         initComponents();
         layoutComponents();
@@ -261,7 +265,7 @@ public class CreateEventsPanel extends AbstractPanel {
     }
 
     private void setOdsTopics(){
-        Response<List<ODS>> response = eventController.getOdsTopics();
+        Response<List<ODS>> response = odsController.getOdsTopics();
         if (response.isSuccess()){
             this.odsList = response.getData();
         }else {

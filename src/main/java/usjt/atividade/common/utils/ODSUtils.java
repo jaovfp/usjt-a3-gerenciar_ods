@@ -4,6 +4,7 @@ import usjt.atividade.common.MessageConstants;
 import usjt.atividade.domain.entities.ODS;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -17,5 +18,17 @@ public class ODSUtils {
         return odsList.stream()
                 .map(ODS::getOdsName)
                 .collect(Collectors.toList());
+    }
+
+    public static UUID getOdsIdByName(List<ODS> odsList, String name) {
+        if (odsList == null || name == null) {
+            return null;
+        }
+
+        return odsList.stream()
+                .filter(ods -> name.equalsIgnoreCase(ods.getOdsName()))
+                .map(ODS::getOdsId)
+                .findFirst()
+                .orElse(null);
     }
 }

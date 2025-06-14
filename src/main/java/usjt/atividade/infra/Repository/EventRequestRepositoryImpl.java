@@ -1,8 +1,9 @@
 package usjt.atividade.infra.Repository;
 
 import usjt.atividade.app.Events.DTO.EventRequestFilter;
-import usjt.atividade.domain.entities.EventsRequest;
+import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.domain.entities.ODS;
+import usjt.atividade.domain.repository.EventRequestRepository;
 import usjt.atividade.domain.valueObjects.Address;
 import usjt.atividade.domain.valueObjects.EventRequestStatus;
 import usjt.atividade.infra.config.MySQLConnection;
@@ -13,7 +14,7 @@ import java.util.*;
 import static java.util.Objects.isNull;
 import static usjt.atividade.common.utils.ValidatorUtils.isStringNullOrEmpty;
 
-public class EventRequestRepository {
+public class EventRequestRepositoryImpl implements EventRequestRepository {
 
     private static final String BASE_SELECT =
             "SELECT " +
@@ -25,7 +26,8 @@ public class EventRequestRepository {
                     "JOIN tbl_ods_topics o ON er.ods_id = o.ods_id " +
                     "WHERE 1=1 ";
 
-    public List<EventsRequest> findAllEventRequestsByFilter(int offset, int pageSize, EventRequestFilter filter) {
+    @Override
+    public List<EventRequest> findAllEventRequestsByFilter(int offset, int pageSize, EventRequestFilter filter) {
         StringBuilder sql = new StringBuilder(BASE_SELECT);
         List<Object> params = buildFilter(filter, sql);
 
@@ -37,7 +39,7 @@ public class EventRequestRepository {
              PreparedStatement stmt = getStatementWithParams(conn, sql.toString(), params);
              ResultSet rs = stmt.executeQuery()) {
 
-            List<EventsRequest> result = new ArrayList<>();
+            List<EventRequest> result = new ArrayList<>();
             while (rs.next()) {
                 result.add(mapResultSetToEventRequest(rs, filter.getUserId()));
             }
@@ -48,6 +50,7 @@ public class EventRequestRepository {
         }
     }
 
+    @Override
     public int countEventRequestByFilter(EventRequestFilter filter) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM tbl_event_requests er WHERE 1=1");
         List<Object> params = buildFilter(filter, sql);
@@ -92,8 +95,8 @@ public class EventRequestRepository {
         return stmt;
     }
 
-    private EventsRequest mapResultSetToEventRequest(ResultSet rs, String userId) throws SQLException {
-        EventsRequest request = new EventsRequest();
+    private EventRequest mapResultSetToEventRequest(ResultSet rs, String userId) throws SQLException {
+        EventRequest request = new EventRequest();
         request.setRequestId(UUID.fromString(rs.getString("request_id")));
         request.setEventName(rs.getString("event_name"));
         request.setEventDescription(rs.getString("event_description"));

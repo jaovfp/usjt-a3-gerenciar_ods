@@ -2,8 +2,6 @@ package usjt.atividade.views.utils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicComboPopup;
 import java.awt.*;
@@ -20,7 +18,48 @@ public class ComponentFactory {
         label.setFont(font);
         label.setForeground(color);
         label.setHorizontalAlignment(alignment);
+        label.setVerticalAlignment(SwingConstants.CENTER);
         return label;
+    }
+
+    public static JPanel createLabelWithIcon(
+            String text, Color textColor, Font font, int alignment,
+            String iconFileName,
+            int iconSize,
+            String iconPosition
+    ) {
+        JLabel label = createLabel(text, font, textColor, alignment);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        FontMetrics fm = label.getFontMetrics(label.getFont());
+        int textWidth = fm.stringWidth(text);
+
+        int paddingHorizontal = 10;
+        int labelHeight = 40;
+
+        label.setPreferredSize(new Dimension(textWidth + paddingHorizontal, labelHeight));
+
+        JLabel iconLabel = new JLabel();
+        ImageIcon rawIcon = new ImageIcon(
+                Objects.requireNonNull(CustomTextField.class.getResource("/icons/" + iconFileName))
+        );
+        Image scaledImage = rawIcon.getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        iconLabel.setIcon(new ImageIcon(scaledImage));
+        iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setOpaque(false);
+
+        if ("WEST".equalsIgnoreCase(iconPosition)) {
+            panel.add(iconLabel, BorderLayout.WEST);
+            panel.add(label, BorderLayout.CENTER);
+        } else {
+            panel.add(label, BorderLayout.CENTER);
+            panel.add(iconLabel, BorderLayout.EAST);
+        }
+        int totalWidth = label.getPreferredSize().width + iconLabel.getPreferredSize().width;
+        panel.setPreferredSize(new Dimension(totalWidth, labelHeight));
+
+        return panel;
     }
 
     public static RoundedButton createRoundedButton(String text, Font font, Color bgColor, Color textColor, int arcWidth, int arcHeight) {
@@ -130,9 +169,9 @@ public class ComponentFactory {
         label.setForeground(textColor);
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
         label.setFont(font);
+        label.setVerticalAlignment(SwingConstants.CENTER);
         return label;
     }
-
 
     public static JLabel createImageLabel(String imageName, String typeImage, int horizontalAlignment, int width, int height) {
         JLabel imageLabel = new JLabel();
@@ -322,5 +361,26 @@ public class ComponentFactory {
             @Override
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent e) {}
         });
+    }
+
+    public static JScrollPane createErrorListPanel(String errorMessage, Color backgroundColor, Color textColor) {
+        JPanel errorPanel = new JPanel();
+        errorPanel.setPreferredSize(new Dimension(970, 400));
+        errorPanel.setBackground(backgroundColor);
+        errorPanel.setLayout(new GridBagLayout());
+
+        JLabel errorLabel = new JLabel(errorMessage);
+        errorLabel.setForeground(textColor);
+        errorLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
+        errorPanel.add(errorLabel, new GridBagConstraints());
+
+        JScrollPane scrollPane = new JScrollPane(errorPanel);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(970, 400));
+
+        return scrollPane;
     }
 }

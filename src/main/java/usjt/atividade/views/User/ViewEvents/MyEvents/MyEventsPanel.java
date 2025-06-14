@@ -1,15 +1,16 @@
 package usjt.atividade.views.User.ViewEvents.MyEvents;
 
 import usjt.atividade.app.Events.DTO.EventRequestFilter;
-import usjt.atividade.domain.entities.EventsRequest;
+import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.domain.valueObjects.EventRequestStatus;
-import usjt.atividade.infra.controller.EventController;
+import usjt.atividade.infra.controller.EventRequestController;
 import usjt.atividade.common.Response;
 import usjt.atividade.common.StatusCode;
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.utils.CustomTextField;
+import usjt.atividade.views.utils.HeaderPanel;
 import usjt.atividade.views.utils.ModernScrollBarUI;
 import usjt.atividade.views.utils.PaginatedPanel.PaginationPanel;
 import usjt.atividade.views.utils.UIStyle;
@@ -30,14 +31,14 @@ public class MyEventsPanel extends AbstractPanel {
     private final User user;
     private JPanel searchPanel;
     private JScrollPane listEventsPanel;
-    private EventController eventController;
+    private EventRequestController eventRequestController;
     private PaginationPanel paginationPanel;
     private CustomTextField searchField;
     private JComboBox<EventRequestStatus> statusField;
 
     public MyEventsPanel(User user) {
         super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.CONTENT_TOPIC_USER_ADMIN_DIMENSION);
-        this.eventController = new EventController();
+        this.eventRequestController = new EventRequestController();
         this.user = user;
         initComponents();
         layoutComponents();
@@ -61,7 +62,7 @@ public class MyEventsPanel extends AbstractPanel {
         searchPanel = searchField.withIcon("searchBlue.png", 15, BorderLayout.WEST);
 
         EventRequestFilter filter = createFilter(searchField.getText().trim(), (EventRequestStatus) statusField.getSelectedItem(), user.getUserId().toString(), null);
-        Response<PaginatedResponse<EventsRequest>> response = eventController.getEventRequests(1, 5, filter);
+        Response<PaginatedResponse<EventRequest>> response = eventRequestController.getEventRequests(1, 5, filter);
         listEventsPanel = getListEventsPanel(response, 1);
         paginationPanel = getPaginationPanel(response);
     }
@@ -100,9 +101,9 @@ public class MyEventsPanel extends AbstractPanel {
                                         .addComponent(searchPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
                                 )
                                 .addGap(42)
-                                .addComponent(listEventsPanel, PREFERRED_SIZE, 360, PREFERRED_SIZE)
-                                .addGap(5)
-                                .addComponent(paginationPanel, PREFERRED_SIZE, 50, PREFERRED_SIZE)
+                                .addComponent(listEventsPanel, PREFERRED_SIZE, 350, PREFERRED_SIZE)
+                                .addGap(15)
+                                .addComponent(paginationPanel, PREFERRED_SIZE, 40, PREFERRED_SIZE)
                         )
         );
     }
@@ -128,13 +129,25 @@ public class MyEventsPanel extends AbstractPanel {
         statusField.addActionListener(e -> { applyFilterWithPage(1);});
     }
 
-    private static JScrollPane createMyEventsListPanel(List<EventsRequest> eventos, Color bgListColor, Color rowColor) {
+    private static JScrollPane createMyEventsListPanel(List<EventRequest> eventos, Color bgListColor, Color rowColor) {
         JPanel listPanel = new JPanel();
         listPanel.setBackground(bgListColor);
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
 
-        for (EventsRequest evento : eventos) {
+        List<JPanel> headerLabels = List.of(
+                createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
+                createLabelWithIcon("Status",UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "approveGreen.png", 14, BorderLayout.EAST),
+                createLabelWithIcon("ODS", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"sustainable.png", 14, BorderLayout.EAST),
+                createLabelWithIcon("Data", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"date.png", 14, BorderLayout.EAST)
+        );
+
+        HeaderPanel headerPanel = new HeaderPanel(headerLabels, bgListColor, List.of(200, 100, 270, 100, 120));
+        headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        listPanel.add(headerPanel);
+        listPanel.add(Box.createVerticalStrut(15));
+
+        for (EventRequest evento : eventos) {
             MyEventsRowPanel row = new MyEventsRowPanel(evento, rowColor);
 
             Dimension rowSize = new Dimension(890, 50);
@@ -161,40 +174,18 @@ public class MyEventsPanel extends AbstractPanel {
         return scrollPane;
     }
 
-    private static JScrollPane createErrorPanel(String errorMessage, Color backgroundColor, Color textColor) {
-        JPanel errorPanel = new JPanel();
-        errorPanel.setPreferredSize(new Dimension(970, 400));
-        errorPanel.setBackground(backgroundColor);
-        errorPanel.setLayout(new GridBagLayout());
-
-        JLabel errorLabel = new JLabel(errorMessage);
-        errorLabel.setForeground(textColor);
-        errorLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-
-        errorPanel.add(errorLabel, new GridBagConstraints());
-
-        JScrollPane scrollPane = new JScrollPane(errorPanel);
-        scrollPane.setBorder(null);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(new Dimension(970, 400));
-
-        return scrollPane;
-    }
-
-
-    private JScrollPane getListEventsPanel(Response<PaginatedResponse<EventsRequest>> response, int page){
+    private JScrollPane getListEventsPanel(Response<PaginatedResponse<EventRequest>> response, int page){
         if (response.isSuccess()){
-           List<EventsRequest> listEvents = response.getData().getData();
+           List<EventRequest> listEvents = response.getData().getData();
            return createMyEventsListPanel(listEvents, UIStyle.BG_USER_ADMIN_COLOR, new Color(240, 240, 240) );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
-            return createErrorPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
+            return createErrorListPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }else{
-            return createErrorPanel("Erro ao consultar as suas solicitações de eventos", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
+            return createErrorListPanel("Erro ao consultar as suas solicitações de eventos", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }
     }
 
-    private PaginationPanel getPaginationPanel(Response<PaginatedResponse<EventsRequest>> response) {
+    private PaginationPanel getPaginationPanel(Response<PaginatedResponse<EventRequest>> response) {
         int totalItems = 0;
         int itemsPerPage = 5;  // default
         if (response.isSuccess() && !isNull(response.getData().getData())) {
@@ -230,7 +221,7 @@ public class MyEventsPanel extends AbstractPanel {
         EventRequestFilter filter = createFilter(searchText, selectedStatus, user.getUserId().toString(), null);
         int size = paginationPanel.getItemsPerPage();
 
-        Response<PaginatedResponse<EventsRequest>> response = eventController.getEventRequests(page, size, filter);
+        Response<PaginatedResponse<EventRequest>> response = eventRequestController.getEventRequests(page, size, filter);
         listEventsPanel.setViewportView(getListEventsPanel(response, page).getViewport().getView());
 
         if (response.isSuccess()) {

@@ -142,4 +142,8 @@ public class User {
             this.address = new Address(addressLine, city, state, postalCode);
         }
     }
+
+    public void setFullName(String fullName) {
+
+    }
 }

@@ -1,44 +1,34 @@
 package usjt.atividade.app.Events;
 
-import usjt.atividade.app.Events.DTO.EventRequestFilter;
-import usjt.atividade.domain.entities.EventsRequest;
+import usjt.atividade.app.Events.DTO.EventFilter;
 import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.PaginatedResponse;
-import usjt.atividade.domain.entities.ODS;
-import usjt.atividade.infra.Repository.EventRequestRepository;
-import usjt.atividade.infra.Repository.OdsRepositoryImpl;
+import usjt.atividade.domain.entities.Event;
+import usjt.atividade.domain.service.EventService;
+import usjt.atividade.infra.Repository.EventRepositoryImpl;
 
 import java.util.List;
 
-public class EventServiceImpl {
+public class EventServiceImpl implements EventService {
 
-    private final EventRequestRepository repository;
-    private final OdsRepositoryImpl odsRepository;
+    private final EventRepositoryImpl repository;
 
     public EventServiceImpl() {
-        this.repository = new EventRequestRepository();
-        this.odsRepository = new OdsRepositoryImpl();
+        this.repository = new EventRepositoryImpl();
     }
 
-    public PaginatedResponse<EventsRequest> getPaginatedEventRequests(int page, int size, EventRequestFilter filter) {
-        int totalItems = repository.countEventRequestByFilter(filter);
+    public PaginatedResponse<Event> getPaginatedEvents(int page, int size, EventFilter filter) {
+        int totalItems = repository.countEventsByFilter(filter);
         if (totalItems == 0){
-            throw new NotFoundException(MessageConstants.EVENTS_REQUESTS_NOT_FOUND);
+            throw new NotFoundException(MessageConstants.EVENTS_SUBSCRIBES_NOT_FOUND);
         }
         int totalPages = (int) Math.ceil((double) totalItems / size);
         int offset = (page - 1) * size;
 
-        List<EventsRequest> items = repository.findAllEventRequestsByFilter(offset, size, filter);
+        List<Event> items = repository.findAllEventsByFilter(offset, size, filter);
 
         return new PaginatedResponse<>(items, page, totalPages, totalItems);
     }
 
-    public List<ODS> getOdsTopics(){
-        List<ODS> odsList = odsRepository.getAllOds();
-        if (odsList.isEmpty()) {
-            throw new NotFoundException(MessageConstants.ODS_TOPICS_NOT_FOUND);
-        }
-        return odsList;
-    }
 }
