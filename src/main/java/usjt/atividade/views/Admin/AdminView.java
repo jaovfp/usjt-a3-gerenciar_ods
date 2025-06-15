@@ -9,6 +9,7 @@ import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static usjt.atividade.views.utils.ComponentFactory.createRoundedButtonWithIcon;
@@ -56,7 +57,7 @@ public class AdminView extends AbstractView {
     }
 
     @Override
-    protected void initPanels(){
+    protected void initPanels() {
         menuPanel = new SideMenuPanel(user.getFullname(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
         contentPanel = new ApprovePanel(user);
     }

@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 import static java.util.Objects.isNull;
@@ -32,6 +34,17 @@ public class DateTimeUtils {
         Date convertedDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
         SimpleDateFormat outputFormat = new SimpleDateFormat(dateFormat);
         return outputFormat.format(convertedDate);
+    }
+
+    public static LocalDate parseToLocalDate(String dateStr, String pattern) {
+        if (dateStr == null || dateStr.isBlank()) return null;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            return LocalDate.parse(dateStr, formatter);
+        } catch (DateTimeParseException e) {
+            System.err.println("Erro ao converter data: " + dateStr);
+            throw e;
+        }
     }
 
     public static String getFormattedDate() {

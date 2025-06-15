@@ -127,7 +127,7 @@ public class EventRepositoryImpl implements EventRepository {
 
         User creator = new User();
         creator.setUserId(UUID.fromString(rs.getString("creator_id")));
-        creator.setFullName(rs.getString("creator_name"));
+        creator.setFullname(rs.getString("creator_name"));
         creator.setEmail(new Email(rs.getString("creator_email")));
         event.setCreatedBy(creator);
 

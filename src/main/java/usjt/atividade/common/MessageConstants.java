@@ -2,6 +2,7 @@ package usjt.atividade.common;
 
 public class MessageConstants {
     public static final String USER_CREATED_SUCCESS = "Usuário criado com sucesso.";
+    public static final String USER_UPDATED_SUCCESS = "Usuário atualizado com sucesso.";
     public static final String GENERIC_CREATE_USER_ERROR = "Erro ao criar usuário: ";
     public static final String PASSWORDS_DO_NOT_MATCH = "As senhas não coincidem.";
     public static final String ERROR_EMPTY_FIELDS = "Preencha todos os campos!";
@@ -19,8 +20,10 @@ public class MessageConstants {
     public static final String PIN_CODE_ERROR = "PIN inválido ou expirado";
     public static final String PIN_CODE_ERROR_LENGHT = "O Pin deve conter apenas 6 dígitos.";
     public static final String EVENTS_REQUESTS_NOT_FOUND = "Não foi encontrada nenhuma solicitação de eventos";
+    public static final String USER_NOT_FOUND = "O usuário não foi encontrado";
     public static final String EVENTS_SUBSCRIBES_NOT_FOUND = "Não foi encontrada nenhuma inscrição de usuários.";
     public static final String ODS_TOPICS_NOT_FOUND = "Ocorreu um erro interno e não há tópicos da ODS disponíveis. Tente novamente mais tarde";
+    public static final String CEP_NOT_FOUND = "O cep informado não existe.";
 
     private void MessageConstants() {
     }

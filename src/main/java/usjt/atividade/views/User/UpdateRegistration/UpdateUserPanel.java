@@ -1,18 +1,45 @@
 package usjt.atividade.views.User.UpdateRegistration;
 
+import usjt.atividade.app.Exceptions.NotFoundException;
+import usjt.atividade.app.User.dto.requests.UpdateUserRequest;
+import usjt.atividade.common.Response;
 import usjt.atividade.domain.entities.User;
+import usjt.atividade.domain.valueObjects.Address;
+import usjt.atividade.domain.valueObjects.CPF;
+import usjt.atividade.domain.valueObjects.Email;
+import usjt.atividade.domain.valueObjects.PhoneNumber;
+import usjt.atividade.infra.Cep.Dto.AddressDto;
+import usjt.atividade.infra.Cep.ViaCepService;
+import usjt.atividade.infra.Photo.FileSystemPhotoStorageService;
+import usjt.atividade.infra.controller.UserController;
 import usjt.atividade.views.AbstractPanel;
+import usjt.atividade.views.User.UserView;
 import usjt.atividade.views.utils.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeParseException;
+import java.util.Objects;
+import java.util.Optional;
 
+import static usjt.atividade.common.utils.DateTimeUtils.dateConverter;
+import static usjt.atividade.common.utils.DateTimeUtils.parseToLocalDate;
+import static usjt.atividade.infra.config.FileSystemPhotoStorageConfig.getUserImagesFolderPath;
 import static usjt.atividade.views.utils.ComponentFactory.*;
+import static usjt.atividade.views.utils.ImageUtils.*;
 
 public class UpdateUserPanel extends AbstractPanel {
 
     private final User user;
+    private final UserView userView;
     private JLabel title;
     private JLabel fullNameLabel;
     private JLabel emailLabel;
@@ -44,13 +71,23 @@ public class UpdateUserPanel extends AbstractPanel {
     private RoundedButton btnUpdate;
     private JLabel profilePhoto;
     private JLabel labelPhoto;
+    private File selectedImageFile;
+    private final UserController userController;
+    private final FileSystemPhotoStorageService photoStorageService;
+    private final ViaCepService cepService;
 
-    public UpdateUserPanel(User user) {
+    public UpdateUserPanel(UserView user) {
         super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.USER_ADMIN_CONTENT_DIMENSION);
-        this.user = user;
+        this.user = user.getUser();
+        this.userView = user;
+        this.photoStorageService = new FileSystemPhotoStorageService(getUserImagesFolderPath());
+        this.userController = new UserController();
+        this.cepService = new ViaCepService();
+
         initComponents();
         layoutComponents();
         addListeners();
+        fillFieldsFromUser();
     }
 
     @Override
@@ -95,20 +132,20 @@ public class UpdateUserPanel extends AbstractPanel {
         addressLineLabel = createLabel("Endereço:", UIStyle.CONTENT_USER_ADMIN_TEXT_FONT, Color.GRAY, SwingConstants.LEFT);
         addressLineField = createCustomTextField("Endereço...", Color.BLACK, UIStyle.BG_SIDE_MENU_USER_COLOR);
         addressLineField.setEditable(false);
-        addressLinePanel = addressLineField.withIcon("edit.png", 14, BorderLayout.EAST);
+        addressLinePanel = addressLineField.withIcon("address.png", 14, BorderLayout.EAST);
 
         cityLabel = createLabel("Cidade:", UIStyle.CONTENT_USER_ADMIN_TEXT_FONT, Color.GRAY, SwingConstants.LEFT);
         cityField = createCustomTextField("Cidade...", Color.BLACK, UIStyle.BG_SIDE_MENU_USER_COLOR);
         cityField.setEditable(false);
-        cityPanel = cityField.withIcon("edit.png", 14, BorderLayout.EAST);
+        cityPanel = cityField.withIcon("city.png", 14, BorderLayout.EAST);
 
         stateLabel = createLabel("Estado:", UIStyle.CONTENT_USER_ADMIN_TEXT_FONT, Color.GRAY, SwingConstants.LEFT);
         stateField = createCustomTextField("Estado...", Color.BLACK, UIStyle.BG_SIDE_MENU_USER_COLOR);
         stateField.setEditable(false);
-        statePanel = stateField.withIcon("edit.png", 14, BorderLayout.EAST);
+        statePanel = stateField.withIcon("state.png", 14, BorderLayout.EAST);
 
         btnUpdate = createRoundedButton("Atualizar Cadastro", UIStyle.USER_CONTENT_BTN_FONT, UIStyle.BG_SIDE_MENU_USER_COLOR, Color.WHITE, 120, 120);
-        profilePhoto = createRoundedImageLabel("default_profile.png", "userImages", SwingConstants.CENTER, 140, 140);
+        profilePhoto = createRoundedImageLabel(getDefaultProfileAbsolutePath(), SwingConstants.CENTER, 140, 140);
         profilePhoto.setCursor(new Cursor(Cursor.HAND_CURSOR));
         labelPhoto = createLabel("Clique na foto para alterar a foto de perfil", UIStyle.CONTENT_USER_ADMIN_TEXT_FONT, Color.GRAY, SwingConstants.CENTER);
     }
@@ -316,7 +353,150 @@ public class UpdateUserPanel extends AbstractPanel {
         );
     }
 
+    private void fillFieldsFromUser() {
+        fullNameField.setText(Optional.ofNullable(user.getFullname()).orElse(""));
+        emailField.setText(Optional.ofNullable(user.getEmail()).map(Email::getValue).orElse(""));
+
+        birthDateField.setText(Optional.ofNullable(user.getBirthDate())
+                .map(date -> dateConverter(date, "dd/MM/yyyy"))
+                .orElse(""));
+
+        cpfField.setText(Optional.ofNullable(user.getCpf()).map(CPF::getValue).orElse(""));
+        phoneField.setText(Optional.ofNullable(user.getPhoneNumber()).map(PhoneNumber::getValue).orElse(""));
+
+        cepField.setText(Optional.ofNullable(user.getAddress())
+                .map(Address::getPostalCode)
+                .orElse(""));
+
+        addressLineField.setText(Optional.ofNullable(user.getAddress())
+                .map(Address::getAddressLine)
+                .orElse(""));
+
+        cityField.setText(Optional.ofNullable(user.getAddress())
+                .map(Address::getCity)
+                .orElse(""));
+
+        stateField.setText(Optional.ofNullable(user.getAddress())
+                .map(Address::getState)
+                .orElse(""));
+
+        profilePhoto.setIcon(loadImage(user.getProfilePhotoUrl(), 140, 140));
+    }
+
     @Override
     public void addListeners(){
+        btnUpdate.addActionListener(e -> btnUpdateClick());
+        profilePhoto.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new FileNameExtensionFilter("Imagens", "jpg", "jpeg", "png"));
+                int result = chooser.showOpenDialog(null);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = chooser.getSelectedFile();
+                    selectedImageFile = selectedFile;
+                    profilePhoto.setIcon(loadImage(selectedFile.getAbsolutePath(), 140, 140));
+                }
+            }
+        });
+
+        searchCep.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String cep = cepField.getText().replaceAll("[^0-9]", "");
+                if (cep.length() == 8) {
+                    searchCep(cep);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Digite um CEP válido com 8 dígitos.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+    }
+
+    private void searchCep(String cep){
+        try {
+            AddressDto dto = cepService.searchAddressByCep(cep);
+            addressLineField.setText(dto.getBairro() + " - " + dto.getLogradouro());
+            cityField.setText(dto.getLocalidade());
+            stateField.setText(dto.getUf());
+        }catch (NotFoundException exception){
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            cepField.setText("");
+            addressLineField.setText("");
+            cityField.setText("");
+            stateField.setText("");
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro interno na consulta do cep.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void btnUpdateClick() {
+        try {
+            String photoUrl = uploadPhotoIfNeeded();
+            UpdateUserRequest request = buildUpdateRequest(photoUrl);
+            Response<User> response = userController.updateUser(request);
+
+            if (response.isSuccess()) {
+                handleSuccess(response.getData(), response.getMessage());
+            } else {
+                showError(response.getMessage());
+            }
+
+        } catch (DateTimeParseException e) {
+            showError("Data de nascimento inválida.");
+            birthDateField.setText("");
+        } catch (Exception e) {
+            showError("Erro inesperado ao atualizar usuário: " + e.getMessage());
+        }
+    }
+
+    private String uploadPhotoIfNeeded() {
+        if (Objects.nonNull(selectedImageFile)) {
+            try {
+                return photoStorageService.save(selectedImageFile);
+            } catch (Exception e) {
+                showError("Erro ao salvar a foto de perfil.");
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    private UpdateUserRequest buildUpdateRequest(String photoUrl) {
+        UpdateUserRequest request = getUpdateRequest();
+        if (Objects.nonNull(photoUrl)) {
+            request.setProfilePhotoUrl(photoUrl);
+        }
+        return request;
+    }
+
+    private void handleSuccess(User updatedUser, String message) {
+        userView.refreshUser(updatedUser);
+        fillFieldsFromUser();
+        JOptionPane.showMessageDialog(null, message, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private UpdateUserRequest getUpdateRequest(){
+        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
+        updateUserRequest.setUserId(user.getUserId().toString());
+        updateUserRequest.setPostalCode(cepField.getText());
+        updateUserRequest.setState(stateField.getText());
+        updateUserRequest.setAddressLine(addressLineField.getText());
+        updateUserRequest.setCity(cityField.getText());
+        updateUserRequest.setEmail(emailField.getText());
+        updateUserRequest.setFullname(fullNameField.getText());
+        updateUserRequest.setPhoneNumber(phoneField.getText());
+        String birthDate = birthDateField.getText().equals("__/__/____") ? null : birthDateField.getText();
+        updateUserRequest.setBirthDate(parseToLocalDate(birthDate, "dd/MM/yyyy"));
+        updateUserRequest.setCpf(cpfField.getText());
+        updateUserRequest.setIsActive(Boolean.TRUE);
+        return updateUserRequest;
     }
 }

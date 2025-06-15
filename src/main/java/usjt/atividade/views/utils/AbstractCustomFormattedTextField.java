@@ -100,7 +100,7 @@ public abstract class AbstractCustomFormattedTextField extends JFormattedTextFie
             public void mouseClicked(MouseEvent e) {
                 if (enableEditOnIconClick) {
                     setEditable(true);
-                    requestFocusInWindow();
+                    SwingUtilities.invokeLater(() -> {requestFocusInWindow();grabFocus();});
                 }
             }
         });

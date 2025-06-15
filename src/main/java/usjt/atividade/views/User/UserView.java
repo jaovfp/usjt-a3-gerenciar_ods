@@ -12,17 +12,18 @@ import usjt.atividade.views.utils.UIStyle;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 import static usjt.atividade.views.utils.ComponentFactory.createRoundedButtonWithIcon;
 
 public class UserView extends AbstractView {
 
-    protected JPanel menuPanel;
+    protected SideMenuPanel menuPanel;
     private JPanel currentContent;
 
     private static final Color BG_SIDE_MENU_COLOR = UIStyle.BG_SIDE_MENU_USER_COLOR;
     private List<JButton> menuButtons;
-    private final User user;
+    private User user;
 
     public UserView(String screenTitle, User user) {
         super(screenTitle, UIStyle.USER_ADMIN_DIMENSION.width, UIStyle.USER_ADMIN_DIMENSION.height);
@@ -65,7 +66,7 @@ public class UserView extends AbstractView {
                 "search.png"
         );
 
-        updateUser.addActionListener(e -> setContent(new UpdateUserPanel(user)));
+        updateUser.addActionListener(e -> setContent(new UpdateUserPanel(this)));
         btnCreateEvents.addActionListener(e -> setContent(new CreateEventsPanel(user)));
         btnEvents.addActionListener(e -> setContent(new EventsPanel(user)));
 
@@ -97,4 +98,26 @@ public class UserView extends AbstractView {
         add(currentContent, BorderLayout.CENTER);
     }
 
+    public void refreshUser(User updatedUser) {
+        this.user.setFullname(updatedUser.getFullname());
+        this.user.setEmail(updatedUser.getEmail());
+        this.user.setBirthDate(updatedUser.getBirthDate());
+        this.user.setCpf(updatedUser.getCpf());
+        this.user.setPhoneNumber(updatedUser.getPhoneNumber());
+        this.user.setAddress(updatedUser.getAddress());
+        this.user.setType(updatedUser.getType());
+        this.user.setActive(updatedUser.isActive());
+        this.user.setProfilePhotoUrl(updatedUser.getProfilePhotoUrl());
+        this.user.setCreateDate(updatedUser.getCreateDate());
+        this.user.setChangeDate(updatedUser.getChangeDate());
+        this.user.setProfileComplete(updatedUser.isProfileComplete());
+        Optional.ofNullable(updatedUser.getProfilePhotoUrl())
+                .ifPresent(menuPanel::setProfileImage);
+        Optional.ofNullable(updatedUser.getFullname())
+                .ifPresent(menuPanel::setFullName);
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

@@ -2,6 +2,7 @@ package usjt.atividade.views;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URISyntaxException;
 
 public abstract class AbstractView extends JFrame {
 
@@ -17,6 +18,6 @@ public abstract class AbstractView extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    protected abstract void initPanels();
+    protected abstract void initPanels() ;
     protected abstract void layoutPanels();
 }

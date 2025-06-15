@@ -132,12 +132,12 @@ public class EventSubscribeRepositoryImpl implements EventSubscribeRepository {
 
         User creator = new User();
         creator.setUserId(UUID.fromString(rs.getString("creator_id")));
-        creator.setFullName(rs.getString("creator_name"));
+        creator.setFullname(rs.getString("creator_name"));
         event.setCreatedBy(creator);
 
         User user = new User();
         user.setUserId(UUID.fromString(rs.getString("user_id")));
-        user.setFullName(rs.getString("full_name"));
+        user.setFullname(rs.getString("full_name"));
 
         EventSubscribe subscribe = new EventSubscribe();
         subscribe.setSubscribeId(rs.getString("registration_id"));

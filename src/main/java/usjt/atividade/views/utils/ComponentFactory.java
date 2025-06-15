@@ -12,11 +12,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.List;
+
+import static usjt.atividade.views.utils.ImageUtils.loadImage;
 
 public class ComponentFactory {
     public static JLabel createLabel(String text, Font font, Color color, int alignment) {
@@ -192,29 +196,30 @@ public class ComponentFactory {
         return imageLabel;
     }
 
-    public static JLabel createRoundedImageLabel(String imageName, String typeImage, int horizontalAlignment, int width, int height){
+    public static JLabel createRoundedImageLabel(String imagePath, int horizontalAlignment, int width, int height) {
         JLabel imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(horizontalAlignment);
         try {
-            URL imageUrl = Objects.requireNonNull(ComponentFactory.class.getResource("/" + typeImage + "/" + imageName));
-
-            BufferedImage originalImage = ImageIO.read(imageUrl);
-            Image scaled = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-
-            BufferedImage circleBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 = circleBuffer.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            g2.setClip(new Ellipse2D.Float(0, 0, width, height));
-            g2.drawImage(scaled, 0, 0, null);
-            g2.dispose();
-
-            imageLabel.setIcon(new ImageIcon(circleBuffer));
+            imageLabel.setIcon(loadImage(imagePath, width, height));
         } catch (Exception e) {
             e.printStackTrace();
             imageLabel.setText("Erro");
         }
         return imageLabel;
+    }
+
+    public static BufferedImage createRoundedImage(BufferedImage originalImage, int width, int height) {
+        Image scaled = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+        BufferedImage circleBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = circleBuffer.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.setClip(new Ellipse2D.Float(0, 0, width, height));
+        g2.drawImage(scaled, 0, 0, null);
+        g2.dispose();
+
+        return circleBuffer;
     }
 
     public static JLabel createBtnLabelTextAndIcon(String text, Font textFont, String iconFileName) {

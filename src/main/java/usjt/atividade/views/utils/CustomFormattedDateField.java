@@ -26,5 +26,4 @@ public class CustomFormattedDateField extends AbstractCustomFormattedTextField {
     protected boolean shouldShowPlaceholder() {
         return getText().trim().equals("__/__/____");
     }
-
 }
