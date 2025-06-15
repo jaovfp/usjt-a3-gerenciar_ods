@@ -24,6 +24,10 @@ public class MessageConstants {
     public static final String EVENTS_SUBSCRIBES_NOT_FOUND = "Não foi encontrada nenhuma inscrição de usuários.";
     public static final String ODS_TOPICS_NOT_FOUND = "Ocorreu um erro interno e não há tópicos da ODS disponíveis. Tente novamente mais tarde";
     public static final String CEP_NOT_FOUND = "O cep informado não existe.";
+    public static final String CREATE_EVENT_REQUEST_SUCCESS = "Evento solicitado com sucesso. Aguarde a aprovação de um administrador";
+    public static final String ODS_NOT_FOUND = "A ODS informada não existe.";
+    public static final String EXISTS_REQUEST_EVENT_FOR_DAY = "Já existe uma solicitação de evento para o dia: ";
+    public static final String ERROR_EVENT_DATE_IN_PAST = "A data do evento não pode ser anterior à data atual.";
 
     private void MessageConstants() {
     }

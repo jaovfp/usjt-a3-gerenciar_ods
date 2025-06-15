@@ -1,8 +1,13 @@
 package usjt.atividade.views.User.CreateEvents;
 
+import usjt.atividade.app.Events.DTO.CreateEventRequestDto;
+import usjt.atividade.app.Exceptions.NotFoundException;
+import usjt.atividade.app.User.dto.requests.UpdateUserRequest;
 import usjt.atividade.common.Response;
 import usjt.atividade.domain.entities.ODS;
 import usjt.atividade.domain.entities.User;
+import usjt.atividade.infra.Cep.Dto.AddressDto;
+import usjt.atividade.infra.Cep.ViaCepService;
 import usjt.atividade.infra.controller.EventRequestController;
 import usjt.atividade.infra.controller.OdsController;
 import usjt.atividade.views.AbstractPanel;
@@ -10,10 +15,16 @@ import usjt.atividade.views.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import static usjt.atividade.common.utils.DateTimeUtils.parseToLocalDate;
 import static usjt.atividade.common.utils.ODSUtils.getArrayOdsTopics;
+import static usjt.atividade.common.utils.ODSUtils.getOdsIdByName;
 import static usjt.atividade.views.utils.ComponentFactory.*;
 
 public class CreateEventsPanel extends AbstractPanel {
@@ -48,12 +59,14 @@ public class CreateEventsPanel extends AbstractPanel {
     private final EventRequestController eventRequestController;
     private final OdsController odsController;
     private JScrollPane eventDescriptionScrollPane;
+    private final ViaCepService cepService;
 
     public CreateEventsPanel(User user){
         super(UIStyle.BG_USER_ADMIN_COLOR, UIStyle.USER_ADMIN_CONTENT_DIMENSION);
         this.user = user;
         this.odsController = new OdsController();
         this.eventRequestController = new EventRequestController();
+        this.cepService = new ViaCepService();
 
         setOdsTopics();
         initComponents();
@@ -112,7 +125,7 @@ public class CreateEventsPanel extends AbstractPanel {
         stateField = createCustomTextField("Estado...", Color.BLACK, UIStyle.BG_SIDE_MENU_USER_COLOR);
         statePanel = stateField.withIcon("state.png", 14, BorderLayout.WEST);
 
-        btnCreate = createRoundedButton("Atualizar Evento", UIStyle.USER_CONTENT_BTN_FONT, UIStyle.BG_SIDE_MENU_USER_COLOR, Color.WHITE, 120, 120);
+        btnCreate = createRoundedButton("Criar Evento", UIStyle.USER_CONTENT_BTN_FONT, UIStyle.BG_SIDE_MENU_USER_COLOR, Color.WHITE, 120, 120);
 
     }
 
@@ -274,6 +287,91 @@ public class CreateEventsPanel extends AbstractPanel {
     }
 
     @Override public void addListeners(){
+        searchCep.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String cep = cepField.getText().replaceAll("[^0-9]", "");
+                if (cep.length() == 8) {
+                    applySearchCep(cep);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Digite um CEP válido com 8 dígitos.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
 
+        btnCreate.addActionListener(e -> btnCreateClick());
     }
+
+    private void btnCreateClick() {
+        try {
+            CreateEventRequestDto request = getCreateEventRequestDto();
+            Response<Void> response = eventRequestController.createEventRequest(request);
+            if (response.isSuccess()) {
+                showSuccess(response.getMessage());
+                clearFields();
+            } else {
+                showError(response.getMessage());
+                clearFields();
+            }
+        } catch (DateTimeParseException e) {
+            showError("Data para o evento inválida.");
+            eventDateField.setText("");
+        }
+    }
+
+    private void showSuccess(String message){
+        JOptionPane.showMessageDialog(null, message, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void clearFields(){
+        cepField.setText("");
+        stateField.setText("");
+        addressLineField.setText("");
+        cityField.setText("");
+        eventDescriptionField.setText("");
+        eventNameField.setText("");
+        odsComboBox.setSelectedIndex(0);
+        eventDateField.setText("");
+    }
+
+    private CreateEventRequestDto getCreateEventRequestDto(){
+        CreateEventRequestDto createEventRequestDto = new CreateEventRequestDto();
+        createEventRequestDto.setUserId(user.getUserId());
+        createEventRequestDto.setPostalCode(cepField.getText());
+        createEventRequestDto.setState(stateField.getText());
+        createEventRequestDto.setAddressLine(addressLineField.getText());
+        createEventRequestDto.setCity(cityField.getText());
+        String eventDate = eventDateField.getText().equals("__/__/____ __:__") ? null : eventDateField.getText();
+        createEventRequestDto.setEventDate(parseToLocalDate(eventDate, "dd/MM/yyyy HH:mm"));
+        createEventRequestDto.setEventDescription(eventDescriptionField.getText());
+        createEventRequestDto.setEventName(eventNameField.getText());
+        String selectedOds = (String) odsComboBox.getSelectedItem();
+        UUID odsId = getOdsIdByName(odsList, selectedOds);
+        createEventRequestDto.setOdsId(odsId);
+        return createEventRequestDto;
+    }
+
+    private void applySearchCep(String cep){
+        try {
+            AddressDto dto = cepService.searchAddressByCep(cep);
+            addressLineField.setText(dto.getBairro() + " - " + dto.getLogradouro());
+            cityField.setText(dto.getLocalidade());
+            stateField.setText(dto.getUf());
+        }catch (NotFoundException exception){
+            JOptionPane.showMessageDialog(null, exception.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            cepField.setText("");
+            addressLineField.setText("");
+            cityField.setText("");
+            stateField.setText("");
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro interno na consulta do cep.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
 }

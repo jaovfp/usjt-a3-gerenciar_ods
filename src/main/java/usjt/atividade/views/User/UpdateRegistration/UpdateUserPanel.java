@@ -16,16 +16,13 @@ import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.User.UserView;
 import usjt.atividade.views.utils.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 import java.util.Optional;
@@ -406,7 +403,7 @@ public class UpdateUserPanel extends AbstractPanel {
             public void mouseClicked(MouseEvent e) {
                 String cep = cepField.getText().replaceAll("[^0-9]", "");
                 if (cep.length() == 8) {
-                    searchCep(cep);
+                    applySearchCep(cep);
                 } else {
                     JOptionPane.showMessageDialog(null, "Digite um CEP válido com 8 dígitos.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 }
@@ -415,7 +412,7 @@ public class UpdateUserPanel extends AbstractPanel {
 
     }
 
-    private void searchCep(String cep){
+    private void applySearchCep(String cep){
         try {
             AddressDto dto = cepService.searchAddressByCep(cep);
             addressLineField.setText(dto.getBairro() + " - " + dto.getLogradouro());

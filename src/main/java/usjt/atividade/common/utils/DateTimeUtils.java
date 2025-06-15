@@ -47,6 +47,17 @@ public class DateTimeUtils {
         }
     }
 
+    public static LocalDateTime parseToLocalDateTime(String dateTimeStr, String pattern) {
+        if (dateTimeStr == null || dateTimeStr.isBlank()) return null;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            return LocalDateTime.parse(dateTimeStr, formatter);
+        } catch (DateTimeParseException e) {
+            System.err.println("Erro ao converter data/hora: " + dateTimeStr);
+            throw e;
+        }
+    }
+
     public static String getFormattedDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("d 'de' MMMM 'de' yyyy");
         return formatter.format(new Date());

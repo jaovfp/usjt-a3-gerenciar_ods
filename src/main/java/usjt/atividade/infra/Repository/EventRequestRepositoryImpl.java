@@ -11,6 +11,8 @@ import usjt.atividade.domain.valueObjects.EventRequestStatus;
 import usjt.atividade.infra.config.MySQLConnection;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 import static java.util.Objects.isNull;
@@ -29,6 +31,57 @@ public class EventRequestRepositoryImpl implements EventRequestRepository {
                     "JOIN tbl_ods_topics o ON er.ods_id = o.ods_id " +
                     "JOIN tbl_users u ON er.user_id = u.user_id " +
                     "WHERE 1=1 ";
+
+    private static final String INSERT_EVENT_REQUEST =
+            "INSERT INTO tbl_event_requests " +
+                    "(request_id, event_name, event_description, status, ods_id, user_id, create_date, event_date, " +
+                    "postal_code, city, address_line, state) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String EXISTS_PENDING_OR_APPROVED_BY_USER_AND_DATE =
+            "SELECT 1 FROM tbl_event_requests WHERE user_id = ? AND event_date = ? AND status IN ('PENDING', 'APPROVED') LIMIT 1";
+
+    @Override
+    public boolean existsPendingOrApprovedByUserIdAndEventDate(UUID userId, LocalDate eventDate) {
+        try (Connection conn = MySQLConnection.getInstance();
+             PreparedStatement stmt = conn.prepareStatement(EXISTS_PENDING_OR_APPROVED_BY_USER_AND_DATE)) {
+
+            stmt.setString(1, userId.toString());
+            stmt.setDate(2, Date.valueOf(eventDate));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao verificar evento pendente ou aprovado para o usuário na data", e);
+        }
+    }
+
+    @Override
+    public void save(EventRequest request) {
+        try (Connection conn = MySQLConnection.getInstance();
+             PreparedStatement stmt = conn.prepareStatement(INSERT_EVENT_REQUEST)) {
+
+            stmt.setString(1, request.getRequestId().toString());
+            stmt.setString(2, request.getEventName());
+            stmt.setString(3, request.getEventDescription());
+            stmt.setString(4, request.getStatus().name());
+            stmt.setString(5, request.getOds().getOdsId().toString());
+            stmt.setString(6, request.getRequestedBy().getUserId().toString());
+            stmt.setTimestamp(7, Timestamp.valueOf(request.getCreateDate()));
+            stmt.setDate(8, Date.valueOf(request.getEventDate()));
+            stmt.setString(9, request.getAddress().getPostalCode());
+            stmt.setString(10, request.getAddress().getCity());
+            stmt.setString(11, request.getAddress().getAddressLine());
+            stmt.setString(12, request.getAddress().getState());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao salvar solicitação de evento: " + e.getMessage());
+            throw new RuntimeException("Erro ao salvar solicitação de evento", e);
+        }
+    }
 
     @Override
     public List<EventRequest> findAllEventRequestsByFilter(int offset, int pageSize, EventRequestFilter filter) {
