@@ -8,12 +8,14 @@ public class EventRequestFilter {
     private String requestId;
     private String eventName;
     private EventRequestStatus status;
+    private String creatorEmail;
 
-    public EventRequestFilter(String eventName, EventRequestStatus status, String userId, String requestId){
+    public EventRequestFilter(String eventName, EventRequestStatus status, String creatorEmail,String userId, String requestId){
         this.eventName = eventName;
         this.status = status;
         this.userId = userId;
         this.requestId = requestId;
+        this.creatorEmail  = creatorEmail;
     }
 
     public String getEventName() {
@@ -30,5 +32,9 @@ public class EventRequestFilter {
 
     public String getRequestId() {
         return requestId;
+    }
+
+    public String getCreatorEmail() {
+        return creatorEmail;
     }
 }

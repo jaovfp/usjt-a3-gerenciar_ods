@@ -1,5 +1,4 @@
-package usjt.atividade.views.User.ViewEvents.RegisteredEvents;
-
+package usjt.atividade.views.User.ViewEvents.SubscribeEvents;
 import usjt.atividade.app.Events.DTO.EventSubscribeFilter;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.common.Response;
@@ -82,116 +81,78 @@ public class SubscribeEventsPanel extends AbstractPanel {
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(55)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(55)
-                                                .addComponent(odsPanel, PREFERRED_SIZE, 170, PREFERRED_SIZE)
-                                                .addGap(460)
+                                        .addGap(55)
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                        .addGap(55)
+                                                                        .addComponent(odsPanel, PREFERRED_SIZE, 170, PREFERRED_SIZE)
+                                                                        .addGap(460)
 //                                                .addGap(145)
 //                                                .addComponent(filterDatePanel, PREFERRED_SIZE, 170, PREFERRED_SIZE)
 //                                                .addGap(145)
-                                                .addComponent(searchPanel, PREFERRED_SIZE, 211, PREFERRED_SIZE)
+                                                                        .addComponent(searchPanel, PREFERRED_SIZE, 211, PREFERRED_SIZE)
+                                                        )
+                                                        .addComponent(listSubscribesPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
+                                                        .addComponent(paginationPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
                                         )
-                                        .addComponent(listSubscribesPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
-                                        .addComponent(paginationPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
-                                )
                         )
         );
 
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(12)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(odsPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
+                                        .addGap(12)
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(odsPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
 //                                        .addComponent(filterDatePanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
-                                        .addComponent(searchPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
-                                )
-                                .addGap(42)
-                                .addComponent(listSubscribesPanel, PREFERRED_SIZE, 360, PREFERRED_SIZE)
-                                .addGap(5)
-                                .addComponent(paginationPanel, PREFERRED_SIZE, 50, PREFERRED_SIZE)
+                                                        .addComponent(searchPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
+                                        )
+                                        .addGap(42)
+                                        .addComponent(listSubscribesPanel, PREFERRED_SIZE, 360, PREFERRED_SIZE)
+                                        .addGap(5)
+                                        .addComponent(paginationPanel, PREFERRED_SIZE, 50, PREFERRED_SIZE)
                         )
         );
     }
 
-    private static JScrollPane createListSubscribesPanel(List<EventSubscribe> subscribes, Color bgListColor, Color rowColor) {
-        JPanel listPanel = new JPanel();
-        listPanel.setBackground(bgListColor);
-        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
-        listPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
-
-        List<JPanel> headerLabels = List.of(
-                createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
-                createLabelWithIcon("ODS",UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "sustainable.png", 14, BorderLayout.EAST),
-                createLabelWithIcon("Organizador", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"", 14, BorderLayout.EAST),
-                createLabelWithIcon("Data do Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"date.png", 14, BorderLayout.EAST)
-        );
-
-        HeaderPanel headerPanel = new HeaderPanel(headerLabels, bgListColor, List.of(200, 200, 100, 100, 160, 160));
-        headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        listPanel.add(headerPanel);
-        listPanel.add(Box.createVerticalStrut(15));
-
-        for (EventSubscribe subscribe : subscribes) {
-            SubscribeEventsRowPanel row = new SubscribeEventsRowPanel(subscribe, rowColor);
-
-            Dimension rowSize = new Dimension(890, 50);
-            row.setMaximumSize(rowSize);
-            row.setPreferredSize(rowSize);
-            row.setMinimumSize(rowSize);
-
-            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-            wrapper.setBackground(bgListColor);
-            wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
-            wrapper.add(row);
-
-            listPanel.add(wrapper);
-            listPanel.add(Box.createVerticalStrut(20));
-        }
-
-        JScrollPane scrollPane = new JScrollPane(listPanel);
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI(UIStyle.BG_SIDE_MENU_USER_COLOR.brighter(), Color.lightGray));
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getHorizontalScrollBar().setUI(new ModernScrollBarUI(UIStyle.BG_SIDE_MENU_USER_COLOR.brighter(), Color.lightGray));
-        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(6, Integer.MAX_VALUE));
-        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(6, Integer.MAX_VALUE));
-
-        return scrollPane;
-    }
-
     private PaginationPanel getPaginationPanel(Response<PaginatedResponse<EventSubscribe>> response) {
         int totalItems = 0;
-        int itemsPerPage = 5;  // default
+        int itemsPerPage = 5;
         if (response.isSuccess() && !isNull(response.getData().getData())) {
             totalItems = response.getData().getTotalItems();
         }
-        PaginationPanel panel = new PaginationPanel(
+        return createPaginationPanel(
                 totalItems,
                 1,
                 itemsPerPage,
-                e -> {
-                    int page = paginationPanel.getCurrentPage();
-                    applyFilterWithPage(page);
-                },
+                this::applyFilterWithPage,
                 UIStyle.USER_ADMIN_PAGINATION_DIMENSION,
                 UIStyle.BG_USER_ADMIN_COLOR,
-                Color.BLACK
+                Color.BLACK,
+                UIStyle.BG_SIDE_MENU_USER_COLOR
         );
-        if (totalItems == 0) {
-            panel = new PaginationPanel(0, 1, 10, e -> {}, UIStyle.USER_ADMIN_PAGINATION_DIMENSION, UIStyle.BG_USER_ADMIN_COLOR, Color.BLACK);
-            panel.setVisible(false);
-        }
-        return panel;
     }
 
     private JScrollPane getListSubscribesPanel(Response<PaginatedResponse<EventSubscribe>> response, int page){
         if (response.isSuccess()){
             List<EventSubscribe> listSubscribes = response.getData().getData();
-            return createListSubscribesPanel(listSubscribes, UIStyle.BG_USER_ADMIN_COLOR, new Color(240, 240, 240) );
+            List<Integer> gaps = List.of(20, 20, 20, 20, 50);
+            List<Integer> width = List.of(200, 200, 100, 100, 160, 160);
+            List<JPanel> headerLabels = List.of(
+                    createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
+                    createLabelWithIcon("ODS",UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "sustainable.png", 14, BorderLayout.EAST),
+                    createLabelWithIcon("Organizador", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"", 14, BorderLayout.EAST),
+                    createLabelWithIcon("Data do Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"date.png", 14, BorderLayout.EAST)
+            );
+            return createListPanel(
+                    listSubscribes,
+                    UIStyle.BG_USER_ADMIN_COLOR,
+                    headerLabels,
+                    width,
+                    gaps,
+                    UIStyle.BG_SIDE_MENU_USER_COLOR,
+                    eventSubscribe -> new SubscribeEventsRowPanel(eventSubscribe, UIStyle.BG_USER_ADMIN_COLOR)
+            );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorListPanel("Você não se inscreveu em nenhum evento.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }else{

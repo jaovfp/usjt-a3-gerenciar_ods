@@ -10,7 +10,7 @@ import java.util.UUID;
 public class EventRequest {
 
     private UUID requestId;
-    private UUID userId;
+    private User requestedBy;
     private ODS ods;
     private String eventName;
     private String eventDescription;
@@ -68,8 +68,8 @@ public class EventRequest {
         this.createDate = createDate;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setRequestedBy(User user) {
+        this.requestedBy = user;
     }
 
     public void setEventDate(LocalDate eventDate) {
@@ -80,8 +80,8 @@ public class EventRequest {
         this.address = address;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public User getRequestedBy() {
+        return requestedBy;
     }
 
     public LocalDate getEventDate() {

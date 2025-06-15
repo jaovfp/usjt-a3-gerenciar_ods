@@ -3,8 +3,10 @@ package usjt.atividade.infra.Repository;
 import usjt.atividade.app.Events.DTO.EventRequestFilter;
 import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.domain.entities.ODS;
+import usjt.atividade.domain.entities.User;
 import usjt.atividade.domain.repository.EventRequestRepository;
 import usjt.atividade.domain.valueObjects.Address;
+import usjt.atividade.domain.valueObjects.Email;
 import usjt.atividade.domain.valueObjects.EventRequestStatus;
 import usjt.atividade.infra.config.MySQLConnection;
 
@@ -21,9 +23,11 @@ public class EventRequestRepositoryImpl implements EventRequestRepository {
                     "er.request_id, er.event_name, er.event_description, er.status, " +
                     "o.ods_name, o.ods_id, o.ods_description, " +
                     "er.create_date, er.event_date, " +
-                    "er.postal_code, er.city, er.address_line, er.state " +
+                    "er.postal_code, er.city, er.address_line, er.state, " +
+                    "u.user_id AS creator_id, u.fullname AS creator_name, u.email AS creator_email " +
                     "FROM tbl_event_requests er " +
                     "JOIN tbl_ods_topics o ON er.ods_id = o.ods_id " +
+                    "JOIN tbl_users u ON er.user_id = u.user_id " +
                     "WHERE 1=1 ";
 
     @Override
@@ -46,7 +50,7 @@ public class EventRequestRepositoryImpl implements EventRequestRepository {
             return result;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar eventos do usuário com filtros e paginação", e);
+            throw new RuntimeException("Erro ao buscar solicitações de eventos com filtros e paginação", e);
         }
     }
 
@@ -84,6 +88,11 @@ public class EventRequestRepositoryImpl implements EventRequestRepository {
             params.add(filter.getStatus().toString());
         }
 
+        if (!isStringNullOrEmpty(filter.getCreatorEmail())) {
+            sql.append(" AND LOWER(u.email) LIKE ?");
+            params.add("%" + filter.getCreatorEmail().toLowerCase() + "%");
+        }
+
         return params;
     }
 
@@ -108,7 +117,11 @@ public class EventRequestRepositoryImpl implements EventRequestRepository {
         ));
         request.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
         request.setEventDate(rs.getDate("event_date").toLocalDate());
-        request.setUserId(UUID.fromString(userId));
+        User creator = new User();
+        creator.setUserId(UUID.fromString(rs.getString("creator_id")));
+        creator.setFullname(rs.getString("creator_name"));
+        creator.setEmail(new Email(rs.getString("creator_email")));
+        request.setRequestedBy(creator);
         request.setAddress(new Address(
                 rs.getString("address_line"),
                 rs.getString("city"),
