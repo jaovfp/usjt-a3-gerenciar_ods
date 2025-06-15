@@ -91,4 +91,8 @@ public class EventRequest {
     public Address getAddress() {
         return address;
     }
+
+    public void updateStatus(EventRequestStatus newStatus) {
+        this.status = newStatus;
+    }
 }

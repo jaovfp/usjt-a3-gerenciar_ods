@@ -1,5 +1,6 @@
 package usjt.atividade.app.Events.DTO;
 
+import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.domain.valueObjects.EventRequestStatus;
 
 public class EventRequestFilter {
@@ -16,6 +17,10 @@ public class EventRequestFilter {
         this.userId = userId;
         this.requestId = requestId;
         this.creatorEmail  = creatorEmail;
+    }
+
+    public EventRequestFilter(){
+
     }
 
     public String getEventName() {
@@ -36,5 +41,9 @@ public class EventRequestFilter {
 
     public String getCreatorEmail() {
         return creatorEmail;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

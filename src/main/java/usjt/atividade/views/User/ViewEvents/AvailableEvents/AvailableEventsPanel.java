@@ -182,7 +182,8 @@ public class AvailableEventsPanel extends AbstractPanel {
                     widths,
                     gaps,
                     UIStyle.BG_SIDE_MENU_USER_COLOR,
-                    event -> new EventRowPanel(event, UIStyle.BG_USER_ADMIN_COLOR)
+                    (event, refreshCallback) -> new EventRowPanel(event, UIStyle.BG_USER_ADMIN_COLOR),
+                    null
             );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorListPanel("Não há eventos disponíveis no momento.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);

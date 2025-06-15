@@ -28,6 +28,14 @@ public class MessageConstants {
     public static final String ODS_NOT_FOUND = "A ODS informada não existe.";
     public static final String EXISTS_REQUEST_EVENT_FOR_DAY = "Já existe uma solicitação de evento para o dia: ";
     public static final String ERROR_EVENT_DATE_IN_PAST = "A data do evento não pode ser anterior à data atual.";
+    public static final String EVENT_REQUEST_APPROVED_SUCCESS = "O evento foi aprovado com sucesso.";
+    public static final String EVENT_REQUEST_CANCELED_SUCCESS = "O evento foi cancelado com sucesso.";
+    public static final String EVENT_REQUEST_REJECT_SUCCESS = "O evento foi rejeitado com sucesso.";
+    public static final String ONLY_ADMINS_CAN_APPROVE_REJECT = "Apenas administradores podem aprovar ou rejeitar eventos.";
+    public static final String ONLY_PENDING_CAN_APPROVE_REJECT = "Somente eventos pendentes podem ser aprovados ou rejeitados.";
+    public static final String ONLY_CREATOR_CAN_CANCEL = "Somente o criador da solicitação pode cancelar.";
+    public static final String ONLY_PENDING_CAN_CANCEL = "Somente eventos pendentes podem ser cancelados.";
+    public static final String STATUS_TRANSITION_NOT_ALLOWED = "Transição de status não permitida.";
 
     private void MessageConstants() {
     }

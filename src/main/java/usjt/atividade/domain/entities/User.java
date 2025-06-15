@@ -198,4 +198,8 @@ public class User {
     public void setProfileComplete(boolean profileComplete) {
         isProfileComplete = profileComplete;
     }
+
+    public boolean isAdmin(){
+        return UserType.ADMIN.equals(this.type);
+    }
 }

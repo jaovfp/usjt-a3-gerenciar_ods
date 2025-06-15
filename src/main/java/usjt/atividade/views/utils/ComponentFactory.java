@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.List;
@@ -402,7 +403,8 @@ public class ComponentFactory {
             List<Integer> columnWidthsHeader,
             List<Integer> columnGapsHeader,
             Color scrollColor,
-            Function<T, JPanel> rowPanelFactory
+            BiFunction<T, Runnable, JPanel> rowPanelFactory,
+            Runnable refreshCallback
     ) {
         JPanel listPanel = new JPanel();
         listPanel.setBackground(bgListColor);
@@ -415,7 +417,7 @@ public class ComponentFactory {
         listPanel.add(Box.createVerticalStrut(15));
 
         for (T item : items) {
-            JPanel row = rowPanelFactory.apply(item);
+            JPanel row = rowPanelFactory.apply(item, refreshCallback);
             row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             row.setMaximumSize(row.getPreferredSize());

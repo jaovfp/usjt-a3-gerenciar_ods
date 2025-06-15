@@ -19,6 +19,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
+import static usjt.atividade.common.utils.DateTimeUtils.dateConverter;
 import static usjt.atividade.views.utils.ComponentFactory.*;
 import static usjt.atividade.views.utils.ComponentFactory.createLabelWithIcon;
 
@@ -144,7 +145,8 @@ public class ApprovePanel extends AbstractPanel {
                     widths,
                     gaps,
                     UIStyle.BG_SIDE_MENU_ADMIN_COLOR.brighter(),
-                    eventRequest -> new ApproveRowPanel(eventRequest, UIStyle.BG_USER_ADMIN_COLOR)
+                    (eventRequest, refreshCallback) -> new ApproveRowPanel(eventRequest, UIStyle.BG_USER_ADMIN_COLOR, eventRequestController, user, refreshCallback),
+                    this::refreshEventRequestsList
             );
         } else if (StatusCode.NOT_FOUND.equals(response.getStatusCode())) {
             return createErrorListPanel("Não há solicitações de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
@@ -207,6 +209,59 @@ public class ApprovePanel extends AbstractPanel {
 
     @Override
     public void addListeners(){
+        searchUserField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
 
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+        });
+
+        searchEventField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+        });
+
+        statusField.addActionListener(e -> { applyFilterWithPage(1);});
+    }
+
+    private void refreshEventRequestsList() {
+        EventRequestFilter eventRequestFilter = createFilter(
+                searchEventField.getText(),
+                (EventRequestStatus) statusField.getSelectedItem(),
+                searchUserField.getText(),
+                null,
+                null
+        );
+
+        Response<PaginatedResponse<EventRequest>> response = eventRequestController.getEventRequests(1, 6, eventRequestFilter);
+
+        JScrollPane newScrollPane = getListEventsPanel(response);
+        Component newView = newScrollPane.getViewport().getView();
+        listEventRequestsPanel.setViewportView(newView);
+
+        listEventRequestsPanel.revalidate();
+        listEventRequestsPanel.repaint();
     }
 }

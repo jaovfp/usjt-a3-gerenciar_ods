@@ -147,7 +147,8 @@ public class MyEventsPanel extends AbstractPanel {
                width,
                gaps,
                UIStyle.BG_SIDE_MENU_USER_COLOR,
-   evento -> new MyEventsRowPanel(evento, UIStyle.BG_USER_ADMIN_COLOR));
+               (evento, runnable) -> new MyEventsRowPanel(evento, UIStyle.BG_USER_ADMIN_COLOR),
+               null);
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorListPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }else{

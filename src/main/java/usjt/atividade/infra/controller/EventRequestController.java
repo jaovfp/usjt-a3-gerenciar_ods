@@ -2,6 +2,7 @@ package usjt.atividade.infra.controller;
 
 import usjt.atividade.app.Events.DTO.CreateEventRequestDto;
 import usjt.atividade.app.Events.DTO.EventRequestFilter;
+import usjt.atividade.app.Events.DTO.UpdateEventRequestStatusDto;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.app.Events.EventRequestServiceImpl;
@@ -43,4 +44,17 @@ public class EventRequestController {
             return Response.fail(StatusCode.INTERNAL_ERROR, INTERNAL_ERROR);
         }
     }
+
+    public Response<EventRequest> updateStatus(UpdateEventRequestStatusDto request){
+        try{
+            EventRequest eventRequestUpdated = eventRequestServiceImpl.updateStatus(request);
+            return Response.ok(eventRequestUpdated);
+        }catch (ErrorException e){
+            return Response.fail(e.getStatusCode(), e.getMessage());
+        }catch (Exception e){
+            System.out.println(e);
+            return Response.fail(StatusCode.INTERNAL_ERROR, INTERNAL_ERROR);
+        }
+    }
+
 }

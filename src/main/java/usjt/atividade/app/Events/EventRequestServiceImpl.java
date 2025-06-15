@@ -2,6 +2,7 @@ package usjt.atividade.app.Events;
 
 import usjt.atividade.app.Events.DTO.CreateEventRequestDto;
 import usjt.atividade.app.Events.DTO.EventRequestFilter;
+import usjt.atividade.app.Events.DTO.UpdateEventRequestStatusDto;
 import usjt.atividade.app.Exceptions.UnprocessableEntityException;
 import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.app.Exceptions.NotFoundException;
@@ -9,7 +10,6 @@ import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.domain.entities.ODS;
 import usjt.atividade.domain.entities.User;
-import usjt.atividade.domain.repository.OdsRepository;
 import usjt.atividade.domain.service.EventRequestService;
 import usjt.atividade.domain.valueObjects.Address;
 import usjt.atividade.domain.valueObjects.EventRequestStatus;
@@ -20,9 +20,10 @@ import usjt.atividade.infra.Repository.UserRepositoryImpl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import static usjt.atividade.app.Events.EventValidator.validateCreateEventRequestDto;
+import static usjt.atividade.app.Events.EventRequestValidator.*;
 import static usjt.atividade.common.utils.DateTimeUtils.dateConverter;
 
 public class EventRequestServiceImpl implements EventRequestService {
@@ -108,5 +109,21 @@ public class EventRequestServiceImpl implements EventRequestService {
         event.setAddress(address);
 
         return event;
+    }
+
+    @Override
+    public EventRequest updateStatus(UpdateEventRequestStatusDto request){
+        validateUpdateEventRequestStatusRequest(request);
+        User actor = userRepository.findById(request.getActorUserId().toString())
+                .orElseThrow(() -> new UnprocessableEntityException(MessageConstants.USER_NOT_FOUND));
+
+        EventRequest eventRequest = repository.findById(request.getRequestId().toString())
+                .orElseThrow(() -> new NotFoundException(MessageConstants.EVENTS_REQUESTS_NOT_FOUND));
+
+        EventRequestStatus newStatus = EventRequestStatus.valueOf(request.getNewStatus().toUpperCase());
+        validateStatusChange(request.getUserType(),actor, eventRequest, newStatus);
+        eventRequest.updateStatus(newStatus);
+        repository.update(eventRequest);
+        return eventRequest;
     }
 }

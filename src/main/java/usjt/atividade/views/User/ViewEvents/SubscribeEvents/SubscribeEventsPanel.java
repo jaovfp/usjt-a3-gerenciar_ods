@@ -151,7 +151,8 @@ public class SubscribeEventsPanel extends AbstractPanel {
                     width,
                     gaps,
                     UIStyle.BG_SIDE_MENU_USER_COLOR,
-                    eventSubscribe -> new SubscribeEventsRowPanel(eventSubscribe, UIStyle.BG_USER_ADMIN_COLOR)
+                    (eventSubscribe,runnable) -> new SubscribeEventsRowPanel(eventSubscribe, UIStyle.BG_USER_ADMIN_COLOR),
+                    null
             );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorListPanel("Você não se inscreveu em nenhum evento.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
