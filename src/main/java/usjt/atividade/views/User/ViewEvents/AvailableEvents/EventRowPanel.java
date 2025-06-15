@@ -52,6 +52,16 @@ public class EventRowPanel extends AbstractPanel {
         List<Integer> gaps = List.of(20, 20, 20, 20, 50, 20);
 
         applyRowLayout(this, components, widths, gaps);
+
+        int totalWidth = 0;
+        for (int w : widths) {
+            totalWidth += w;
+        }
+        for (int g : gaps) {
+            totalWidth += g;
+        }
+
+        this.setPreferredSize(new Dimension(totalWidth + 60, 50));
     }
 
     @Override

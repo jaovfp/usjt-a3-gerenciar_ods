@@ -25,9 +25,10 @@ public class PaginationPanel extends AbstractPanel {
     private final ActionListener onChange;
     private final Color backGroundColor;
     private final Color textColor;
+    private final Color comboColor;
     private boolean suppressPageComboListener = false;
 
-    public PaginationPanel(int totalItems, int currentPage, int itemsPerPage, ActionListener onChange, Dimension dimension, Color backGroundColor, Color textColor) {
+    public PaginationPanel(int totalItems, int currentPage, int itemsPerPage, ActionListener onChange, Dimension dimension, Color backGroundColor, Color textColor, Color comboColor) {
         super(backGroundColor, dimension);
         this.totalItems = totalItems;
         this.currentPage = currentPage;
@@ -35,6 +36,7 @@ public class PaginationPanel extends AbstractPanel {
         this.onChange = onChange;
         this.backGroundColor = backGroundColor;
         this.textColor = textColor;
+        this.comboColor = comboColor;
 
         initComponents();
         layoutComponents();
@@ -46,7 +48,7 @@ public class PaginationPanel extends AbstractPanel {
     protected void initComponents() {
         itemsPerPageCombo = createCustomComboBox(
                 new Integer[]{5, 10, 25, 50, 100},
-                UIStyle.BG_SIDE_MENU_USER_COLOR,
+                comboColor,
                 backGroundColor,
                 textColor
         );
@@ -56,15 +58,15 @@ public class PaginationPanel extends AbstractPanel {
 
         pageCombo = createCustomComboBox(
                 new Integer[]{},
-                UIStyle.BG_SIDE_MENU_USER_COLOR,
+                comboColor,
                 backGroundColor,
                 textColor
         );
 
         prevButton = new JButton("⟨");
-        prevButton.setForeground(UIStyle.BG_SIDE_MENU_USER_COLOR);
+        prevButton.setForeground(comboColor);
         nextButton = new JButton("⟩");
-        nextButton.setForeground(UIStyle.BG_SIDE_MENU_USER_COLOR);
+        nextButton.setForeground(comboColor);
     }
 
     @Override

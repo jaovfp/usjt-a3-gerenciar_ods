@@ -10,16 +10,14 @@ public class HeaderPanel extends AbstractPanel {
 
     private final List<JPanel> panels;
     private final List<Integer> widths;
+    private final List<Integer> gaps;
 
-    public HeaderPanel(List<JPanel> panels, Color bgColor, List<Integer> widths) {
+    public HeaderPanel(List<JPanel> panels, Color bgColor, List<Integer> widths, List<Integer> gaps) {
         super(bgColor, new Dimension(970, 40));
         this.panels = panels;
         this.widths = widths;
-
-        setPreferredSize(new Dimension(970, 40));
-        setMaximumSize(new Dimension(970, 40));
-        setMinimumSize(new Dimension(970, 40));
-
+        this.gaps = gaps;
+        defineWidth();
         initComponents();
         layoutComponents();
     }
@@ -29,15 +27,13 @@ public class HeaderPanel extends AbstractPanel {
 
     @Override
     protected void layoutComponents() {
-        List<Integer> gaps = List.of(20, 20, 20, 50);
-
         List<Component> containers = new java.util.ArrayList<>();
         for (int i = 0; i < panels.size(); i++) {
             JPanel originalPanel = panels.get(i);
 
             int columnWidth = widths.get(i);
 
-            int wrapperWidth = 80;
+            int wrapperWidth = columnWidth;
             int wrapperHeight = 40;
 
             JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -66,6 +62,17 @@ public class HeaderPanel extends AbstractPanel {
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(970, 40);
+    }
+
+    private void defineWidth(){
+        int totalWidth = 0;
+        for (int i = 0; i < widths.size(); i++) {
+            totalWidth += widths.get(i);
+            if (i < gaps.size()) {
+                totalWidth += gaps.get(i);
+            }
+        }
+        this.setPreferredSize(new Dimension(totalWidth, 40));
     }
 
 }

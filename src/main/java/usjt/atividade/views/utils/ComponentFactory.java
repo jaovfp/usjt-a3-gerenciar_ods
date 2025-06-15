@@ -1,7 +1,10 @@
 package usjt.atividade.views.utils;
 
+import usjt.atividade.views.utils.PaginatedPanel.PaginationPanel;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicComboPopup;
 import java.awt.*;
@@ -11,6 +14,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.List;
 
 public class ComponentFactory {
     public static JLabel createLabel(String text, Font font, Color color, int alignment) {
@@ -382,5 +388,96 @@ public class ComponentFactory {
         scrollPane.setPreferredSize(new Dimension(970, 400));
 
         return scrollPane;
+    }
+
+    public static <T> JScrollPane createListPanel(
+            List<T> items,
+            Color bgListColor,
+            List<JPanel> headerLabels,
+            List<Integer> columnWidthsHeader,
+            List<Integer> columnGapsHeader,
+            Color scrollColor,
+            Function<T, JPanel> rowPanelFactory
+    ) {
+        JPanel listPanel = new JPanel();
+        listPanel.setBackground(bgListColor);
+        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
+
+        HeaderPanel headerPanel = new HeaderPanel(headerLabels, bgListColor, columnWidthsHeader, columnGapsHeader);
+        headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        listPanel.add(headerPanel);
+        listPanel.add(Box.createVerticalStrut(15));
+
+        for (T item : items) {
+            JPanel row = rowPanelFactory.apply(item);
+            row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            row.setMaximumSize(row.getPreferredSize());
+
+            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+            wrapper.setBackground(bgListColor);
+            wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+            wrapper.add(row);
+
+            listPanel.add(wrapper);
+            listPanel.add(Box.createVerticalStrut(20));
+        }
+
+        JPanel outerWrapper = new JPanel(new BorderLayout());
+        outerWrapper.setBackground(bgListColor);
+        outerWrapper.add(listPanel, BorderLayout.NORTH);
+
+        JScrollPane scrollPane = new JScrollPane(outerWrapper);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI(scrollColor, Color.LIGHT_GRAY));
+        scrollPane.getHorizontalScrollBar().setUI(new ModernScrollBarUI(scrollColor, Color.LIGHT_GRAY));
+
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(4, 6));
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 4));
+
+        return scrollPane;
+    }
+
+    public static PaginationPanel createPaginationPanel(
+            int totalItems,
+            int currentPage,
+            int itemsPerPage,
+            Consumer<Integer> onPageChange,
+            Dimension dimension,
+            Color backgroundColor,
+            Color textColor,
+            Color comboColor
+    ) {
+        if (totalItems == 0) {
+            PaginationPanel emptyPanel = new PaginationPanel(0, 1, 10, e -> {}, dimension, backgroundColor, textColor, comboColor);
+            emptyPanel.setVisible(false);
+            return emptyPanel;
+        }
+
+        final PaginationPanel[] panelRef = new PaginationPanel[1];
+
+        PaginationPanel panel = new PaginationPanel(
+                totalItems,
+                currentPage,
+                itemsPerPage,
+                e -> {
+                    if (panelRef[0] != null) {
+                        onPageChange.accept(panelRef[0].getCurrentPage());
+                    }
+                },
+                dimension,
+                backgroundColor,
+                textColor,
+                comboColor
+        );
+
+        panelRef[0] = panel;
+
+        return panel;
     }
 }

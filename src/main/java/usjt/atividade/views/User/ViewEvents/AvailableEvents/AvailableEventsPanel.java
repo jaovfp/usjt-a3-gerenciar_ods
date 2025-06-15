@@ -1,19 +1,16 @@
 package usjt.atividade.views.User.ViewEvents.AvailableEvents;
 
 import usjt.atividade.app.Events.DTO.EventFilter;
-import usjt.atividade.app.Events.DTO.EventSubscribeFilter;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.common.Response;
 import usjt.atividade.common.StatusCode;
 import usjt.atividade.domain.entities.Event;
-import usjt.atividade.domain.entities.EventSubscribe;
 import usjt.atividade.domain.entities.ODS;
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.infra.controller.EventController;
-import usjt.atividade.infra.controller.EventSubscribeController;
 import usjt.atividade.infra.controller.OdsController;
 import usjt.atividade.views.AbstractPanel;
-import usjt.atividade.views.User.ViewEvents.RegisteredEvents.SubscribeEventsRowPanel;
+import usjt.atividade.views.User.ViewEvents.SubscribeEvents.SubscribeEventsRowPanel;
 import usjt.atividade.views.utils.CustomTextField;
 import usjt.atividade.views.utils.HeaderPanel;
 import usjt.atividade.views.utils.ModernScrollBarUI;
@@ -132,76 +129,22 @@ public class AvailableEventsPanel extends AbstractPanel {
 
     }
 
-    private static JScrollPane createListEventsPanel(List<Event> events, Color bgListColor, Color rowColor) {
-        JPanel listPanel = new JPanel();
-        listPanel.setBackground(bgListColor);
-        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
-        listPanel.setBorder(new EmptyBorder(0, 30, 0, 0));
-
-        List<JPanel> headerLabels = List.of(
-                createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
-                createLabelWithIcon("ODS",UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "sustainable.png", 14, BorderLayout.EAST),
-                createLabelWithIcon("Organizador", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"", 14, BorderLayout.EAST),
-                createLabelWithIcon("Data do Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"date.png", 14, BorderLayout.EAST)
-        );
-
-        HeaderPanel headerPanel = new HeaderPanel(headerLabels, bgListColor, List.of(200, 200, 100, 100, 160, 160));
-        headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        listPanel.add(headerPanel);
-        listPanel.add(Box.createVerticalStrut(15));
-
-        for (Event event : events) {
-            EventRowPanel row = new EventRowPanel(event, rowColor);
-
-            Dimension rowSize = new Dimension(890, 50);
-            row.setMaximumSize(rowSize);
-            row.setPreferredSize(rowSize);
-            row.setMinimumSize(rowSize);
-
-            JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-            wrapper.setBackground(bgListColor);
-            wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
-            wrapper.add(row);
-
-            listPanel.add(wrapper);
-            listPanel.add(Box.createVerticalStrut(20));
-        }
-
-        JScrollPane scrollPane = new JScrollPane(listPanel);
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI(UIStyle.BG_SIDE_MENU_USER_COLOR.brighter(), Color.lightGray));
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getHorizontalScrollBar().setUI(new ModernScrollBarUI(UIStyle.BG_SIDE_MENU_USER_COLOR.brighter(), Color.lightGray));
-        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(6, Integer.MAX_VALUE));
-        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(6, Integer.MAX_VALUE));
-
-        return scrollPane;
-    }
-
     private PaginationPanel getPaginationPanel(Response<PaginatedResponse<Event>> response) {
         int totalItems = 0;
-        int itemsPerPage = 5;  // default
+        int itemsPerPage = 5;
         if (response.isSuccess() && !isNull(response.getData().getData())) {
             totalItems = response.getData().getTotalItems();
         }
-        PaginationPanel panel = new PaginationPanel(
+        return createPaginationPanel(
                 totalItems,
                 1,
                 itemsPerPage,
-                e -> {
-                    int page = paginationPanel.getCurrentPage();
-                    applyFilterWithPage(page);
-                },
+                this::applyFilterWithPage,
                 UIStyle.USER_ADMIN_PAGINATION_DIMENSION,
                 UIStyle.BG_USER_ADMIN_COLOR,
-                Color.BLACK
+                Color.BLACK,
+                UIStyle.BG_SIDE_MENU_USER_COLOR
         );
-        if (totalItems == 0) {
-            panel = new PaginationPanel(0, 1, 10, e -> {}, UIStyle.USER_ADMIN_PAGINATION_DIMENSION, UIStyle.BG_USER_ADMIN_COLOR, Color.BLACK);
-            panel.setVisible(false);
-        }
-        return panel;
     }
 
     private void applyFilterWithPage(int page) {
@@ -223,8 +166,24 @@ public class AvailableEventsPanel extends AbstractPanel {
 
     private JScrollPane getListEventsPanel(Response<PaginatedResponse<Event>> response, int page){
         if (response.isSuccess()){
+            List<Integer> widths = List.of(200, 200, 100, 100);
+            List<Integer> gaps = List.of(20, 20, 20, 50);
+            List<JPanel> headerLabels = List.of(
+                    createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
+                    createLabelWithIcon("ODS",UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "sustainable.png", 14, BorderLayout.EAST),
+                    createLabelWithIcon("Organizador", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"", 14, BorderLayout.EAST),
+                    createLabelWithIcon("Data do Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"date.png", 14, BorderLayout.EAST)
+            );
             List<Event> listEvents = response.getData().getData();
-            return createListEventsPanel(listEvents, UIStyle.BG_USER_ADMIN_COLOR, new Color(240, 240, 240) );
+            return createListPanel(
+                    listEvents,
+                    UIStyle.BG_USER_ADMIN_COLOR,
+                    headerLabels,
+                    widths,
+                    gaps,
+                    UIStyle.BG_SIDE_MENU_USER_COLOR,
+                    event -> new EventRowPanel(event, UIStyle.BG_USER_ADMIN_COLOR)
+            );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorListPanel("Não há eventos disponíveis no momento.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }else{
