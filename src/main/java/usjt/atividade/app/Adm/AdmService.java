@@ -1,6 +1,8 @@
 package usjt.atividade.app.Adm;
 
-import usjt.atividade.app.Events.DTO.MyEventsRequest;
+import usjt.atividade.app.Events.DTO.EventFilter;
+import usjt.atividade.app.Events.DTO.EventRequestFilter;
+import usjt.atividade.domain.entities.Event;
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.domain.repository.EventRepository;
 import usjt.atividade.domain.repository.UserRepository;
@@ -45,24 +47,24 @@ public class AdmService  {
         userRepository.update(user);
     }
 
-    public List<MyEventsRequest> findAllEvents(){
-        List<MyEventsRequest> listEvent =  eventRepository.findAllEvents(0, 10);
+    public List<Event> findAllEvents(int offset, int pageSize, EventFilter filter){
+        List<Event> listEvent =  eventRepository.findAllEventsByFilter(offset, pageSize, filter);
         if (listEvent.isEmpty()) {
             throw new RuntimeException("No events found");
         }
         return listEvent;
     }
 
-    public List<MyEventsRequest> findAllEventsByStatus(int offset, int pageSize, String status) {
-        List<MyEventsRequest> listEventByStatus =  eventRepository.findAllEventsByStatus(offset, pageSize, status);
+    public List<Event> findAllEventsByStatus(int offset, int pageSize, EventFilter filter) {
+        List<Event> listEventByStatus =  eventRepository.findAllEventsByFilter(offset, pageSize, filter);
         if (listEventByStatus.isEmpty()) {
             throw new RuntimeException("No events found");
         }
         return listEventByStatus;
     }
 
-    public List<MyEventsRequest> findEventsByUserName(String name, int offset, int pageSize) {
-        List<MyEventsRequest> listEventByName =   userRepository.findEventsByUserName(name, offset, pageSize);
+    public List<EventRequestFilter> findEventsByUserName(String name, int offset, int pageSize, EventFilter filter) {
+        List<EventRequestFilter> listEventByName =   eventRepository.findEventsByUserName(name, offset, pageSize, filter);
         if (listEventByName.isEmpty()) {
             throw new RuntimeException("No events found");
         }

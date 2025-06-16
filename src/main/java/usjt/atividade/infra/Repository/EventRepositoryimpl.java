@@ -1,7 +1,12 @@
 package usjt.atividade.infra.Repository;
 
-import usjt.atividade.app.Events.DTO.MyEventsRequest;
+import usjt.atividade.app.Events.DTO.EventRequestFilter;
+import usjt.atividade.domain.entities.Event;
+import usjt.atividade.domain.entities.ODS;
+import usjt.atividade.domain.entities.User;
 import usjt.atividade.domain.repository.EventRepository;
+import usjt.atividade.domain.valueObjects.Email;
+import usjt.atividade.app.Events.DTO.EventFilter;
 import usjt.atividade.infra.config.MySQLConnection;
 
 import java.sql.Connection;
@@ -12,136 +17,150 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class EventRepositoryimpl  implements EventRepository {
+import static usjt.atividade.common.utils.ValidatorUtils.isStringNullOrEmpty;
 
-    public List<MyEventsRequest> findAllEventRequestsByUserId(String userId, int offset, int pageSize) {
-        List<MyEventsRequest> result = new ArrayList<>();
+public class EventRepositoryImpl implements EventRepository {
 
-        final String sql =
-                "SELECT er.request_id, er.event_name, er.event_description, er.status, o.ods_name, er.create_date " +
-                        "FROM tbl_event_requests er " +
-                        "JOIN tbl_ods_topics o ON er.ods_id = o.ods_id " +
-                        "WHERE er.user_id = ? " +
-                        "ORDER BY er.create_date DESC " +
-                        "LIMIT ? OFFSET ?";
 
-        try (Connection conn = MySQLConnection.getInstance();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    private static final String BASE_SELECT =
+            "SELECT " +
+                    "e.event_id, e.event_name, e.event_description, e.event_date, " +
+                    "e.address_line, e.city, e.state, e.postal_code, e.create_date, " +
+                    "o.ods_id, o.ods_name, o.ods_description, " +
+                    "u.user_id AS creator_id, u.full_name AS creator_name, u.email AS creator_email " +
+                    "FROM tbl_events e " +
+                    "JOIN tbl_ods_topics o ON e.ods_id = o.ods_id " +
+                    "JOIN tbl_users u ON e.created_by = u.user_id " +
+                    "WHERE 1=1 ";
 
-            stmt.setString(1, userId);
-            stmt.setInt(2, pageSize);
-            stmt.setInt(3, offset);
+    @Override
+    public List<Event> findAllEventsByFilter(int offset, int pageSize, EventFilter filter) {
+        StringBuilder sql = new StringBuilder(BASE_SELECT);
+        List<Object> params = buildFilter(filter, sql);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    MyEventsRequest request = new MyEventsRequest();
-                    request.setRequestId(rs.getString("request_id"));
-                    request.setEventName(rs.getString("event_name"));
-                    request.setEventDescription(rs.getString("event_description"));
-                    request.setStatus(rs.getString("status"));
-                    request.setOdsName(rs.getString("ods_name"));
-                    request.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
-
-                    result.add(request);
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-            throw new RuntimeException("Erro ao buscar eventos do usuário com paginação", e);
-        }
-        return result;
-    }
-
-    public int countByUserId(UUID userId) {
-        String sql = "SELECT COUNT(*) FROM tbl_event_requests WHERE user_id = ?";
+        sql.append(" ORDER BY e.create_date DESC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add(offset);
 
         try (Connection conn = MySQLConnection.getInstance();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = getStatementWithParams(conn, sql.toString(), params);
+             ResultSet rs = stmt.executeQuery()) {
 
-            stmt.setObject(1, userId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1);
+            List<Event> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(mapResultSetToEvent(rs));
             }
+            return result;
 
         } catch (SQLException e) {
-            System.out.println(e);
-            throw new RuntimeException("Erro ao contar eventos", e);
+            throw new RuntimeException("Erro ao buscar eventos com filtros", e);
         }
-
-        return 0;
     }
 
-    public List<MyEventsRequest> findAllEventsByStatus (int offset, int pageSize, String status) {
-        List<MyEventsRequest> result = new ArrayList<>();
-
-        final String sql =
-                "SELECT * " + "FROM tbl_event_requests er " +
-                        "WHERE er.status = ? " +
-                        "ORDER BY er.create_date DESC " +
-                        "LIMIT ? OFFSET ?";
-
+    @Override
+    public int countEventsByFilter(EventFilter filter) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM tbl_events e WHERE 1=1 ");
+        List<Object> params = buildFilter(filter, sql);
 
         try (Connection conn = MySQLConnection.getInstance();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = getStatementWithParams(conn, sql.toString(), params);
+             ResultSet rs = stmt.executeQuery()) {
 
-            stmt.setString(1, status);
-            stmt.setInt(2, pageSize );
-            stmt.setInt(3, offset);
+            return rs.next() ? rs.getInt(1) : 0;
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    MyEventsRequest request = new MyEventsRequest();
-                    request.setRequestId(rs.getString("request_id"));
-                    request.setEventName(rs.getString("event_name"));
-                    request.setEventDescription(rs.getString("event_description"));
-                    request.setStatus(rs.getString("status"));
-                    request.setOdsName(rs.getString("ods_name"));
-                    request.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
-
-                    result.add(request);
-                }
-            }
         } catch (SQLException e) {
-            System.out.println(e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao contar eventos com filtros", e);
         }
-        return result;
     }
 
-    public List<MyEventsRequest> findAllEvents (int offset, int pageSize) {
-        List<MyEventsRequest> result = new ArrayList<>();
+    private List<Object> buildFilter(EventFilter filter, StringBuilder sql) {
+        List<Object> params = new ArrayList<>();
 
-        final String sql =
-                "SELECT * " + "FROM tbl_event_requests er " +
-                        "ORDER BY er.create_date DESC " +
-                        "LIMIT ? OFFSET ?";
+        if (!isStringNullOrEmpty(filter.getEventName())) {
+            sql.append(" AND LOWER(e.event_name) LIKE ?");
+            params.add("%" + filter.getEventName().toLowerCase() + "%");
+        }
 
+        if (!isStringNullOrEmpty(filter.getOdsId())) {
+            sql.append(" AND e.ods_id = ?");
+            params.add(filter.getOdsId());
+        }
+
+        if (!isStringNullOrEmpty(filter.getCreatorId())) {
+            sql.append(" AND e.created_by = ?");
+            params.add(filter.getCreatorId());
+        }
+
+        if (Boolean.TRUE.equals(filter.getBeforeToday())) {
+            sql.append(" AND e.create_date < CURRENT_DATE");
+        }
+
+        return params;
+    }
+
+    private PreparedStatement getStatementWithParams(Connection conn, String sql, List<Object> params) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        for (int i = 0; i < params.size(); i++) {
+            stmt.setObject(i + 1, params.get(i));
+        }
+        return stmt;
+    }
+
+    private Event mapResultSetToEvent(ResultSet rs) throws SQLException {
+        Event event = new Event();
+        event.setEventId(rs.getString("event_id"));
+        event.setEventName(rs.getString("event_name"));
+        event.setEventDescription(rs.getString("event_description"));
+        event.setEventDate(rs.getDate("event_date").toLocalDate());
+        event.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
+
+        event.setAddressLine(rs.getString("address_line"));
+        event.setCity(rs.getString("city"));
+        event.setState(rs.getString("state"));
+        event.setPostalCode(rs.getString("postal_code"));
+
+        ODS ods = new ODS(
+                UUID.fromString(rs.getString("ods_id")),
+                rs.getString("ods_name"),
+                rs.getString("ods_description")
+        );
+        event.setOds(ods);
+
+        User creator = new User();
+        creator.setUserId(UUID.fromString(rs.getString("creator_id")));
+        creator.setFullname(rs.getString("creator_name"));
+        creator.setEmail(new Email(rs.getString("creator_email")));
+        event.setCreatedBy(creator);
+
+        return event;
+    }
+
+    public List<EventRequestFilter> findEventsByUserName (String name, int offset, int pageSize, EventFilter filter){
+        StringBuilder sql = new StringBuilder(BASE_SELECT);
+        List<Object> params = buildFilter(filter, sql);
+
+
+        sql.append(" AND u.full_name LIKE ? ");
+        sql.append(" ORDER BY e.create_date DESC LIMIT ? OFFSET ?");
+        params.add(name);
+        params.add(pageSize);
+        params.add(offset);
 
         try (Connection conn = MySQLConnection.getInstance();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, pageSize );
-            stmt.setInt(2, offset);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    MyEventsRequest request = new MyEventsRequest();
-                    request.setRequestId(rs.getString("request_id"));
-                    request.setEventName(rs.getString("event_name"));
-                    request.setEventDescription(rs.getString("event_description"));
-                    request.setStatus(rs.getString("status"));
-                    request.setOdsName(rs.getString("ods_name"));
-                    request.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
-
-                    result.add(request);
-                }
+             PreparedStatement stmt = getStatementWithParams(conn, sql.toString(), params);
+             ResultSet rs = stmt.executeQuery()) {
+            List<EventRequestFilter> result = null;
+            while (rs.next()) {
+                result = new ArrayList<>();
+                EventRequestFilter request = new EventRequestFilter();
+                request.setRequestId(rs.getString("request_id"));
+                request.setEventName(rs.getString("event_name"));
+                result.add(request);
             }
+
+            return result;
+
         } catch (SQLException e) {
-            System.out.println(e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao buscar eventos com filtros", e);}
         }
-        return result;
     }
-}

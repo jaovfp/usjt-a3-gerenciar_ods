@@ -21,6 +21,7 @@ public class User {
     private String profilePhotoUrl;
     private LocalDateTime createDate;
     private LocalDateTime changeDate;
+    private boolean isProfileComplete;
 
     public User(){}
 
@@ -165,4 +166,36 @@ public class User {
         this.profilePhotoUrl = profilePhotoUrl;
     }
 
+
+    public CPF getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(CPF cpf) {
+        this.cpf = cpf;
+    }
+
+    public PhoneNumber getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public boolean isProfileComplete() {
+        return isProfileComplete;
+    }
+
+    public void setProfileComplete(boolean profileComplete) {
+        isProfileComplete = profileComplete;
+    }
 }

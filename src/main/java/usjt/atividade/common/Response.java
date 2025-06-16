@@ -26,6 +26,10 @@ public class Response <T>{
         return new Response<>(true, StatusCode.CREATED, message, data);
     }
 
+    public static <T> Response<T> ok(String message, T data) {
+        return new Response<>(true, StatusCode.SUCCESS, message, data);
+    }
+
     public static <T> Response<T> fail(StatusCode code, String message) {
         return new Response<>(false, code, message, null);
     }

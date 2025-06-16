@@ -59,7 +59,7 @@ public class SignUpPanel extends AbstractPanel {
         passwordField = createCustomPasswordField("Digite sua senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         repeatPasswordLabel = createLabel("Repetir senha:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         repeatPasswordField = createCustomPasswordField("Repita sua senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
-        btnSignUp = createRoundedButton("Cadastrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        btnSignUp = createRoundedButton("Cadastrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR, 60, 60);
     }
 
     @Override

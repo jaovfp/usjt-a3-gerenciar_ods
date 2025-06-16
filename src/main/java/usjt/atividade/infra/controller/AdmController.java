@@ -1,6 +1,7 @@
 package usjt.atividade.infra.controller;
 
 import usjt.atividade.app.Adm.AdmService;
+import usjt.atividade.app.Events.DTO.EventFilter;
 import usjt.atividade.app.Exceptions.ErrorException;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.Response;
@@ -8,13 +9,12 @@ import usjt.atividade.common.StatusCode;
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.domain.repository.EventRepository;
 import usjt.atividade.domain.repository.UserRepository;
-import usjt.atividade.infra.Repository.EventRepositoryimpl;
+import usjt.atividade.infra.Repository.EventRepositoryImpl;
 import usjt.atividade.infra.Repository.UserRepositoryImpl;
 
 import java.util.List;
 import java.util.Optional;
 
-import static jdk.nashorn.internal.objects.Global.println;
 import static usjt.atividade.common.MessageConstants.INTERNAL_ERROR;
 
 public class AdmController  {
@@ -24,8 +24,8 @@ public class AdmController  {
     private EventRepository eventRepository;
 
     public AdmController() {
-        this.userRepository = new UserRepositoryImpl();    // instanciando a implementação concreta
-        this.eventRepository = new EventRepositoryimpl();  // faça o mesmo para EventRepository
+        this.userRepository = new UserRepositoryImpl();
+        this.eventRepository = new EventRepositoryImpl();
         this.admService = new AdmService(userRepository, eventRepository);
     }
 
@@ -79,9 +79,9 @@ public class AdmController  {
         }
     }
 
-    public Response<Void> getAllEvents (){
+    public Response<Void> getAllEvents (int offset, int pageSize, EventFilter filter){
         try{
-            admService.findAllEvents();
+            admService.findAllEvents(offset, pageSize, filter);
             return Response.created("Eventos Listados com sucesso");
         }catch (ErrorException e){
             return Response.fail(e.getStatusCode(), e.getMessage());
@@ -91,9 +91,9 @@ public class AdmController  {
         }
     }
 
-    public Response<Void> getAllEventsByStatus(int offset, int pageSize, String status) {
+    public Response<Void> getAllEventsByStatus(int offset, int pageSize, EventFilter filter) {
         try {
-            admService.findAllEventsByStatus(offset, pageSize, status);
+            admService.findAllEventsByStatus(offset, pageSize, filter);
             return Response.created("Eventos listados por status com sucesso");
         } catch (ErrorException e) {
             return Response.fail(e.getStatusCode(), e.getMessage());
@@ -103,9 +103,9 @@ public class AdmController  {
         }
     }
 
-    public Response<Void> getEventsByUserName(String name, int offset, int pageSize) {
+    public Response<Void> getEventsByUserName(String name, int offset, int pageSize, EventFilter filter) {
         try {
-            admService.findEventsByUserName(name, offset, pageSize);
+            admService.findEventsByUserName(name, offset, pageSize, filter);
             return Response.created("Eventos listados por nomes com sucesso");
         } catch (ErrorException e) {
             return Response.fail(e.getStatusCode(), e.getMessage());

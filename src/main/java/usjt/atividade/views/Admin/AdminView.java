@@ -2,7 +2,8 @@ package usjt.atividade.views.Admin;
 
 import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractView;
-import usjt.atividade.views.SideMenu.SideMenuPanel;
+import usjt.atividade.views.Admin.ApproveUsers.ApprovePanel;
+import usjt.atividade.views.utils.SideMenu.SideMenuPanel;
 import usjt.atividade.views.utils.RoundedButton;
 import usjt.atividade.views.utils.UIStyle;
 
@@ -32,34 +33,38 @@ public class AdminView extends AbstractView {
 
     private void createMenuButtons(){
         RoundedButton btnHome = createRoundedButtonWithIcon("Inicio", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "home.png");
-        RoundedButton btnCreateEvents = createRoundedButtonWithIcon("Aprovar Eventos", UIStyle.SIDE_MENU_BTN_TEXT_FONT, UIStyle.TRANSPARENT_COLOR, BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "approve.png");
-        RoundedButton btnSearchEvents = createRoundedButtonWithIcon("Gerenciar Usuários", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "management.png");
+        RoundedButton btnApproveEvents = createRoundedButtonWithIcon("Solicitações de Eventos", UIStyle.SIDE_MENU_BTN_TEXT_FONT, UIStyle.TRANSPARENT_COLOR, BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "approve.png");
+        RoundedButton btnUserManager = createRoundedButtonWithIcon("Gerenciar Usuários", UIStyle.SIDE_MENU_BTN_TEXT_FONT, BG_SIDE_MENU_COLOR.brighter(), BG_SIDE_MENU_COLOR.brighter().darker(), BG_SIDE_MENU_COLOR.brighter().brighter(), Color.WHITE, "management.png");
 
         btnHome.addActionListener(e -> setContent(new AdminHomePanel()));
+        btnApproveEvents.addActionListener(e -> setContent(new ApprovePanel(user)));
         //btnCreateEvents.addActionListener(e -> setContent(new CadastrarEventosPanel()));
 //        btnSearchEvents.addActionListener(e -> setContent(new UserManagementPanel()));
 
-        menuButtons = List.of(btnHome, btnCreateEvents, btnSearchEvents);
+        menuButtons = List.of(btnHome, btnApproveEvents, btnUserManager);
     }
 
     public void setContent(JPanel newContent) {
-        contentPanel.removeAll();
-        contentPanel.add(newContent, BorderLayout.CENTER);
-        contentPanel.revalidate();
-        contentPanel.repaint();
+        if (contentPanel != null) {
+            remove(contentPanel);
+        }
+        contentPanel = newContent;
+        add(contentPanel, BorderLayout.CENTER);
+        contentPanel    .setBackground(UIStyle.BG_USER_ADMIN_COLOR);
+        revalidate();
+        repaint();
     }
 
     @Override
-    protected void initPanels(){
+    protected void initPanels() {
         menuPanel = new SideMenuPanel(user.getFullname(), user.getProfilePhotoUrl(), BG_SIDE_MENU_COLOR, menuButtons, this);
-        contentPanel = new JPanel();
-        contentPanel.setBackground(Color.WHITE);
+        contentPanel = new ApprovePanel(user);
     }
 
     @Override
     protected void layoutPanels(){
         setLayout(new BorderLayout());
-        menuPanel.setPreferredSize(new Dimension(220, getHeight()));
+        menuPanel.setPreferredSize(UIStyle.SIDE_MENU_DIMENSION);
         add(menuPanel, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
     }

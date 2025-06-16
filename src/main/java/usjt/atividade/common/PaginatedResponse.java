@@ -2,7 +2,7 @@ package usjt.atividade.common;
 
 import java.util.List;
 
-public class PaginatedResponse <T> {
+public class PaginatedResponse<T> {
     private List<T> data;
     private int currentPage;
     private int totalPages;
@@ -30,4 +30,5 @@ public class PaginatedResponse <T> {
     public int getTotalItems() {
         return totalItems;
     }
+
 }

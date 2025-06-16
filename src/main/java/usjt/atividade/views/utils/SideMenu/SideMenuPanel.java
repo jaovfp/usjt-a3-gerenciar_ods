@@ -1,23 +1,30 @@
-package usjt.atividade.views.SideMenu;
+package usjt.atividade.views.utils.SideMenu;
 
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;
 import usjt.atividade.views.utils.UIStyle;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 import static usjt.atividade.common.utils.DateTimeUtils.getFormattedDate;
 import static usjt.atividade.views.utils.ComponentFactory.*;
+import static usjt.atividade.views.utils.ImageUtils.getDefaultProfileAbsolutePath;
+import static usjt.atividade.views.utils.ImageUtils.loadImage;
 
 public class SideMenuPanel extends AbstractPanel {
 
     private final String fullName;
+    private JLabel nameLabel;
     private final String profileImagePath;
     private final Color backgroundColor;
     private final List<JButton> menuButtons;
@@ -92,13 +99,13 @@ public class SideMenuPanel extends AbstractPanel {
         card.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         if(isNull(profileImagePath)){
-            profileImagePath = "default_profile.png";
+            profileImagePath = getDefaultProfileAbsolutePath();
         }
-        profileImage = createRoundedImageLabel(profileImagePath, "userImages", SwingConstants.CENTER, 80, 80);
+        profileImage = createRoundedImageLabel(profileImagePath, SwingConstants.CENTER,  80, 80);
         profileImage.setAlignmentX(Component.CENTER_ALIGNMENT);
         profileImage.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        JLabel nameLabel = new JLabel(name);
+        nameLabel = new JLabel(name);
         nameLabel.setForeground(UIStyle.SIDE_MENU_TEXT_COLOR);
         nameLabel.setFont(UIStyle.SIDE_MENU_TITLE_FONT);
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -204,6 +211,14 @@ public class SideMenuPanel extends AbstractPanel {
             g2.dispose();
             super.paintComponent(g);
         }
+    }
+
+    public void setProfileImage(String imagePath){
+        profileImage.setIcon(loadImage(imagePath, 80, 80));
+    }
+
+    public void setFullName(String fullName){
+        nameLabel.setText(fullName);
     }
 
     @Override
