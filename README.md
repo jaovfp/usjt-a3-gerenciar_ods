@@ -1,6 +1,6 @@
-# 🌍 VoluntODS
+# 🌍 ConectaODS
 
-**VoluntODS** é um sistema de gerenciamento de ações voluntárias alinhadas com os Objetivos de Desenvolvimento Sustentável (ODS) da ONU. A plataforma permite que usuários cadastrem eventos (ações voluntárias), se inscrevam nessas ações voluntárias, e que administradores façam a gestão e aprovação das iniciativas.
+**ConectaODS** é um sistema de gerenciamento de ações voluntárias alinhadas com os Objetivos de Desenvolvimento Sustentável (ODS) da ONU. A plataforma permite que usuários cadastrem eventos (ações voluntárias), se inscrevam nessas ações voluntárias, e que administradores façam a gestão e aprovação das iniciativas.
 
 ---
 
