@@ -9,7 +9,6 @@ import usjt.atividade.views.utils.UIStyle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import static usjt.atividade.views.utils.ComponentFactory.createRoundedButtonWithIcon;
@@ -40,7 +39,7 @@ public class AdminView extends AbstractView {
         btnHome.addActionListener(e -> setContent(new AdminHomePanel()));
         btnApproveEvents.addActionListener(e -> setContent(new ApprovePanel(user)));
         //btnCreateEvents.addActionListener(e -> setContent(new CadastrarEventosPanel()));
-        //btnSearchEvents.addActionListener(e -> setContent(new VerEventosPanel()));
+//        btnSearchEvents.addActionListener(e -> setContent(new UserManagementPanel()));
 
         menuButtons = List.of(btnHome, btnApproveEvents, btnUserManager);
     }

@@ -2,6 +2,7 @@ package usjt.atividade.common;
 
 public class MessageConstants {
     public static final String USER_CREATED_SUCCESS = "Usuário criado com sucesso.";
+    public static final String USER_DELETED_SUCCESS = "Usuário deletado com sucesso.";
     public static final String USER_UPDATED_SUCCESS = "Usuário atualizado com sucesso.";
     public static final String GENERIC_CREATE_USER_ERROR = "Erro ao criar usuário: ";
     public static final String PASSWORDS_DO_NOT_MATCH = "As senhas não coincidem.";

@@ -18,6 +18,8 @@ public class EventRequestFilter {
         this.creatorEmail  = creatorEmail;
     }
 
+    public EventRequestFilter(){};
+
     public String getEventName() {
         return eventName;
     }
@@ -36,5 +38,25 @@ public class EventRequestFilter {
 
     public String getCreatorEmail() {
         return creatorEmail;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
+    }
+
+    public void setStatus(EventRequestStatus status) {
+        this.status = status;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

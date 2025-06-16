@@ -5,12 +5,10 @@ import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.domain.entities.Event;
-import usjt.atividade.domain.service.EventService;
 import usjt.atividade.infra.Repository.EventRepositoryImpl;
-
 import java.util.List;
 
-public class EventServiceImpl implements EventService {
+public class EventServiceImpl {
 
     private final EventRepositoryImpl repository;
 

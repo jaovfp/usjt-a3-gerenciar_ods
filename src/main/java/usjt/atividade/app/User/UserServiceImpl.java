@@ -13,9 +13,11 @@ import usjt.atividade.infra.Repository.UserRepositoryImpl;
 
 import java.util.UUID;
 
+import static usjt.atividade.app.User.UserValidator.validateCreateRequestIsNull;
+import static usjt.atividade.app.User.UserValidator.validateUserExists;
+import static usjt.atividade.infra.security.PasswordHasher.hash;
 import static usjt.atividade.app.User.UserValidator.*;
 import static usjt.atividade.common.utils.ValidatorUtils.isStringNullOrEmpty;
-import static usjt.atividade.infra.security.PasswordHasher.hash;
 
 public class UserServiceImpl implements UserService {
 
