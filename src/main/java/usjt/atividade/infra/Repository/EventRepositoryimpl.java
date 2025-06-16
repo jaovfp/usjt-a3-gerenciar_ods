@@ -1,6 +1,7 @@
 package usjt.atividade.infra.Repository;
 
 import usjt.atividade.app.Events.DTO.MyEventsRequest;
+import usjt.atividade.domain.repository.EventRepository;
 import usjt.atividade.infra.config.MySQLConnection;
 
 import java.sql.Connection;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class EventRepository {
+public class EventRepositoryimpl  implements EventRepository {
 
     public List<MyEventsRequest> findAllEventRequestsByUserId(String userId, int offset, int pageSize) {
         List<MyEventsRequest> result = new ArrayList<>();

@@ -6,19 +6,33 @@ import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.Response;
 import usjt.atividade.common.StatusCode;
 import usjt.atividade.domain.entities.User;
+import usjt.atividade.domain.repository.EventRepository;
+import usjt.atividade.domain.repository.UserRepository;
+import usjt.atividade.infra.Repository.EventRepositoryimpl;
+import usjt.atividade.infra.Repository.UserRepositoryImpl;
 
 import java.util.List;
 import java.util.Optional;
 
+import static jdk.nashorn.internal.objects.Global.println;
 import static usjt.atividade.common.MessageConstants.INTERNAL_ERROR;
 
-public class AdmController {
+public class AdmController  {
 
     private AdmService admService;
+    private UserRepository userRepository;
+    private EventRepository eventRepository;
 
-    public Response<List<User>> getAllUser (){
+    public AdmController() {
+        this.userRepository = new UserRepositoryImpl();    // instanciando a implementação concreta
+        this.eventRepository = new EventRepositoryimpl();  // faça o mesmo para EventRepository
+        this.admService = new AdmService(userRepository, eventRepository);
+    }
+
+    public Response<List<User>> getAllUser (int offset, int pageSize){
         try{
-            return Response.created(MessageConstants.USER_CREATED_SUCCESS, admService.findAllUser());
+            List<User> user = admService.findAllUser(offset, pageSize);
+            return Response.created(MessageConstants.USER_CREATED_SUCCESS, user);
         }catch (ErrorException e){
             return Response.fail(e.getStatusCode(), e.getMessage());
         }catch (Exception e){

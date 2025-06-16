@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import static usjt.atividade.app.User.UserValidator.validateCreateRequestIsNull;
 import static usjt.atividade.app.User.UserValidator.validateUserExists;
+import static usjt.atividade.infra.security.PasswordHasher.hash;
 
 public class UserServiceImpl implements UserService {
 
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
         user.setUserId(UUID.randomUUID());
         user.setFullname(request.getFullname());
         user.setEmail(new Email(request.getEmail()));
-        user.setPasswordHash(new Password(request.getPassword()).getValue());
+        user.setPasswordHash(hash(new Password(request.getPassword()).getValue()));
         user.setType(UserType.NORMAL);
         user.setActive(true);
         return user;

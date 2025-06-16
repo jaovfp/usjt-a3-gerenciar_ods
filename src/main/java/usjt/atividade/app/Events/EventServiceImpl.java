@@ -4,17 +4,17 @@ import usjt.atividade.app.Events.DTO.MyEventsRequest;
 import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.PaginatedResponse;
-import usjt.atividade.infra.Repository.EventRepository;
+import usjt.atividade.infra.Repository.EventRepositoryimpl;
 
 import java.util.List;
 import java.util.UUID;
 
 public class EventServiceImpl {
 
-    private final EventRepository repository;
+    private final EventRepositoryimpl repository;
 
     public EventServiceImpl() {
-        this.repository = new EventRepository();
+        this.repository = new EventRepositoryimpl();
     }
 
     public PaginatedResponse<MyEventsRequest> getPaginatedEventRequests(UUID userId, int page, int size) {

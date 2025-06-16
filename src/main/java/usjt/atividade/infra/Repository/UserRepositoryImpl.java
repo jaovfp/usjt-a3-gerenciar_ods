@@ -185,7 +185,8 @@ public class UserRepositoryImpl implements UserRepository {
         List<User> result = new ArrayList<>();
 
         final String sql =
-                "SELECT * FROM tbl_users " +
+                "SELECT fullname, email, birth_date, cpf, phone_number, address_line, city, state, postal_code " +
+                        "FROM tbl_users " +
                         "ORDER BY create_date DESC " +
                         "LIMIT ? OFFSET ?";
 
@@ -198,22 +199,18 @@ public class UserRepositoryImpl implements UserRepository {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     User user = new User();
-                    stmt.setString(1, user.getFullname());
-                    stmt.setString(2, user.getEmail().getValue());
-                    stmt.setString(3, user.getPasswordHash());
-                    stmt.setDate(4, user.getBirthDate() != null ? Date.valueOf(user.getBirthDate()) : null);
-                    stmt.setString(5, user.getCpfValue());
-                    stmt.setString(6, user.getPhoneNumberValue());
-                    stmt.setString(7, user.getAddressLine());
-                    stmt.setString(8, user.getCity());
-                    stmt.setString(9, user.getState());
-                    stmt.setString(10, user.getPostalCode());
-                    stmt.setString(11, user.getType().name());
-                    stmt.setBoolean(12, user.isActive());
-                    stmt.setString(13, user.getProfilePhotoUrl());
-                    stmt.setTimestamp(14, Timestamp.valueOf(LocalDateTime.now()));
-                    stmt.setString(15, user.getUserId().toString());
-
+                    user.setFullname(rs.getString("fullname"));
+                    user.setEmail(new Email(rs.getString("email")));
+                    Date birthDate = rs.getDate("birth_date");
+                    user.setBirthDate(birthDate != null ? birthDate.toLocalDate() : null);
+                    user.setCpf(rs.getString("cpf"));
+                    user.setPhoneNumber(rs.getString("phone_number"));
+                    user.setAddress(
+                            rs.getString("address_line"),
+                            rs.getString("city"),
+                            rs.getString("state"),
+                            rs.getString("postal_code")
+                    );
                     result.add(user);
                 }
             }

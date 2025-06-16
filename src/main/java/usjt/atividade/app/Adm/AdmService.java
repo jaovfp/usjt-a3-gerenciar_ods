@@ -21,13 +21,20 @@ public class AdmService  {
         this.eventRepository = eventRepository;
     }
 
-    public List<User> findAllUser(){
-        List<User> listUser =  userRepository.findAllUsers(0, 10);
+    public List<User> findAllUser(int offset, int pageSize){
+        List<User> listUser =  userRepository.findAllUsers(offset, pageSize);
+        if (listUser.isEmpty()) {
+            throw new RuntimeException("No users found");
+        }
         return listUser;
     }
 
     public Optional<User> findUserById(String userId) {
-        return userRepository.findById(userId);
+        Optional<User> findUser =  userRepository.findById(userId);
+        if (findUser.isEmpty()) {
+            throw new RuntimeException("No user found");
+        }
+        return findUser;
     }
 
     public boolean deleteUserById(String userId) {
@@ -40,15 +47,26 @@ public class AdmService  {
 
     public List<MyEventsRequest> findAllEvents(){
         List<MyEventsRequest> listEvent =  eventRepository.findAllEvents(0, 10);
+        if (listEvent.isEmpty()) {
+            throw new RuntimeException("No events found");
+        }
         return listEvent;
     }
 
     public List<MyEventsRequest> findAllEventsByStatus(int offset, int pageSize, String status) {
-        return eventRepository.findAllEventsByStatus(offset, pageSize, status);
+        List<MyEventsRequest> listEventByStatus =  eventRepository.findAllEventsByStatus(offset, pageSize, status);
+        if (listEventByStatus.isEmpty()) {
+            throw new RuntimeException("No events found");
+        }
+        return listEventByStatus;
     }
 
     public List<MyEventsRequest> findEventsByUserName(String name, int offset, int pageSize) {
-        return userRepository.findEventsByUserName(name, offset, pageSize);
+        List<MyEventsRequest> listEventByName =   userRepository.findEventsByUserName(name, offset, pageSize);
+        if (listEventByName.isEmpty()) {
+            throw new RuntimeException("No events found");
+        }
+        return listEventByName;
     }
 
 }
