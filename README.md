@@ -73,9 +73,9 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues, pull req
 ---
 
 ## 📦 Estrutura do projeto
-├── domain/ # Entidades de domínios, value objects e interfaces de services e repositórios
-├── app/ # DTOs e serviços da aplicação
-├── infra/ # Implementações (Banco, Email, API Correios, Controller etc)
-├── views/ # Telas Swing (cadastro, login, painel, etc)
-├── common/ # Classes utilitárias e helpers
-├── Main.java # Classe principal da aplicação
+├── domain/ # Entidades de domínios, value objects e interfaces de services e repositórios   
+├── app/ # DTOs e serviços da aplicação  
+├── infra/ # Implementações (Banco, Email, API Correios, Controller etc)  
+├── views/ # Telas Swing (cadastro, login, painel, etc)  
+├── common/ # Classes utilitárias e helpers  
+├── Main.java # Classe principal da aplicação  
