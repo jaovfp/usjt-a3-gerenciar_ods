@@ -3,6 +3,7 @@ package usjt.atividade.app.Events;
 import usjt.atividade.app.Events.DTO.CreateEventRequestDto;
 import usjt.atividade.app.Events.DTO.EventRequestFilter;
 import usjt.atividade.app.Events.DTO.UpdateEventRequestStatusDto;
+import usjt.atividade.app.Exceptions.UnauthorizedException;
 import usjt.atividade.app.Exceptions.UnprocessableEntityException;
 import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.app.Exceptions.NotFoundException;
@@ -13,6 +14,7 @@ import usjt.atividade.domain.entities.User;
 import usjt.atividade.domain.service.EventRequestService;
 import usjt.atividade.domain.valueObjects.Address;
 import usjt.atividade.domain.valueObjects.EventRequestStatus;
+import usjt.atividade.domain.valueObjects.UserType;
 import usjt.atividade.infra.Repository.EventRequestRepositoryImpl;
 import usjt.atividade.infra.Repository.OdsRepositoryImpl;
 import usjt.atividade.infra.Repository.UserRepositoryImpl;
@@ -20,10 +22,9 @@ import usjt.atividade.infra.Repository.UserRepositoryImpl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static usjt.atividade.app.Events.EventRequestValidator.*;
+import static usjt.atividade.app.Events.Validator.EventValidator.*;
 import static usjt.atividade.common.utils.DateTimeUtils.dateConverter;
 
 public class EventRequestServiceImpl implements EventRequestService {
@@ -31,11 +32,13 @@ public class EventRequestServiceImpl implements EventRequestService {
     private final EventRequestRepositoryImpl repository;
     private final UserRepositoryImpl userRepository;
     private final OdsRepositoryImpl odsRepository;
+    private final EventServiceImpl eventService;
 
     public EventRequestServiceImpl() {
         this.repository = new EventRequestRepositoryImpl();
         this.userRepository = new UserRepositoryImpl();
         this.odsRepository = new OdsRepositoryImpl();
+        this.eventService = new EventServiceImpl();
     }
 
     @Override
@@ -57,10 +60,11 @@ public class EventRequestServiceImpl implements EventRequestService {
         validateCreateEventRequestDto(request);
 
         User user = findUserById(request.getUserId());
+        validateUserHasCompleteProfile(user);
         ODS ods = findOdsById(request.getOdsId());
         LocalDate eventDate = request.getEventDate();
 
-        validateEventDate(eventDate);
+        validateEventDateBeforeToday(eventDate);
         validateExistingEvent(user.getUserId(), eventDate);
 
         EventRequest event = buildEventRequest(request, user, ods);
@@ -75,12 +79,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     private ODS findOdsById(UUID odsId) {
         return odsRepository.findById(odsId)
                 .orElseThrow(() -> new UnprocessableEntityException(MessageConstants.ODS_NOT_FOUND));
-    }
-
-    private void validateEventDate(LocalDate eventDate) {
-        if (eventDate.isBefore(LocalDate.now())) {
-            throw new UnprocessableEntityException(MessageConstants.ERROR_EVENT_DATE_IN_PAST);
-        }
     }
 
     private void validateExistingEvent(UUID userId, LocalDate eventDate) {
@@ -124,6 +122,37 @@ public class EventRequestServiceImpl implements EventRequestService {
         validateStatusChange(request.getUserType(),actor, eventRequest, newStatus);
         eventRequest.updateStatus(newStatus);
         repository.update(eventRequest);
+        if (EventRequestStatus.APPROVED.equals(newStatus)){
+            eventService.createEventFromRequest(eventRequest);
+        }
         return eventRequest;
+    }
+
+    private void validateStatusChange(UserType userType, User actor, EventRequest eventRequest, EventRequestStatus newStatus) {
+        EventRequestStatus currentStatus = eventRequest.getStatus();
+
+        switch (newStatus) {
+            case APPROVED:
+            case REJECTED:
+                if (!UserType.ADMIN.equals(userType)) {
+                    throw new UnauthorizedException(MessageConstants.ONLY_ADMINS_CAN_APPROVE_REJECT);
+                }
+                if (!EventRequestStatus.PENDING.equals(currentStatus)) {
+                    throw new UnprocessableEntityException(MessageConstants.ONLY_PENDING_CAN_APPROVE_REJECT);
+                }
+                break;
+
+            case CANCELED:
+                if (!eventRequest.getRequestedBy().getUserId().equals(actor.getUserId())) {
+                    throw new UnauthorizedException(MessageConstants.ONLY_CREATOR_CAN_CANCEL);
+                }
+                if (!EventRequestStatus.PENDING.equals(currentStatus)) {
+                    throw new UnprocessableEntityException(MessageConstants.ONLY_PENDING_CAN_CANCEL);
+                }
+                break;
+
+            default:
+                throw new UnprocessableEntityException(MessageConstants.STATUS_TRANSITION_NOT_ALLOWED);
+        }
     }
 }

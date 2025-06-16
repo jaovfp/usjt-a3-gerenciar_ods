@@ -13,7 +13,6 @@ import usjt.atividade.views.utils.*;
 import usjt.atividade.views.utils.PaginatedPanel.PaginationPanel;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +20,7 @@ import java.util.UUID;
 
 import static java.util.Objects.isNull;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
-import static usjt.atividade.common.utils.ODSUtils.getArrayOdsTopics;
-import static usjt.atividade.common.utils.ODSUtils.getOdsIdByName;
+import static usjt.atividade.common.utils.ODSUtils.*;
 import static usjt.atividade.views.utils.ComponentFactory.*;
 
 public class SubscribeEventsPanel extends AbstractPanel {
@@ -63,9 +61,12 @@ public class SubscribeEventsPanel extends AbstractPanel {
 
         searchField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
         searchPanel = searchField.withIcon("searchBlue.png", 15, BorderLayout.WEST);
-        EventSubscribeFilter eventSubscribeFilter = createFilter(searchField.getText().trim(), (String) odsComboBox.getSelectedItem(), user.getUserId().toString(), null);
+        String selectedOds = getSelectedOdsOrNull(odsComboBox);
+        UUID odsIdObj = getOdsIdByName(odsTopicsList, selectedOds);
+        String odsId = odsIdObj != null ? odsIdObj.toString() : null;
+        EventSubscribeFilter eventSubscribeFilter = createFilter(searchField.getText().trim(), odsId, user.getUserId().toString(), null);
         Response<PaginatedResponse<EventSubscribe>> response = eventSubscribeController.getPaginatedEventSubscribes(1, 5, eventSubscribeFilter);
-        listSubscribesPanel = getListSubscribesPanel(response, 1);
+        listSubscribesPanel = getListSubscribesPanel(response);
         paginationPanel = getPaginationPanel(response);
 
     }
@@ -87,9 +88,6 @@ public class SubscribeEventsPanel extends AbstractPanel {
                                                                         .addGap(55)
                                                                         .addComponent(odsPanel, PREFERRED_SIZE, 170, PREFERRED_SIZE)
                                                                         .addGap(460)
-//                                                .addGap(145)
-//                                                .addComponent(filterDatePanel, PREFERRED_SIZE, 170, PREFERRED_SIZE)
-//                                                .addGap(145)
                                                                         .addComponent(searchPanel, PREFERRED_SIZE, 211, PREFERRED_SIZE)
                                                         )
                                                         .addComponent(listSubscribesPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
@@ -104,7 +102,6 @@ public class SubscribeEventsPanel extends AbstractPanel {
                                         .addGap(12)
                                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(odsPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
-//                                        .addComponent(filterDatePanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
                                                         .addComponent(searchPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
                                         )
                                         .addGap(42)
@@ -133,11 +130,11 @@ public class SubscribeEventsPanel extends AbstractPanel {
         );
     }
 
-    private JScrollPane getListSubscribesPanel(Response<PaginatedResponse<EventSubscribe>> response, int page){
+    private JScrollPane getListSubscribesPanel(Response<PaginatedResponse<EventSubscribe>> response){
         if (response.isSuccess()){
             List<EventSubscribe> listSubscribes = response.getData().getData();
             List<Integer> gaps = List.of(20, 20, 20, 20, 50);
-            List<Integer> width = List.of(200, 200, 100, 100, 160, 160);
+            List<Integer> width = List.of(200, 200, 100, 150, 160, 160);
             List<JPanel> headerLabels = List.of(
                     createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
                     createLabelWithIcon("ODS",UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "sustainable.png", 14, BorderLayout.EAST),
@@ -151,8 +148,8 @@ public class SubscribeEventsPanel extends AbstractPanel {
                     width,
                     gaps,
                     UIStyle.BG_SIDE_MENU_USER_COLOR,
-                    (eventSubscribe,runnable) -> new SubscribeEventsRowPanel(eventSubscribe, UIStyle.BG_USER_ADMIN_COLOR),
-                    null
+                    (eventSubscribe,refreshCallback) -> new SubscribeEventsRowPanel(eventSubscribe, UIStyle.BG_USER_ADMIN_COLOR, user, refreshCallback),
+                    this::refreshEventSubscribesList
             );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorListPanel("Você não se inscreveu em nenhum evento.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
@@ -163,15 +160,15 @@ public class SubscribeEventsPanel extends AbstractPanel {
 
     private void applyFilterWithPage(int page) {
         String searchText = searchField.getText().trim();
-        String selectedOds = (String) odsComboBox.getSelectedItem();
-        UUID odsId = getOdsIdByName(odsTopicsList, selectedOds);
+        String selectedOds = getSelectedOdsOrNull(odsComboBox);
+        UUID odsIdObj = getOdsIdByName(odsTopicsList, selectedOds);
+        String odsId = odsIdObj != null ? odsIdObj.toString() : null;
 
-
-        EventSubscribeFilter filter = createFilter(searchText, odsId.toString(), user.getUserId().toString(), null);
+        EventSubscribeFilter filter = createFilter(searchText, odsId, user.getUserId().toString(), null);
         int size = paginationPanel.getItemsPerPage();
 
         Response<PaginatedResponse<EventSubscribe>> response = eventSubscribeController.getPaginatedEventSubscribes(page, size, filter);
-        listSubscribesPanel.setViewportView(getListSubscribesPanel(response, page).getViewport().getView());
+        listSubscribesPanel.setViewportView(getListSubscribesPanel(response).getViewport().getView());
 
         if (response.isSuccess()) {
             paginationPanel.refresh(response.getData().getTotalItems(), page);
@@ -184,7 +181,39 @@ public class SubscribeEventsPanel extends AbstractPanel {
 
     @Override
     public void addListeners(){
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
 
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+        });
+        odsComboBox.addActionListener(e -> { applyFilterWithPage(1);});
+    }
+
+    private void refreshEventSubscribesList() {
+        String searchText = searchField.getText().trim();
+        String selectedOds = getSelectedOdsOrNull(odsComboBox);
+        UUID odsIdObj = getOdsIdByName(odsTopicsList, selectedOds);
+        String odsId = odsIdObj != null ? odsIdObj.toString() : null;
+        EventSubscribeFilter filter = createFilter(searchText, odsId, user.getUserId().toString(), null);
+
+        Response<PaginatedResponse<EventSubscribe>> response = eventSubscribeController.getPaginatedEventSubscribes(1, 6, filter);
+
+        JScrollPane newScrollPane = getListSubscribesPanel(response);
+        Component newView = newScrollPane.getViewport().getView();
+        listSubscribesPanel.setViewportView(newView);
+        listSubscribesPanel.revalidate();
+        listSubscribesPanel.repaint();
     }
 
     private void setOdsTopics(){

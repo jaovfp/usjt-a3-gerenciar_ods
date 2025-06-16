@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS tbl_users (
     postal_code VARCHAR(20) DEFAULT NULL,
     type ENUM('NORMAL', 'ADMIN') DEFAULT 'NORMAL',
     is_active BOOLEAN DEFAULT TRUE,
+    is_profile_complete DEFAULT FALSE,
     profile_photo_url VARCHAR(255) DEFAULT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -98,3 +99,23 @@ INSERT INTO tbl_ods_topics (ods_id, ods_name, ods_description) VALUES
 (UUID(), 'Vida Terrestre', 'Proteger, recuperar e promover o uso sustentável dos ecossistemas terrestres, gerir de forma sustentável as florestas, combater a desertificação, deter e reverter a degradação da terra e deter a perda de biodiversidade.'),
 (UUID(), 'Paz, Justiça e Instituições Eficazes', 'Promover sociedades pacíficas e inclusivas para o desenvolvimento sustentável, proporcionar o acesso à justiça para todos e construir instituições eficazes, responsáveis e inclusivas em todos os níveis.'),
 (UUID(), 'Parcerias e Meios de Implementação', 'Fortalecer os meios de implementação e revitalizar a parceria global para o desenvolvimento sustentável.');
+
+INSERT INTO tbl_users (
+    user_id,
+    fullname,
+    email,
+    password_hash,
+    type,
+    is_active,
+    is_profile_complete,
+    create_date
+) VALUES (
+    UUID(),
+    'Usuário Administrador',
+    'admin@gmail.com',
+    '$2a$12$/iHC8HVJZUL.rh3RunlF4eglj3fp2B.6NtUdQ8mj6B921keeZp6Vm',
+    'ADMIN',
+    TRUE,
+    TRUE,
+    CURRENT_TIMESTAMP
+);

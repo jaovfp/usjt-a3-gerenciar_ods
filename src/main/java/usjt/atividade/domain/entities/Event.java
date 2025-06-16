@@ -1,48 +1,44 @@
 package usjt.atividade.domain.entities;
 
+import usjt.atividade.domain.valueObjects.Address;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Event {
 
-    private String eventId;
+    private UUID eventId;
     private ODS ods;
     private String eventName;
     private String eventDescription;
     private LocalDate eventDate;
-    private String addressLine;
-    private String city;
-    private String state;
-    private String postalCode;
+    private Address address;
     private User createdBy;
     private LocalDateTime createDate;
+    private int totalRegistrations;
 
     public Event() {
-        this.eventId = UUID.randomUUID().toString();
+        this.eventId = UUID.randomUUID();
         this.createDate = LocalDateTime.now();
     }
 
-    public Event(ODS odsId, String eventName, String eventDescription,
-                 LocalDate eventDate, String addressLine, String city,
-                 String state, String postalCode, User createdBy) {
+    public Event(ODS ods, String eventName, String eventDescription,
+                 LocalDate eventDate, Address address, User createdBy) {
         this();
         this.ods = ods;
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.eventDate = eventDate;
-        this.addressLine = addressLine;
-        this.city = city;
-        this.state = state;
-        this.postalCode = postalCode;
+        this.address = address;
         this.createdBy = createdBy;
     }
 
-    public String getEventId() {
+    public UUID getEventId() {
         return eventId;
     }
 
-    public void setEventId(String eventId) {
+    public void setEventId(UUID eventId) {
         this.eventId = eventId;
     }
 
@@ -78,38 +74,6 @@ public class Event {
         this.eventDate = eventDate;
     }
 
-    public String getAddressLine() {
-        return addressLine;
-    }
-
-    public void setAddressLine(String addressLine) {
-        this.addressLine = addressLine;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
     public User getCreatedBy() {
         return createdBy;
     }
@@ -126,4 +90,18 @@ public class Event {
         this.createDate = createDate;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public int getTotalRegistrations() {
+        return totalRegistrations;
+    }
+    public void setTotalRegistrations(int totalRegistrations) {
+        this.totalRegistrations = totalRegistrations;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 }

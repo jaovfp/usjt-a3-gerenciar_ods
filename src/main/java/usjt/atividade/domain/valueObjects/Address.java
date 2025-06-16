@@ -1,5 +1,7 @@
 package usjt.atividade.domain.valueObjects;
 
+import static usjt.atividade.common.utils.ValidatorUtils.isStringNullOrEmpty;
+
 public class Address {
 
     private final String addressLine;
@@ -32,5 +34,9 @@ public class Address {
 
     public String toString() {
         return addressLine + ", " + city + ", " + state + " - " + postalCode;
+    }
+
+    public boolean isBlank() {
+        return isStringNullOrEmpty(addressLine) || isStringNullOrEmpty(city) || isStringNullOrEmpty(state) || isStringNullOrEmpty(postalCode);
     }
 }

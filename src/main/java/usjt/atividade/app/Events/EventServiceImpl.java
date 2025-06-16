@@ -5,10 +5,15 @@ import usjt.atividade.app.Exceptions.NotFoundException;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.PaginatedResponse;
 import usjt.atividade.domain.entities.Event;
+import usjt.atividade.domain.entities.EventRequest;
 import usjt.atividade.domain.service.EventService;
 import usjt.atividade.infra.Repository.EventRepositoryImpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
+import static usjt.atividade.app.Events.Validator.EventValidator.validateEventRequestForCreation;
 
 public class EventServiceImpl implements EventService {
 
@@ -29,6 +34,21 @@ public class EventServiceImpl implements EventService {
         List<Event> items = repository.findAllEventsByFilter(offset, size, filter);
 
         return new PaginatedResponse<>(items, page, totalPages, totalItems);
+    }
+
+    public void createEventFromRequest(EventRequest eventRequest){
+        validateEventRequestForCreation(eventRequest);
+        Event newEvent = new Event();
+        newEvent.setEventId(UUID.randomUUID());
+        newEvent.setOds(eventRequest.getOds());
+        newEvent.setEventName(eventRequest.getEventName());
+        newEvent.setEventDescription(eventRequest.getEventDescription());
+        newEvent.setEventDate(eventRequest.getEventDate());
+        newEvent.setAddress(eventRequest.getAddress());
+        newEvent.setCreatedBy(eventRequest.getRequestedBy());
+        newEvent.setCreateDate(LocalDateTime.now());
+
+        repository.save(newEvent);
     }
 
 }

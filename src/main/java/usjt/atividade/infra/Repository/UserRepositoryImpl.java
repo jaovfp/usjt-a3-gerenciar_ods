@@ -19,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String SQL_UPDATE = "UPDATE tbl_users SET " +
             "fullname = ?, email = ?, password_hash = ?, birth_date = ?, cpf = ?, phone_number = ?, " +
             "address_line = ?, city = ?, state = ?, postal_code = ?, type = ?, is_active = ?, " +
-            "profile_photo_url = ?, change_date = ? " +
+            "profile_photo_url = ?, is_profile_complete = ?, change_date = ? " +
             "WHERE user_id = ?";
 
     @Override
@@ -30,8 +30,9 @@ public class UserRepositoryImpl implements UserRepository {
             setCommonParams(stmt, user, false);
 
             stmt.setString(13, user.getProfilePhotoUrl());
-            stmt.setTimestamp(14, Timestamp.valueOf(LocalDateTime.now()));
-            stmt.setString(15, user.getUserId().toString());
+            stmt.setBoolean(14, user.isProfileComplete());
+            stmt.setTimestamp(15, Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setString(16, user.getUserId().toString());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -132,7 +133,8 @@ public class UserRepositoryImpl implements UserRepository {
                 rs.getString("postal_code"),
                 rs.getString("profile_photo_url"),
                 createDate,
-                changeDate
+                changeDate,
+                rs.getBoolean("is_profile_complete")
         );
     }
 

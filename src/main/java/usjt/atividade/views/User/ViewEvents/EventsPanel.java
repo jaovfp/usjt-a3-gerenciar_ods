@@ -37,7 +37,7 @@ public class EventsPanel extends AbstractPanel {
     @Override
     public void initComponents(){
         title = createLabel("Eventos", UIStyle.USER_ADMIN_TITLE_FONT, UIStyle.BG_SIDE_MENU_USER_COLOR, SwingConstants.LEFT);
-        List<String> buttonLabels = List.of("Eventos Disponíveis", "Meus Eventos", "Minhas Inscrições");
+        List<String> buttonLabels = List.of("Eventos Disponíveis", "Minhas Solicitações", "Minhas Inscrições");
         menuPanelButtons = buttonLabels.stream()
                 .collect(Collectors.toMap(
                         label -> label,
@@ -53,11 +53,11 @@ public class EventsPanel extends AbstractPanel {
         contentPanel.setBackground(UIStyle.BG_USER_ADMIN_COLOR);
 
         contentPanel.add(new AvailableEventsPanel(user), "Eventos Disponíveis");
-        contentPanel.add(new MyEventsPanel(user), "Meus Eventos");
+        contentPanel.add(new MyEventsPanel(user), "Minhas Solicitações");
         contentPanel.add(new SubscribeEventsPanel(user), "Minhas Inscrições");
 
-        updateMenuSelection("Meus Eventos");
-        cardLayout.show(contentPanel, "Meus Eventos");
+        updateMenuSelection("Minhas Solicitações");
+        cardLayout.show(contentPanel, "Minhas Solicitações");
     }
 
     @Override

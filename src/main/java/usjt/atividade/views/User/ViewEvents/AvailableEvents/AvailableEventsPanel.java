@@ -26,8 +26,7 @@ import java.util.UUID;
 
 import static java.util.Objects.isNull;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
-import static usjt.atividade.common.utils.ODSUtils.getArrayOdsTopics;
-import static usjt.atividade.common.utils.ODSUtils.getOdsIdByName;
+import static usjt.atividade.common.utils.ODSUtils.*;
 import static usjt.atividade.views.utils.ComponentFactory.*;
 
 public class AvailableEventsPanel extends AbstractPanel {
@@ -69,14 +68,17 @@ public class AvailableEventsPanel extends AbstractPanel {
         searchField = createCustomTextField("Busque por um evento...", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.BG_SIDE_MENU_USER_COLOR);
         searchPanel = searchField.withIcon("searchBlue.png", 15, BorderLayout.WEST);
 
-        EventFilter eventFilter = createFilter(searchField.getText().trim(), (String) odsComboBox.getSelectedItem(), null, null, true);
+        String selectedOds = getSelectedOdsOrNull(odsComboBox);
+        UUID odsIdObj = getOdsIdByName(odsTopicsList, selectedOds);
+        String odsId = odsIdObj != null ? odsIdObj.toString() : null;
+        EventFilter eventFilter = createFilter(searchField.getText().trim(), odsId, null, null, true);
         Response<PaginatedResponse<Event>> response = eventController.getPaginatedEvents(1, 5, eventFilter);
         listEventsPanel = getListEventsPanel(response, 1);
         paginationPanel = getPaginationPanel(response);
     }
 
-    private EventFilter createFilter(String eventName, String odsId, String userId, String eventId, boolean beforeToday){
-        return new EventFilter(eventName, odsId, userId, eventId, beforeToday);
+    private EventFilter createFilter(String eventName, String odsId, String userId, String eventId, boolean afterToday){
+        return new EventFilter(eventName, odsId, userId, eventId, afterToday);
     }
 
     @Override
@@ -96,9 +98,6 @@ public class AvailableEventsPanel extends AbstractPanel {
                                                                         .addGap(55)
                                                                         .addComponent(odsPanel, PREFERRED_SIZE, 170, PREFERRED_SIZE)
                                                                         .addGap(460)
-//                                                .addGap(145)
-//                                                .addComponent(filterDatePanel, PREFERRED_SIZE, 170, PREFERRED_SIZE)
-//                                                .addGap(145)
                                                                         .addComponent(searchPanel, PREFERRED_SIZE, 211, PREFERRED_SIZE)
                                                         )
                                                         .addComponent(listEventsPanel, PREFERRED_SIZE, 970, PREFERRED_SIZE)
@@ -113,7 +112,6 @@ public class AvailableEventsPanel extends AbstractPanel {
                                         .addGap(12)
                                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(odsPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
-//                                        .addComponent(filterDatePanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
                                                         .addComponent(searchPanel, PREFERRED_SIZE, 24, PREFERRED_SIZE)
                                         )
                                         .addGap(42)
@@ -126,6 +124,24 @@ public class AvailableEventsPanel extends AbstractPanel {
 
     @Override
     public void addListeners(){
+
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                applyFilterWithPage(1);
+            }
+        });
+        odsComboBox.addActionListener(e -> { applyFilterWithPage(1);});
 
     }
 
@@ -149,11 +165,11 @@ public class AvailableEventsPanel extends AbstractPanel {
 
     private void applyFilterWithPage(int page) {
         String searchText = searchField.getText().trim();
-        String selectedOds = (String) odsComboBox.getSelectedItem();
-        UUID odsId = getOdsIdByName(odsTopicsList, selectedOds);
+        String selectedOds = getSelectedOdsOrNull(odsComboBox);
+        UUID odsIdObj = getOdsIdByName(odsTopicsList, selectedOds);
+        String odsId = odsIdObj != null ? odsIdObj.toString() : null;
 
-
-        EventFilter filter = createFilter(searchText, odsId.toString(), null, null, true);
+        EventFilter filter = createFilter(searchText, odsId, null, null, true);
         int size = paginationPanel.getItemsPerPage();
 
         Response<PaginatedResponse<Event>> response = eventController.getPaginatedEvents(page, size, filter);
@@ -166,7 +182,7 @@ public class AvailableEventsPanel extends AbstractPanel {
 
     private JScrollPane getListEventsPanel(Response<PaginatedResponse<Event>> response, int page){
         if (response.isSuccess()){
-            List<Integer> widths = List.of(200, 200, 100, 100);
+            List<Integer> widths = List.of(200, 200, 100, 150);
             List<Integer> gaps = List.of(20, 20, 20, 50);
             List<JPanel> headerLabels = List.of(
                     createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
@@ -182,7 +198,7 @@ public class AvailableEventsPanel extends AbstractPanel {
                     widths,
                     gaps,
                     UIStyle.BG_SIDE_MENU_USER_COLOR,
-                    (event, refreshCallback) -> new EventRowPanel(event, UIStyle.BG_USER_ADMIN_COLOR),
+                    (event, refreshCallback) -> new EventRowPanel(event, UIStyle.BG_USER_ADMIN_COLOR, user),
                     null
             );
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){

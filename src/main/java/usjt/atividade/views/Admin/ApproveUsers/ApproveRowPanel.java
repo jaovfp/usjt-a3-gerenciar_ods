@@ -52,7 +52,7 @@ public class ApproveRowPanel extends AbstractPanel {
     protected void initComponents() {
         lblEventName = createLabel(eventRequest.getEventName(), new Font("Segoe UI", Font.BOLD, 12), UIStyle.BG_SIDE_MENU_ADMIN_COLOR, SwingConstants.LEFT);
         lblOds = createLabel(eventRequest.getOds().getOdsName(), new Font("Segoe UI", Font.PLAIN, 11), UIStyle.BG_SIDE_MENU_ADMIN_COLOR, SwingConstants.LEFT);
-        String dateConverted = dateConverter(eventRequest.getCreateDate(), "dd/MM/yyyy");
+        String dateConverted = dateConverter(eventRequest.getEventDate(), "dd/MM/yyyy");
 
         String status = eventRequest.getStatus().getStatus();
         Color colorStatus = defineEventRequestStatusColorByStatus(eventRequest.getStatus());
@@ -164,7 +164,7 @@ public class ApproveRowPanel extends AbstractPanel {
     }
 
     private void btnRejectClick(){
-        if (confirmAction("Tem certeza que deseja cancelar este evento?", "Confirmação")) {
+        if (confirmAction("Tem certeza que deseja rejeitar este evento?", "Confirmação")) {
             UpdateEventRequestStatusDto request = new UpdateEventRequestStatusDto(
                     eventRequest.getRequestId(),
                     eventRequest.getRequestedBy().getUserId(),

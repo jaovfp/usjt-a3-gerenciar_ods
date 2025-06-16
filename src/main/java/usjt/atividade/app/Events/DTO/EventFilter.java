@@ -6,15 +6,18 @@ public class EventFilter {
     private String eventId;
     private String eventName;
     private String odsId;
-    private Boolean beforeToday;
+    private Boolean afterToday;
 
+    public EventFilter(){
 
-    public EventFilter(String eventName, String odsId, String creatorId, String eventId, boolean beforeToday){
+    }
+
+    public EventFilter(String eventName, String odsId, String creatorId, String eventId, boolean afterToday){
         this.eventName = eventName;
         this.odsId = odsId;
         this.creatorId = creatorId;
         this.eventId = eventId;
-        this.beforeToday = beforeToday;
+        this.afterToday = afterToday;
     }
 
     public String getCreatorId() {
@@ -33,7 +36,15 @@ public class EventFilter {
         return odsId;
     }
 
-    public Boolean getBeforeToday() {
-        return beforeToday;
+    public Boolean getAfterToday() {
+        return afterToday;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 }

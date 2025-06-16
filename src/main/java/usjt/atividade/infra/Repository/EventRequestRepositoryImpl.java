@@ -82,7 +82,6 @@ public class EventRequestRepositoryImpl implements EventRequestRepository {
     public void save(EventRequest request) {
         try (Connection conn = MySQLConnection.getInstance();
              PreparedStatement stmt = conn.prepareStatement(INSERT_EVENT_REQUEST)) {
-            stmt.setString(1, request.getRequestId().toString());
             setCommonParams(stmt, request, true);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -223,27 +222,31 @@ public class EventRequestRepositoryImpl implements EventRequestRepository {
     }
 
     private void setCommonParams(PreparedStatement stmt, EventRequest request, boolean includeAllFields) throws SQLException {
-        stmt.setString(1, request.getEventName());
-        stmt.setString(2, request.getEventDescription());
-        stmt.setString(3, request.getStatus().name());
+        int index = 1;
 
         if (includeAllFields) {
-            stmt.setString(4, request.getOds().getOdsId().toString());
-            stmt.setString(5, request.getRequestedBy().getUserId().toString());
-            stmt.setTimestamp(6, Timestamp.valueOf(request.getCreateDate()));
-            stmt.setDate(7, Date.valueOf(request.getEventDate()));
-            stmt.setString(8, request.getAddress().getPostalCode());
-            stmt.setString(9, request.getAddress().getCity());
-            stmt.setString(10, request.getAddress().getAddressLine());
-            stmt.setString(11, request.getAddress().getState());
-            stmt.setString(12, request.getRequestId().toString());
+            stmt.setString(index++, request.getRequestId().toString());
+            stmt.setString(index++, request.getEventName());
+            stmt.setString(index++, request.getEventDescription());
+            stmt.setString(index++, request.getStatus().name());
+            stmt.setString(index++, request.getOds().getOdsId().toString());
+            stmt.setString(index++, request.getRequestedBy().getUserId().toString());
+            stmt.setTimestamp(index++, Timestamp.valueOf(request.getCreateDate()));
+            stmt.setDate(index++, Date.valueOf(request.getEventDate()));
+            stmt.setString(index++, request.getAddress().getPostalCode());
+            stmt.setString(index++, request.getAddress().getCity());
+            stmt.setString(index++, request.getAddress().getAddressLine());
+            stmt.setString(index++, request.getAddress().getState());
         } else {
-            stmt.setDate(4, Date.valueOf(request.getEventDate()));
-            stmt.setString(5, request.getAddress().getPostalCode());
-            stmt.setString(6, request.getAddress().getCity());
-            stmt.setString(7, request.getAddress().getAddressLine());
-            stmt.setString(8, request.getAddress().getState());
-            stmt.setString(9, request.getRequestId().toString());
+            stmt.setString(index++, request.getEventName());
+            stmt.setString(index++, request.getEventDescription());
+            stmt.setString(index++, request.getStatus().name());
+            stmt.setDate(index++, Date.valueOf(request.getEventDate()));
+            stmt.setString(index++, request.getAddress().getPostalCode());
+            stmt.setString(index++, request.getAddress().getCity());
+            stmt.setString(index++, request.getAddress().getAddressLine());
+            stmt.setString(index++, request.getAddress().getState());
+            stmt.setString(index++, request.getRequestId().toString());
         }
     }
 

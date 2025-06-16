@@ -136,10 +136,10 @@ public class MyEventsPanel extends AbstractPanel {
                     createLabelWithIcon("Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "event.png",14, BorderLayout.EAST),
                     createLabelWithIcon("Status",UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT, "approveGreen.png", 14, BorderLayout.EAST),
                     createLabelWithIcon("ODS", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"sustainable.png", 14, BorderLayout.EAST),
-                    createLabelWithIcon("Data", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"date.png", 14, BorderLayout.EAST)
+                    createLabelWithIcon("Data do Evento", UIStyle.BG_SIDE_MENU_USER_COLOR, UIStyle.HEADER_FONT, SwingConstants.LEFT,"date.png", 14, BorderLayout.EAST)
             );
             List<Integer> gaps =  List.of(20, 20, 20,50);
-            List<Integer> width = List.of(200, 100, 270, 100, 120);
+            List<Integer> width = List.of(200, 100, 270, 140, 120);
            return createListPanel(
                listEvents,
                UIStyle.BG_USER_ADMIN_COLOR,
@@ -147,8 +147,8 @@ public class MyEventsPanel extends AbstractPanel {
                width,
                gaps,
                UIStyle.BG_SIDE_MENU_USER_COLOR,
-               (evento, runnable) -> new MyEventsRowPanel(evento, UIStyle.BG_USER_ADMIN_COLOR),
-               null);
+               (evento, refreshCallBack) -> new MyEventsRowPanel(evento, UIStyle.BG_USER_ADMIN_COLOR, refreshCallBack),
+               this::refreshMyEventRequestsList);
         }else if(StatusCode.NOT_FOUND.equals(response.getStatusCode())){
             return createErrorListPanel("Você não possuí solicitação de eventos.", UIStyle.BG_USER_ADMIN_COLOR, Color.GRAY);
         }else{
@@ -191,6 +191,22 @@ public class MyEventsPanel extends AbstractPanel {
         if (response.isSuccess()) {
             paginationPanel.refresh(response.getData().getTotalItems(), page);
         }
+    }
+
+    private void refreshMyEventRequestsList() {
+        String searchText = searchField.getText().trim();
+        EventRequestStatus selectedStatus = (EventRequestStatus) statusField.getSelectedItem();
+
+        EventRequestFilter filter = createFilter(searchText, selectedStatus, user.getUserId().toString(), null);
+
+        Response<PaginatedResponse<EventRequest>> response = eventRequestController.getEventRequests(1, 6, filter);
+
+        JScrollPane newScrollPane = getListEventsPanel(response);
+        Component newView = newScrollPane.getViewport().getView();
+        listEventsPanel.setViewportView(newView);
+
+        listEventsPanel.revalidate();
+        listEventsPanel.repaint();
     }
 
     private DefaultListCellRenderer createEventStatusRenderer() {

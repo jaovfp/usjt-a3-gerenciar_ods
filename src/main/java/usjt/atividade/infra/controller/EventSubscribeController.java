@@ -1,5 +1,6 @@
 package usjt.atividade.infra.controller;
 
+import usjt.atividade.app.Events.DTO.EventSubscribeDto;
 import usjt.atividade.app.Events.DTO.EventSubscribeFilter;
 import usjt.atividade.app.Events.EventSubscribeServiceImpl;
 import usjt.atividade.app.Exceptions.ErrorException;
@@ -22,6 +23,30 @@ public class EventSubscribeController {
         try{
             PaginatedResponse<EventSubscribe> eventSubscribes = eventSubscribeService.getPaginatedEventSubscribes(page, pageSize, filter);
             return Response.ok(eventSubscribes);
+        }catch (ErrorException e){
+            return Response.fail(e.getStatusCode(), e.getMessage());
+        }catch (Exception e){
+            System.out.println(e);
+            return Response.fail(StatusCode.INTERNAL_ERROR, INTERNAL_ERROR);
+        }
+    }
+
+    public Response<Void> subscribe(EventSubscribeDto request){
+        try{
+            eventSubscribeService.subscribe(request);
+            return Response.ok();
+        }catch (ErrorException e){
+            return Response.fail(e.getStatusCode(), e.getMessage());
+        }catch (Exception e){
+            System.out.println(e);
+            return Response.fail(StatusCode.INTERNAL_ERROR, INTERNAL_ERROR);
+        }
+    }
+
+    public Response<Void> unsubscribe(EventSubscribeDto request){
+        try{
+            eventSubscribeService.unsubscribe(request);
+            return Response.ok();
         }catch (ErrorException e){
             return Response.fail(e.getStatusCode(), e.getMessage());
         }catch (Exception e){

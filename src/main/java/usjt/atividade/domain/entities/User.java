@@ -28,7 +28,7 @@ public class User {
     public User(UUID userId, String fullname, Email email, String passwordHash,
                 UserType type, boolean isActive, LocalDate birthDate,
                 String cpf, String phoneNumber, String addressLine, String city, String state, String postalCode,
-                String profilePhotoUrl, LocalDateTime createDate, LocalDateTime changeDate) {
+                String profilePhotoUrl, LocalDateTime createDate, LocalDateTime changeDate, boolean isProfileComplete) {
         this.userId = userId;
         this.fullname = fullname;
         this.email = email;
@@ -42,6 +42,7 @@ public class User {
         this.profilePhotoUrl = profilePhotoUrl;
         this.createDate = createDate;
         this.changeDate = changeDate;
+        this.isProfileComplete = isProfileComplete;
     }
 
     public void setEmail(Email email) {
