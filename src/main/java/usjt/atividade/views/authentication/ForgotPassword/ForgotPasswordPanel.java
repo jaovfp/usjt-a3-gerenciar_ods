@@ -1,8 +1,8 @@
 package usjt.atividade.views.authentication.ForgotPassword;
 
-import usjt.atividade.app.Authentication.AuthController;
+import usjt.atividade.infra.controller.AuthController;
 import usjt.atividade.common.Response;
-import usjt.atividade.domain.model.PasswordRecovery;
+import usjt.atividade.domain.entities.PasswordRecovery;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.Login.LoginView;
 import usjt.atividade.views.authentication.ResetPassword.ResetPasswordView;
@@ -44,7 +44,7 @@ public class ForgotPasswordPanel extends AbstractPanel {
         forgotPasswordTextLabel = createLabel(UIStyle.FORGOT_PASSWORD_TEXT, UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         emailLabel = createLabel("E-mail:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         emailTextField = createCustomTextField("Digite seu e-mail...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
-        btnSendPinCodeEmail = createRoundedButton("Continuar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        btnSendPinCodeEmail = createRoundedButton("Continuar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR, 60, 60);
     }
 
     @Override

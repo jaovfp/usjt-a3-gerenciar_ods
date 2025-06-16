@@ -1,6 +1,6 @@
 package usjt.atividade.views.authentication.SignUp;
 
-import usjt.atividade.app.User.UserController;
+import usjt.atividade.infra.controller.UserController;
 import usjt.atividade.app.User.dto.requests.CreateUserRequest;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.Response;
@@ -53,13 +53,13 @@ public class SignUpPanel extends AbstractPanel {
         signUpLabel = createLabel("Cadastre-se", UIStyle.AUTH_TITLE_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         emailLabel = createLabel("E-mail:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         emailTextField = createCustomTextField("Digite seu e-mail...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
-        userLabel = createLabel("Usuário:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
+        userLabel = createLabel("Nome completo:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         userTextField = createCustomTextField("Digite seu usuário...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         passwordLabel = createLabel("Senha:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         passwordField = createCustomPasswordField("Digite sua senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         repeatPasswordLabel = createLabel("Repetir senha:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         repeatPasswordField = createCustomPasswordField("Repita sua senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
-        btnSignUp = createRoundedButton("Cadastrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        btnSignUp = createRoundedButton("Cadastrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR, 60, 60);
     }
 
     @Override

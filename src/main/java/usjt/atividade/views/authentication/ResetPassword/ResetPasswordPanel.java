@@ -1,10 +1,10 @@
 package usjt.atividade.views.authentication.ResetPassword;
 
-import usjt.atividade.app.Authentication.AuthController;
+import usjt.atividade.infra.controller.AuthController;
 import usjt.atividade.app.Authentication.dto.ResetPasswordRequest;
 import usjt.atividade.common.MessageConstants;
 import usjt.atividade.common.Response;
-import usjt.atividade.domain.model.PasswordRecovery;
+import usjt.atividade.domain.entities.PasswordRecovery;
 import usjt.atividade.views.AbstractPanel;
 import usjt.atividade.views.authentication.ForgotPassword.ForgotPasswordView;
 import usjt.atividade.views.authentication.Login.LoginView;
@@ -59,7 +59,7 @@ public class ResetPasswordPanel extends AbstractPanel {
         newPasswordField = createCustomPasswordField("Digite sua nova senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         repeatNewPasswordLabel = createLabel("Repetir senha:", UIStyle.AUTH_TEXT_FONT, UIStyle.AUTH_TEXT_COLOR, SwingConstants.CENTER);
         repeatNewPasswordField = createCustomPasswordField("Repita sua nova senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
-        btnResetPassword = createRoundedButton("Alterar Senha", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        btnResetPassword = createRoundedButton("Alterar Senha", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR, 60, 60);
     }
 
     @Override

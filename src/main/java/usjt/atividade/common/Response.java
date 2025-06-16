@@ -1,7 +1,5 @@
 package usjt.atividade.common;
 
-import usjt.atividade.domain.model.User.User;
-
 public class Response <T>{
 
     private final boolean success;
@@ -24,8 +22,16 @@ public class Response <T>{
         return new Response<>(true, StatusCode.CREATED, message, null);
     }
 
+    public static <T> Response<T> ok() {
+        return new Response<>(true, StatusCode.SUCCESS, null, null);
+    }
+
     public static <T> Response<T> created(String message, T data) {
         return new Response<>(true, StatusCode.CREATED, message, data);
+    }
+
+    public static <T> Response<T> ok(String message, T data) {
+        return new Response<>(true, StatusCode.SUCCESS, message, data);
     }
 
     public static <T> Response<T> fail(StatusCode code, String message) {

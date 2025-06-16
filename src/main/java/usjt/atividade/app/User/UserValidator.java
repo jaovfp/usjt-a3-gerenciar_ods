@@ -1,32 +1,39 @@
 package usjt.atividade.app.User;
 
+import usjt.atividade.app.Exceptions.UnprocessableEntityException;
 import usjt.atividade.app.Exceptions.ValidationException;
 import usjt.atividade.app.User.dto.requests.CreateUserRequest;
+import usjt.atividade.app.User.dto.requests.UpdateUserRequest;
 
 import static usjt.atividade.common.MessageConstants.*;
 import static usjt.atividade.common.utils.ValidatorUtils.*;
 
 public class UserValidator {
 
-    public static void validateCreate(CreateUserRequest request) {
-        if (isStringNullOrEmpty(request.getUsername()) || isStringNullOrEmpty(request.getEmail()) || isStringNullOrEmpty(request.getPassword())) {
+    public static void validateCreateRequestIsNull(CreateUserRequest request) {
+        if (isStringNullOrEmpty(request.getFullname()) || isStringNullOrEmpty(request.getEmail()) || isStringNullOrEmpty(request.getPassword())) {
             throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_EMPTY_FIELDS);
         }
+    }
 
-        if (!isEmailValid(request.getEmail())) {
-            throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_INVALID_EMAIL);
+    public static void validateUpdateUserRequestIsNull(UpdateUserRequest request) {
+        if (isStringNullOrEmpty(request.getFullname()) ||
+                isStringNullOrEmpty(request.getEmail()) ||
+                request.getBirthDate() == null ||
+                isStringNullOrEmpty(request.getCpf()) ||
+                isStringNullOrEmpty(request.getPhoneNumber()) ||
+                isStringNullOrEmpty(request.getAddressLine()) ||
+                isStringNullOrEmpty(request.getCity()) ||
+                isStringNullOrEmpty(request.getState()) ||
+                isStringNullOrEmpty(request.getPostalCode())) {
+
+            throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_EMPTY_FIELDS);
         }
+    }
 
-        if (!isValidPasswordLength(request.getPassword())) {
-            throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_PASSWORD_LENGTH);
-        }
-
-        if (!passwordHasUppercase(request.getPassword())) {
-            throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_PASSWORD_UPPERCASE);
-        }
-
-        if (!passwordHasSpecialCharacter(request.getPassword())) {
-            throw new ValidationException(GENERIC_CREATE_USER_ERROR + ERROR_PASSWORD_SPECIAL_CHAR);
+    public static void validateUserExists(boolean userExists){
+        if (userExists){
+            throw new UnprocessableEntityException(ERROR_EMAIL_ALREADY_EXISTS);
         }
     }
 

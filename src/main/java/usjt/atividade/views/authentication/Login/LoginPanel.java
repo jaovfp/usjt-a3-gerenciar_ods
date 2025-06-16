@@ -1,10 +1,12 @@
 package usjt.atividade.views.authentication.Login;
 
-import usjt.atividade.app.Authentication.AuthController;
+import usjt.atividade.infra.controller.AuthController;
 import usjt.atividade.app.Authentication.dto.AuthenticateRequest;
 import usjt.atividade.common.Response;
-import usjt.atividade.domain.model.User.User;
+import usjt.atividade.domain.entities.User;
 import usjt.atividade.views.AbstractPanel;
+import usjt.atividade.views.Admin.AdminView;
+import usjt.atividade.views.User.UserView;
 import usjt.atividade.views.authentication.ForgotPassword.ForgotPasswordView;
 import usjt.atividade.views.authentication.SignUp.SignUpView;
 import usjt.atividade.views.utils.CustomPasswordField;
@@ -18,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URISyntaxException;
 
 public class LoginPanel extends AbstractPanel {
 
@@ -52,7 +55,7 @@ public class LoginPanel extends AbstractPanel {
         passwordField = createCustomPasswordField("Digite sua senha...", UIStyle.AUTH_TEXT_COLOR, Color.CYAN);
         forgotPasswordLabel = createLinkLabel("Esqueceu sua senha ?", UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
         signUpLabel = createLinkLabel("Cadastre-se",  UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_FONT);
-        btnSignIn = createRoundedButton("Entrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR);
+        btnSignIn = createRoundedButton("Entrar", UIStyle.AUTH_BTN_FONT, UIStyle.AUTH_ACCENT_COLOR, UIStyle.AUTH_TEXT_COLOR, 60, 60);
     }
     
     @Override
@@ -133,10 +136,10 @@ public class LoginPanel extends AbstractPanel {
     private void redirectToMainScreen(User user) {
         switch (user.getType()) {
             case ADMIN:
-                new SignUpView().setVisible(true); // alterar para a tela do usuário
+                new AdminView("Admin Screen", user).setVisible(true);
                 break;
             case NORMAL:
-                new SignUpView().setVisible(true); // alterar para a tela de admin
+                new UserView("User Screen", user).setVisible(true);
                 break;
             default:
                 System.out.println(user);
