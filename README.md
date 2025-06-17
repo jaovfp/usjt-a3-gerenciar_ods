@@ -119,7 +119,7 @@
 
 ### 🟢 Aprovar Eventos com botões de aprovação
 
-![Tela de Login](./assets/aprovar-evento-botoes.PNG) 
+![Tela de Login](./assets/aprovar-eventos-botoes.PNG) 
 
 ---
 
