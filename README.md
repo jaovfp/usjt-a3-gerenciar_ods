@@ -55,71 +55,71 @@
 
 ### 📝 Cadastro de Novo Usuário
 
-![Tela de Login](./assets/Capturar.png)
+![Tela de Login](./assets/Capturar.PNG)
 
 ### ❓ Recuperação de Senha
 
-![Tela de Login](./assets/esqueceu-sua-senha.png)
+![Tela de Login](./assets/esqueceu-sua-senha.PNG)
 
 ### ✉️ Código PIN no E-mail
 
-![Tela de Login](./assets/email-pincode.png)
+![Tela de Login](./assets/email-pincode.PNG)
 
 ### 🔑 Alteração de Senha
 
-![Tela de Login](./assets/alterar-senha.png)
+![Tela de Login](./assets/alterar-senha.PNG)
 
 ### 👤 Atualização de Cadastro (Usuário)
 
-![Tela de Login](./assets/atualizar-cadastro.png)
+![Tela de Login](./assets/atualizar-cadastro.PNG)
 
 ### 📅 Cadastro de Evento (Usuário)
 
-![Tela de Login](./assets/cadastrar-evento.png)
+![Tela de Login](./assets/cadastrar-evento.PNG)
 
 ### ✅ Evento Cadastrado com Sucesso
 
-![Tela de Login](./assets/cadastrar-evento-sucesso.png)
+![Tela de Login](./assets/cadastrar-evento-sucesso.PNG)
 
 ### ⚠️ CEP Não Encontrado
 
-![Tela de Login](./assets/cep-nao-existe.png)
+![Tela de Login](./assets/cep-nao-existe.PNG)
 
 ### 📢 Evento Aprovado (Visualização do Usuário)
 
-![Tela de Login](./assets/evento-aprovado.png)
+![Tela de Login](./assets/evento-aprovado.PNG)
 
 ### 🚫 Criador do Evento Tentando se Inscrever
 
-![Tela de Login](./assets/evento-criador-tenta-inscrever.png)
+![Tela de Login](./assets/evento-criador-tenta-inscrever.PNG)
 
 ### 📋 Lista de Eventos Disponíveis
 
-![Tela de Login](./assets/eventos-disponiveis.png)
+![Tela de Login](./assets/eventos-disponiveis.PNG)
 
 ### 🧾 Minhas Inscrições
 
-![Tela de Login](./assets/minhas-inscricoes.png)
+![Tela de Login](./assets/minhas-inscricoes.PNG)
 
 ### 📨 Minhas Solicitações de Eventos
 
-![Tela de Login](./assets/minhas-solicitacoes.png)
+![Tela de Login](./assets/minhas-solicitacoes.PNG)
 
 ### 👨‍💼 Aprovar Eventos (Administrador)
 
-![Tela de Login](./assets/aprovar-evento.png)
+![Tela de Login](./assets/aprovar-evento.PNG)
 
 ### 🔍 Filtro por Status - Cancelados (Administrador)
 
-![Tela de Login](./assets/adm-filtro-cancelado.png) 
+![Tela de Login](./assets/adm-filtro-cancelado.PNG) 
 
 ### 🔎 Filtro por Pesquisa (Administrador)
 
-![Tela de Login](./assets/adm-filtro-pesquisar.png) 
+![Tela de Login](./assets/adm-filtro-pesquisar.PNG) 
 
 ### 🟢 Aprovar Eventos com botões de aprovação
 
-![Tela de Login](./assets/aprovar-evento-botoes.png) 
+![Tela de Login](./assets/aprovar-evento-botoes.PNG) 
 
 ---
 
