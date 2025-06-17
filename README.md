@@ -49,7 +49,77 @@
 
 ## 📸 Capturas de Tela
 
-> 
+### 🔐 Login
+
+![Tela de Login](./assets/tela-login.png)
+
+### 📝 Cadastro de Novo Usuário
+
+![Tela de Login](./assets/Capturar.png)
+
+### ❓ Recuperação de Senha
+
+![Tela de Login](./assets/esqueceu-sua-senha.png)
+
+### ✉️ Código PIN no E-mail
+
+![Tela de Login](./assets/email-pincode.png)
+
+### 🔑 Alteração de Senha
+
+![Tela de Login](./assets/alterar-senha.png)
+
+### 👤 Atualização de Cadastro (Usuário)
+
+![Tela de Login](./assets/atualizar-cadastro.png)
+
+### 📅 Cadastro de Evento (Usuário)
+
+![Tela de Login](./assets/cadastrar-evento.png)
+
+### ✅ Evento Cadastrado com Sucesso
+
+![Tela de Login](./assets/cadastrar-evento-sucesso.png)
+
+### ⚠️ CEP Não Encontrado
+
+![Tela de Login](./assets/cep-nao-existe.png)
+
+### 📢 Evento Aprovado (Visualização do Usuário)
+
+![Tela de Login](./assets/evento-aprovado.png)
+
+### 🚫 Criador do Evento Tentando se Inscrever
+
+![Tela de Login](./assets/evento-criador-tenta-inscrever.png)
+
+### 📋 Lista de Eventos Disponíveis
+
+![Tela de Login](./assets/eventos-disponiveis.png)
+
+### 🧾 Minhas Inscrições
+
+![Tela de Login](./assets/minhas-inscricoes.png)
+
+### 📨 Minhas Solicitações de Eventos
+
+![Tela de Login](./assets/minhas-solicitacoes.png)
+
+### 👨‍💼 Aprovar Eventos (Administrador)
+
+![Tela de Login](./assets/aprovar-evento.png)
+
+### 🔍 Filtro por Status - Cancelados (Administrador)
+
+![Tela de Login](./assets/adm-filtro-cancelado.png) 
+
+### 🔎 Filtro por Pesquisa (Administrador)
+
+![Tela de Login](./assets/adm-filtro-pesquisar.png) 
+
+### 🟢 Aprovar Eventos com botões de aprovação
+
+![Tela de Login](./assets/aprovar-evento-botoes.png) 
 
 ---
 
