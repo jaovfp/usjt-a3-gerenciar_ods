@@ -85,10 +85,6 @@
 
 ![Tela de Login](./assets/cep-nao-existe.PNG)
 
-### 📢 Evento Aprovado (Visualização do Usuário)
-
-![Tela de Login](./assets/evento-aprovado.PNG)
-
 ### 🚫 Criador do Evento Tentando se Inscrever
 
 ![Tela de Login](./assets/evento-criador-tenta-inscrever.PNG)
@@ -109,6 +105,7 @@
 
 ![Tela de Login](./assets/aprovar-evento.PNG)
 
+
 ### 🔍 Filtro por Status - Cancelados (Administrador)
 
 ![Tela de Login](./assets/adm-filtro-cancelado.PNG) 
@@ -116,6 +113,10 @@
 ### 🔎 Filtro por Pesquisa (Administrador)
 
 ![Tela de Login](./assets/adm-filtro-pesquisar.PNG) 
+
+### 📢 Evento Aprovado 
+
+![Tela de Login](./assets/evento-aprovado.PNG)
 
 ### 🟢 Aprovar Eventos com botões de aprovação
 
