@@ -51,7 +51,7 @@
 
 ### 🔐 Login
 
-![Tela de Login](./assets/tela-login.png)
+![Tela de Login](./assets/tela-login.PNG)
 
 ### 📝 Cadastro de Novo Usuário
 
