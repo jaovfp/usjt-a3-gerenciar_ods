@@ -91,7 +91,7 @@
 
 ### 📋 Lista de Eventos Disponíveis
 
-![Tela de Login](./assets/eventos-disponiveis.PNG)
+![Tela de Login](./assets/eventos-diponiveis.PNG)
 
 ### 🧾 Minhas Inscrições
 
@@ -103,7 +103,7 @@
 
 ### 👨‍💼 Aprovar Eventos (Administrador)
 
-![Tela de Login](./assets/aprovar-evento.PNG)
+![Tela de Login](./assets/aprovar-eventos.PNG)
 
 
 ### 🔍 Filtro por Status - Cancelados (Administrador)
